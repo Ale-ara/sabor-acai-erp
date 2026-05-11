@@ -106,41 +106,41 @@
 
             <nav class="menu">
 
-    <a href="dashboard.html">
-        📊 Dashboard
-    </a>
+                <a href="dashboard.html">
+                    📊 Dashboard
+                </a>
 
-    <a href="caixa.html">
-        💰 Caixa
-    </a>
+                <a href="caixa.html">
+                    💰 Caixa
+                </a>
 
-    <a href="produtos.html">
-        🍧 Produtos
-    </a>
+                <a href="produtos.html">
+                    🍧 Produtos
+                </a>
 
-    <a href="estoque.html">
-        📦 Estoque
-    </a>
+                <a href="estoque.html">
+                    📦 Estoque
+                </a>
 
-    <a href="movimentacoes.html">
-        🔄 Movimentações
-    </a>
+                <a href="movimentacoes.html">
+                    🔄 Movimentações
+                </a>
 
-    <a href="vendas.html">
-        🧾 Vendas
-    </a>
+                <a href="vendas.html">
+                    🧾 Vendas
+                </a>
 
-    <a href="relatorios.html">
-        📈 Relatórios
-    </a>
+                <a href="relatorios.html">
+                    📈 Relatórios
+                </a>
 
-    <a href="usuarios.html">
-        👤 Usuário
-    </a>
+                <a href="usuarios.html">
+                    👤 Usuário
+                </a>
 
-</nav>
+            </nav>
 
-</div>
+        </div>
 
         <!-- SAIR -->
 
@@ -179,138 +179,121 @@
 
             <div class="header-right">
 
+                <!-- NOTIFICAÇÃO -->
+
                 <div class="notification-wrapper">
 
-    <button
-        class="notification-btn"
-        onclick="toggleNotifications()"
-    >
+                    <button
+                        class="notification-btn"
+                        onclick="toggleNotifications()"
+                    >
 
-        🔔
+                        🔔
 
-        <span class="notification-badge">
-            3
-        </span>
+                        <span class="notification-badge">
+                            3
+                        </span>
 
-    </button>
+                    </button>
 
-    <!-- DROPDOWN -->
+                    <!-- DROPDOWN -->
 
-    <div
-        class="notification-dropdown"
-        id="notification-dropdown"
-    >
+                    <div
+                        class="notification-dropdown"
+                        id="notification-dropdown"
+                    >
 
-        <div class="notification-header">
+                        <div class="notification-header">
 
-            <h3>
-                Notificações
-            </h3>
+                            <h3>
+                                Notificações
+                            </h3>
 
-            <span>
-                3 novas
-            </span>
+                            <span>
+                                3 novas
+                            </span>
 
-        </div>
+                        </div>
 
-        <!-- ITEM -->
+                        <!-- ITEM -->
 
-        <div class="notification-item critica">
+                        <div class="notification-item critica">
 
-            <div class="notification-icon">
-                ⚠️
-            </div>
+                            <div class="notification-icon">
+                                ⚠️
+                            </div>
 
-            <div>
+                            <div>
 
-                <strong>
-                    Estoque crítico
-                </strong>
+                                <strong>
+                                    Estoque crítico
+                                </strong>
 
-                <p>
-                    Açaí 700ML está acabando
-                </p>
+                                <p>
+                                    Açaí 700ML está acabando
+                                </p>
 
-            </div>
+                            </div>
 
-        </div>
+                        </div>
 
-        <!-- ITEM -->
+                        <!-- ITEM -->
 
-        <div class="notification-item venda">
+                        <div class="notification-item venda">
 
-            <div class="notification-icon">
-                💰
-            </div>
+                            <div class="notification-icon">
+                                💰
+                            </div>
 
-            <div>
+                            <div>
 
-                <strong>
-                    Nova venda
-                </strong>
+                                <strong>
+                                    Nova venda
+                                </strong>
 
-                <p>
-                    Pedido de R$ 49,90 realizado
-                </p>
+                                <p>
+                                    Pedido de R$ 49,90 realizado
+                                </p>
 
-            </div>
+                            </div>
 
-        </div>
+                        </div>
 
-        <!-- ITEM -->
+                        <!-- LISTA -->
 
-        <div
-    class="notification-dropdown"
-    id="notification-dropdown"
->
+                        <div
+                            id="notification-list"
+                        >
 
-    <div class="notification-header">
+                        </div>
 
-        <h3>
-            Notificações
-        </h3>
+                    </div>
 
-        <span id="notification-count">
-            0 novas
-        </span>
-
-    </div>
-
-    <!-- LISTA -->
-
-    <div id="notification-list">
-
-    </div>
-
-</div>
-
-    </div>
-
-</div>
+                </div>
 
                 <!-- PERFIL -->
 
-<div class="user-profile">
+                <div class="user-profile">
 
-    <div class="user-text">
+                    <div class="user-text">
 
-        <strong id="user-name">
-            Usuário
-        </strong>
+                        <strong id="user-name">
+                            Usuário
+                        </strong>
 
-        <span id="user-cargo">
-            Cargo
-        </span>
+                        <span id="user-cargo">
+                            Cargo
+                        </span>
 
-    </div>
+                    </div>
 
-    <img
-        id="top-user-avatar"
-        src="../assets/user.png"
-        alt="Usuário"
-    >
+                    <img
+                        id="top-user-avatar"
+                        src="../assets/user.png"
+                        alt="Usuário"
+                    >
 
-</div>
+                </div>
 
             </div>
 
@@ -356,7 +339,7 @@
 
     </main>
 
-    <!-- MODAL -->
+    <!-- MODAL ITENS -->
 
     <div 
         class="modal-venda"
@@ -385,11 +368,66 @@
 
     </div>
 
+    <!-- ========================================= -->
+    <!-- MODAL IMPRESSÃO -->
+    <!-- ========================================= -->
+
+    <div
+        class="modal-venda"
+        id="popup-impressao"
+    >
+
+        <div class="modal-box">
+
+            <div class="modal-topo">
+
+                <h2>
+                    Escolha a impressão
+                </h2>
+
+                <button
+                    onclick="fecharPopupImpressao()"
+                >
+                    ✕
+                </button>
+
+            </div>
+
+            <div
+                style="
+                    display:flex;
+                    flex-direction:column;
+                    gap:14px;
+                    margin-top:20px;
+                "
+            >
+
+                <button
+                    class="ver-btn"
+                    onclick="imprimirA4()"
+                >
+                    🖨️ Impressão A4
+                </button>
+
+                <button
+                    class="ver-btn"
+                    onclick="imprimirTermica()"
+                >
+                    🧾 Impressão Térmica
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
     <!-- SCRIPTS -->
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
     <script src="../js/supabase.js"></script>
+
     <script src="../js/auth.js"></script>
 
     <script src="../js/global.js"></script>

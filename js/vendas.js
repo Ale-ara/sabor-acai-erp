@@ -85,13 +85,20 @@ async function carregarVendas(){
                     R$ ${Number(venda.total).toFixed(2)}
                 </td>
 
-                <td>
+                <td class="acoes-venda">
 
                     <button 
                         class="ver-btn"
                         onclick="verItens(${venda.id})"
                     >
                         Ver
+                    </button>
+
+                    <button 
+                        class="print-btn"
+                        onclick="abrirPopupImpressaoVenda(${venda.id})"
+                    >
+                        🖨️
                     </button>
 
                 </td>
@@ -205,6 +212,184 @@ function fecharModal(){
     )
 
     .classList.remove('active')
+}
+
+/* ========================================= */
+/* IMPRESSÃO */
+/* ========================================= */
+
+let vendaSelecionada = null
+
+async function abrirPopupImpressaoVenda(
+    vendaId
+){
+
+    vendaSelecionada = vendaId
+
+    document
+
+    .getElementById(
+        'popup-impressao'
+    )
+
+    .classList.add('active')
+}
+
+/* ========================================= */
+/* FECHAR POPUP */
+/* ========================================= */
+
+function fecharPopupImpressao(){
+
+    document
+
+    .getElementById(
+        'popup-impressao'
+    )
+
+    .classList.remove('active')
+}
+
+/* ========================================= */
+/* IMPRESSÃO A4 */
+/* ========================================= */
+
+async function imprimirA4(){
+
+    await prepararVendaImpressao()
+
+    window.open(
+        'impressao-a4.html',
+        '_blank'
+    )
+
+    fecharPopupImpressao()
+}
+
+/* ========================================= */
+/* IMPRESSÃO TÉRMICA */
+/* ========================================= */
+
+async function imprimirTermica(){
+
+    await prepararVendaImpressao()
+
+    window.open(
+        'impressao-termica.html',
+        '_blank'
+    )
+
+    fecharPopupImpressao()
+}
+
+/* ========================================= */
+/* PREPARAR IMPRESSÃO */
+/* ========================================= */
+
+async function prepararVendaImpressao(){
+
+    /* VENDA */
+
+    const {
+
+        data: venda,
+
+        error: erroVenda
+
+    } = await supabaseClient
+
+    .from('vendas')
+
+    .select('*')
+
+    .eq('id', vendaSelecionada)
+
+    .single()
+
+    if(erroVenda){
+
+        console.log(erroVenda)
+
+        mostrarToast(
+            'Erro',
+            'Erro ao carregar venda',
+            'error'
+        )
+
+        return
+    }
+
+    /* ITENS */
+
+    const {
+
+        data: itens,
+
+        error: erroItens
+
+    } = await supabaseClient
+
+    .from('itens_venda')
+
+    .select('*')
+
+    .eq('venda_id', vendaSelecionada)
+
+    if(erroItens){
+
+        console.log(erroItens)
+
+        mostrarToast(
+            'Erro',
+            'Erro ao carregar itens',
+            'error'
+        )
+
+        return
+    }
+
+    /* SALVA */
+
+    localStorage.setItem(
+
+        'ultimaVenda',
+
+        JSON.stringify({
+
+            vendaId: venda.id,
+
+            itens: itens.map(item => ({
+
+                nome: item.nome_produto,
+
+                preco: item.preco
+
+            })),
+
+            total: venda.total,
+
+            pagamento: 'Sistema',
+
+            recebido: venda.total,
+
+            troco: 0,
+
+            data: new Date(
+                venda.criado_em
+            ).toLocaleString('pt-BR')
+
+        })
+    )
+
+    /* AUDITORIA */
+
+    await registrarAuditoria(
+
+        'Imprimiu venda',
+
+        `Venda #${venda.id} foi impressa`
+
+    )
 }
 
 /* ========================================= */

@@ -30,6 +30,134 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+    <!-- ========================================= -->
+    <!-- NOVO CSS IMPRESSÃO -->
+    <!-- ========================================= -->
+
+    <style>
+
+        .modal-impressao{
+
+            position: fixed;
+
+            inset: 0;
+
+            background: rgba(0,0,0,0.6);
+
+            display: none;
+
+            align-items: center;
+
+            justify-content: center;
+
+            z-index: 99999;
+        }
+
+        .modal-impressao.ativo{
+
+            display: flex;
+        }
+
+        .modal-impressao-box{
+
+            background: #fff;
+
+            width: 95%;
+
+            max-width: 420px;
+
+            border-radius: 18px;
+
+            padding: 30px;
+
+            text-align: center;
+
+            animation: aparecer .2s ease;
+        }
+
+        .modal-impressao-box h2{
+
+            margin-bottom: 10px;
+
+            color: #111;
+        }
+
+        .modal-impressao-box p{
+
+            color: #666;
+
+            margin-bottom: 25px;
+        }
+
+        .impressao-botoes{
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 12px;
+        }
+
+        .impressao-botoes button{
+
+            border: none;
+
+            padding: 14px;
+
+            border-radius: 12px;
+
+            font-size: 15px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition: .2s;
+        }
+
+        .btn-a4{
+
+            background: #2563eb;
+
+            color: white;
+        }
+
+        .btn-termica{
+
+            background: #111827;
+
+            color: white;
+        }
+
+        .btn-fechar{
+
+            background: #e5e7eb;
+
+            color: #111;
+        }
+
+        .impressao-botoes button:hover{
+
+            transform: scale(1.02);
+        }
+
+        @keyframes aparecer{
+
+            from{
+
+                opacity: 0;
+                transform: scale(.9);
+            }
+
+            to{
+
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+    </style>
+
 </head>
 
 <body>
@@ -487,6 +615,107 @@
 
     </div>
 
+    <!-- ========================================= -->
+    <!-- NOVO MODAL IMPRESSÃO -->
+    <!-- ========================================= -->
+
+    <!-- ========================================= -->
+<!-- POPUP IMPRESSÃO -->
+<!-- ========================================= -->
+
+<div
+    class="popup-impressao"
+    id="popup-impressao"
+>
+
+    <div class="popup-impressao-box">
+
+        <div class="popup-impressao-icone">
+            🖨️
+        </div>
+
+        <h2>
+            Imprimir comprovante?
+        </h2>
+
+        <p>
+            Deseja imprimir o comprovante desta venda?
+        </p>
+
+        <div class="popup-impressao-buttons">
+
+            <button
+                class="btn-imprimir"
+                onclick="mostrarOpcoesImpressao()"
+            >
+                Sim, imprimir
+            </button>
+
+            <button
+                class="btn-cancelar"
+                onclick="fecharPopupImpressao()"
+            >
+                Não imprimir
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ========================================= -->
+<!-- POPUP OPÇÕES IMPRESSÃO -->
+<!-- ========================================= -->
+
+<div
+    class="popup-impressao"
+    id="popup-opcoes-impressao"
+>
+
+    <div class="popup-impressao-box">
+
+        <div class="popup-impressao-icone">
+            📄
+        </div>
+
+        <h2>
+            Escolha o modelo
+        </h2>
+
+        <p>
+            Selecione o tipo de impressão
+        </p>
+
+        <div class="popup-impressao-buttons">
+
+            <button
+                class="btn-imprimir"
+                onclick="abrirImpressaoA4()"
+            >
+                Impressão A4
+            </button>
+
+            <button
+                class="btn-termica"
+                onclick="abrirImpressaoTermica()"
+            >
+                Impressão Térmica
+            </button>
+
+            <button
+                class="btn-cancelar"
+                onclick="fecharOpcoesImpressao()"
+            >
+                Cancelar
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
     <!-- SCRIPTS -->
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
@@ -494,9 +723,56 @@
     <script src="../js/supabase.js"></script>
 
     <script src="../js/global.js"></script>
+
     <script src="../js/auth.js"></script>
 
     <script src="../js/caixa.js"></script>
+
+    <!-- ========================================= -->
+    <!-- NOVO SCRIPT IMPRESSÃO -->
+    <!-- ========================================= -->
+
+    <script>
+
+        function abrirModalImpressao(){
+
+            document
+
+            .getElementById(
+                'modal-impressao'
+            )
+
+            .classList.add('ativo')
+        }
+
+        function fecharModalImpressao(){
+
+            document
+
+            .getElementById(
+                'modal-impressao'
+            )
+
+            .classList.remove('ativo')
+        }
+
+        function abrirImpressaoA4(){
+
+            window.open(
+                'impressao-a4.html',
+                '_blank'
+            )
+        }
+
+        function abrirImpressaoTermica(){
+
+            window.open(
+                'impressao-termica.html',
+                '_blank'
+            )
+        }
+
+    </script>
 
 </body>
 </html>

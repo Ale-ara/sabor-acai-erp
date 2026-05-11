@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>
+    Impressão Térmica
+</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:white;
+
+    font-family:
+    'Courier New',
+    monospace;
+
+    padding:10px;
+
+    display:flex;
+
+    justify-content:center;
+}
+
+/* CUPOM */
+
+.cupom{
+    width:80mm;
+
+    color:#000;
+}
+
+/* TOPO */
+
+.topo{
+    text-align:center;
+
+    margin-bottom:14px;
+}
+
+.logo{
+    width:90px;
+
+    margin-bottom:10px;
+}
+
+.topo h1{
+    font-size:20px;
+
+    margin-bottom:5px;
+
+    font-weight:bold;
+}
+
+.topo p{
+    font-size:12px;
+
+    line-height:1.5;
+}
+
+/* LINHA */
+
+.linha{
+    border-top:
+    1px dashed #000;
+
+    margin:12px 0;
+}
+
+/* INFOS */
+
+.info{
+    font-size:13px;
+
+    margin-bottom:5px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    gap:10px;
+}
+
+/* PRODUTOS */
+
+.item{
+    margin-bottom:10px;
+}
+
+.item-nome{
+    font-size:13px;
+
+    margin-bottom:4px;
+
+    word-break:break-word;
+}
+
+.item-preco{
+    display:flex;
+
+    justify-content:space-between;
+
+    font-size:13px;
+}
+
+/* TOTAL */
+
+.total{
+    margin-top:14px;
+
+    font-size:18px;
+
+    font-weight:bold;
+
+    text-align:right;
+}
+
+/* FINAL */
+
+.final{
+    margin-top:25px;
+
+    text-align:center;
+
+    font-size:12px;
+
+    line-height:1.6;
+}
+
+/* PRINT */
+
+@media print{
+
+    body{
+        width:80mm;
+
+        padding:0;
+    }
+
+    .cupom{
+        width:100%;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="cupom">
+
+    <!-- TOPO -->
+
+    <div class="topo">
+
+        <img
+            src="../assets/logo.png"
+            class="logo"
+        >
+
+        <h1>
+            SABOR DO AÇAÍ
+        </h1>
+
+        <p>
+            CNPJ: 31.259.610/0001-38
+        </p>
+
+        <p>
+            R. Joaquim Peçanha, 80
+        </p>
+
+        <p>
+            Parque Lafaiete
+        </p>
+
+        <p>
+            Duque de Caxias/RJ
+        </p>
+
+        <p>
+            (21) 96673-8735
+        </p>
+
+    </div>
+
+    <div class="linha"></div>
+
+    <!-- INFOS -->
+
+    <div class="info">
+
+        <span>
+            Pedido:
+        </span>
+
+        <strong id="pedido"></strong>
+
+    </div>
+
+    <div class="info">
+
+        <span>
+            Data:
+        </span>
+
+        <strong id="data"></strong>
+
+    </div>
+
+    <div class="info">
+
+        <span>
+            Pagamento:
+        </span>
+
+        <strong id="pagamento"></strong>
+
+    </div>
+
+    <div class="linha"></div>
+
+    <!-- ITENS -->
+
+    <div id="itens"></div>
+
+    <div class="linha"></div>
+
+    <!-- TROCO -->
+
+    <div class="info">
+
+        <span>
+            Troco
+        </span>
+
+        <strong id="troco"></strong>
+
+    </div>
+
+    <!-- TOTAL -->
+
+    <div
+        class="total"
+        id="total"
+    ></div>
+
+    <!-- FINAL -->
+
+    <div class="final">
+
+        Obrigado pela preferência!
+        <br>
+
+        Volte sempre
+
+    </div>
+
+</div>
+
+<script>
+
+const venda = JSON.parse(
+
+    localStorage.getItem(
+        'ultimaVenda'
+    )
+)
+
+/* INFOS */
+
+document.getElementById(
+    'pedido'
+).innerText =
+
+`#${venda.vendaId}`
+
+document.getElementById(
+    'data'
+).innerText = venda.data
+
+document.getElementById(
+    'pagamento'
+).innerText = venda.pagamento
+
+document.getElementById(
+    'troco'
+).innerText =
+
+`R$ ${venda.troco.toFixed(2)}`
+
+document.getElementById(
+    'total'
+).innerText =
+
+`TOTAL: R$ ${venda.total.toFixed(2)}`
+
+/* ITENS */
+
+const itens = document.getElementById(
+    'itens'
+)
+
+venda.itens.forEach(item => {
+
+    itens.innerHTML += `
+
+        <div class="item">
+
+            <div class="item-nome">
+
+                ${item.nome}
+
+            </div>
+
+            <div class="item-preco">
+
+                <span>
+                    1x
+                </span>
+
+                <strong>
+                    R$ ${item.preco.toFixed(2)}
+                </strong>
+
+            </div>
+
+        </div>
+
+    `
+})
+
+/* PRINT */
+
+window.onload = () => {
+
+    setTimeout(() => {
+
+        window.print()
+
+    }, 300)
+}
+
+</script>
+
+</body>
+</html>

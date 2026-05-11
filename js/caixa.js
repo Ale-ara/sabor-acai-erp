@@ -32,6 +32,119 @@ async function criarNotificacaoVenda(
 }
 
 /* =========================
+   IMPRESSÃO
+========================= */
+
+function salvarUltimaVenda(
+    vendaId,
+    total,
+    formaPagamento,
+    valorRecebido
+){
+
+    localStorage.setItem(
+
+        'ultimaVenda',
+
+        JSON.stringify({
+
+            vendaId,
+
+            itens: carrinho,
+
+            total,
+
+            pagamento: formaPagamento,
+
+            recebido: valorRecebido,
+
+            troco: valorRecebido - total,
+
+            data: new Date().toLocaleString()
+
+        })
+    )
+}
+
+/* =========================
+   POPUP IMPRESSÃO
+========================= */
+
+function abrirPopupImpressao(){
+
+    document
+
+    .getElementById(
+        'popup-impressao'
+    )
+
+    .classList.add('ativo')
+}
+
+function fecharPopupImpressao(){
+
+    document
+
+    .getElementById(
+        'popup-impressao'
+    )
+
+    .classList.remove('ativo')
+}
+
+/* =========================
+   OPÇÕES IMPRESSÃO
+========================= */
+
+function mostrarOpcoesImpressao(){
+
+    fecharPopupImpressao()
+
+    document
+
+    .getElementById(
+        'popup-opcoes-impressao'
+    )
+
+    .classList.add('ativo')
+}
+
+function fecharOpcoesImpressao(){
+
+    document
+
+    .getElementById(
+        'popup-opcoes-impressao'
+    )
+
+    .classList.remove('ativo')
+}
+
+/* =========================
+   ABRIR IMPRESSÕES
+========================= */
+
+function abrirImpressaoA4(){
+
+    window.open(
+        'impressao-a4.html',
+        '_blank'
+    )
+
+    fecharOpcoesImpressao()
+}
+
+function abrirImpressaoTermica(){
+
+    window.open(
+        'impressao-termica.html',
+        '_blank'
+    )
+
+    fecharOpcoesImpressao()
+}
+
+/* =========================
    PRODUTOS
 ========================= */
 
@@ -338,6 +451,17 @@ async function finalizarVenda(){
 
     const vendaId = venda[0].id
 
+    /* =========================
+       SALVA VENDA IMPRESSÃO
+    ========================= */
+
+    salvarUltimaVenda(
+        vendaId,
+        total,
+        formaPagamento,
+        valorRecebido
+    )
+
     /* USUÁRIO */
 
     const {
@@ -424,9 +548,7 @@ async function finalizarVenda(){
 
         .eq('id', item.id)
 
-        /* ========================================= */
-        /* MOVIMENTAÇÃO ESTOQUE */
-        /* ========================================= */
+        /* MOVIMENTAÇÃO */
 
         await supabaseClient
 
@@ -454,9 +576,7 @@ async function finalizarVenda(){
 
         ])
 
-        /* ========================================= */
         /* AUDITORIA */
-        /* ========================================= */
 
         await registrarAuditoria(
 
@@ -477,7 +597,7 @@ async function finalizarVenda(){
 
     carregarProdutos()
 
-    /* POPUP */
+    /* POPUP SUCESSO */
 
     document
 
@@ -492,7 +612,9 @@ async function finalizarVenda(){
         `Pedido R$ ${total.toFixed(2)}`
     )
 
-    /* LIMPA */
+    /* =========================
+       LIMPA CARRINHO
+    ========================= */
 
     carrinho = []
 
@@ -505,6 +627,16 @@ async function finalizarVenda(){
     document.getElementById(
         'troco'
     ).innerText = 'R$ 0,00'
+
+    /* =========================
+       ABRE IMPRESSÃO
+    ========================= */
+
+    setTimeout(() => {
+
+        abrirPopupImpressao()
+
+    }, 500)
 }
 
 /* =========================

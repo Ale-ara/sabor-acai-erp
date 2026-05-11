@@ -524,3 +524,157 @@
         width:100%;
     }
 }
+
+/* ========================================= */
+/* POPUP IMPRESSÃO */
+/* ========================================= */
+
+.popup-impressao{
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background: rgba(0,0,0,0.75);
+
+    backdrop-filter: blur(4px);
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transition: 0.3s;
+
+    z-index: 10000;
+}
+
+.popup-impressao.ativo{
+    opacity: 1;
+    visibility: visible;
+}
+
+.popup-impressao-box{
+    width: 420px;
+
+    background: #1E0B36;
+
+    border-radius: 24px;
+
+    padding: 35px;
+
+    text-align: center;
+
+    border:
+    1px solid rgba(255,255,255,0.06);
+
+    animation: popupAnim 0.3s ease;
+}
+
+.popup-impressao-icone{
+    width: 90px;
+    height: 90px;
+
+    border-radius: 50%;
+
+    background: #F4B400;
+
+    color: #1E0B36;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    margin: 0 auto 20px;
+
+    font-size: 40px;
+
+    font-weight: bold;
+}
+
+.popup-impressao-box h2{
+    font-size: 28px;
+
+    margin-bottom: 10px;
+}
+
+.popup-impressao-box p{
+    color: rgba(255,255,255,0.65);
+
+    margin-bottom: 28px;
+
+    line-height: 1.5;
+}
+
+.popup-impressao-buttons{
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+}
+
+.popup-impressao-buttons button{
+    width: 100%;
+    height: 52px;
+
+    border: none;
+
+    border-radius: 14px;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.25s;
+}
+
+.popup-impressao-buttons button:hover{
+    transform: translateY(-2px);
+}
+
+.btn-imprimir{
+    background: linear-gradient(
+        135deg,
+        #5B2392,
+        #7B2CBF
+    );
+
+    color: white;
+}
+
+.btn-termica{
+    background: #111827;
+
+    color: white;
+}
+
+.btn-cancelar{
+    background: rgba(255,255,255,0.06);
+
+    color: white;
+}
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+    .popup-impressao-box{
+        width: 95%;
+
+        padding: 28px;
+    }
+
+    .popup-impressao-box h2{
+        font-size: 24px;
+    }
+}
