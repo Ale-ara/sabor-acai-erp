@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Estoque | ERP Sabor do Açaí
+    </title>
+
+    <link
+    rel="icon"
+    type="image/png"
+    href="../assets/logo.png"
+>
+
+    <!-- GLOBAL -->
+
+    <link rel="stylesheet" href="../css/global.css">
+
+    <!-- PÁGINA -->
+
+    <link rel="stylesheet" href="../css/estoque.css">
+
+    <!-- FONT -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <!-- PAGE TRANSITION -->
+
+    <div 
+        class="page-transition"
+        id="page-transition"
+    ></div>
+
+    <!-- NAVBAR MOBILE -->
+
+    <header class="mobile-navbar">
+
+        <div class="mobile-left">
+
+            <img
+                src="../assets/logo.png"
+                alt="Logo"
+            >
+
+            <h2>
+                Sabor ERP
+            </h2>
+
+        </div>
+
+        <button
+            class="menu-mobile-btn"
+            onclick="toggleSidebar()"
+        >
+            ☰
+        </button>
+
+    </header>
+
+    <!-- OVERLAY -->
+
+    <div
+        class="sidebar-overlay"
+        id="sidebar-overlay"
+        onclick="fecharSidebar()"
+    ></div>
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div>
+
+            <!-- TOPO -->
+
+            <div class="sidebar-top">
+
+                <img 
+                    src="../assets/logo.png"
+                    alt="Logo"
+                    class="logo"
+                >
+
+                <div>
+
+                    <h2>
+                        Sabor ERP
+                    </h2>
+
+                    <span>
+                        Sabor do Açaí
+                    </span>
+
+                </div>
+
+            </div>
+
+            <!-- MENU -->
+
+           <nav class="menu">
+
+    <a href="dashboard.html">
+        📊 Dashboard
+    </a>
+
+    <a href="caixa.html">
+        💰 Caixa
+    </a>
+
+    <a href="produtos.html">
+        🍧 Produtos
+    </a>
+
+    <a href="estoque.html">
+        📦 Estoque
+    </a>
+
+    <a href="movimentacoes.html">
+        🔄 Movimentações
+    </a>
+
+    <a href="vendas.html">
+        🧾 Vendas
+    </a>
+
+    <a href="relatorios.html">
+        📈 Relatórios
+    </a>
+
+    <a href="usuarios.html">
+        👤 Usuário
+    </a>
+
+</nav>
+</div>
+
+        <!-- SAIR -->
+
+        <button 
+            class="logout-btn"
+            onclick="logout()"
+        >
+            Sair
+        </button>
+
+    </aside>
+
+    <!-- MAIN -->
+
+    <main class="main-content">
+
+        <!-- HEADER -->
+
+        <header class="top-header">
+
+            <div class="header-left">
+
+                <h1>
+                    Estoque
+                </h1>
+
+                <p>
+                    Controle os produtos e níveis de estoque
+                </p>
+
+            </div>
+
+            <!-- DIREITA -->
+
+            <div class="header-right">
+
+                <!-- NOTIFICAÇÕES -->
+
+                <div class="notification-wrapper">
+
+                    <button
+                        class="notification-btn"
+                        onclick="toggleNotifications()"
+                    >
+
+                        🔔
+
+                        <span 
+                            class="notification-badge"
+                            id="notification-badge"
+                        >
+                            0
+                        </span>
+
+                    </button>
+
+                    <!-- DROPDOWN -->
+
+                    <div
+                        class="notification-dropdown"
+                        id="notification-dropdown"
+                    >
+
+                        <div class="notification-header">
+
+                            <h3>
+                                Notificações
+                            </h3>
+
+                            <span id="notification-count">
+                                0 novas
+                            </span>
+
+                        </div>
+
+                        <!-- LISTA -->
+
+                        <div id="notification-list">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- PERFIL -->
+
+<div class="user-profile">
+
+    <div class="user-text">
+
+        <strong id="user-name">
+            Usuário
+        </strong>
+
+        <span id="user-cargo">
+            Cargo
+        </span>
+
+    </div>
+
+    <img
+        id="top-user-avatar"
+        src="../assets/user.png"
+        alt="Usuário"
+    >
+
+</div>
+
+            </div>
+
+        </header>
+
+        <!-- CARDS -->
+
+        <section class="cards-estoque">
+
+            <div class="card-estoque">
+
+                <h3>
+                    Produtos em Estoque
+                </h3>
+
+                <strong id="total-produtos">
+                    0
+                </strong>
+
+            </div>
+
+            <div class="card-estoque alerta">
+
+                <h3>
+                    Estoque Baixo
+                </h3>
+
+                <strong id="estoque-baixo">
+                    0
+                </strong>
+
+            </div>
+
+            <div class="card-estoque perigo">
+
+                <h3>
+                    Sem Estoque
+                </h3>
+
+                <strong id="sem-estoque">
+                    0
+                </strong>
+
+            </div>
+
+        </section>
+
+        <!-- TABELA -->
+
+        <section class="tabela-box">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Produto
+                        </th>
+
+                        <th>
+                            Categoria
+                        </th>
+
+                        <th>
+                            Estoque
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                        <th>
+                            Ações
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="tabela-estoque">
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+    </main>
+
+    <!-- MODAL ESTOQUE -->
+
+    <div 
+        class="modal-estoque"
+        id="modal-estoque"
+    >
+
+        <div class="modal-box">
+
+            <!-- TOPO -->
+
+            <div class="modal-top">
+
+                <h2>
+                    Movimentar Estoque
+                </h2>
+
+                <button onclick="fecharModalEstoque()">
+                    ✕
+                </button>
+
+            </div>
+
+            <!-- CONTEÚDO -->
+
+            <div class="modal-content">
+
+                <div class="input-group">
+
+                    <label>
+                        Produto
+                    </label>
+
+                    <input
+                        type="text"
+                        id="modal-produto"
+                        disabled
+                    >
+
+                </div>
+
+                <div class="input-group">
+
+                    <label>
+                        Tipo de movimentação
+                    </label>
+
+                    <select id="modal-tipo">
+
+                        <option value="entrada">
+                            ➕ Entrada
+                        </option>
+
+                        <option value="saida">
+                            ➖ Saída
+                        </option>
+
+                        <option value="editar">
+                            ✏️ Editar Estoque
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="input-group">
+
+                    <label>
+                        Quantidade
+                    </label>
+
+                    <input
+                        type="number"
+                        id="modal-quantidade"
+                        placeholder="Digite a quantidade"
+                    >
+
+                </div>
+
+                <div class="input-group">
+
+                    <label>
+                        Motivo
+                    </label>
+
+                    <textarea
+                        id="modal-motivo"
+                        placeholder="Ex: reposição, perda, ajuste..."
+                    ></textarea>
+
+                </div>
+
+                <!-- BOTÃO -->
+
+                <button
+                    class="salvar-mov-btn"
+                    onclick="salvarMovimentacao()"
+                >
+                    Salvar Movimentação
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- TOAST -->
+
+<div
+    class="toast"
+    id="toast"
+>
+
+    <div class="toast-icon" id="toast-icon">
+        ✔
+    </div>
+
+    <div class="toast-content">
+
+        <strong id="toast-title">
+            Sucesso
+        </strong>
+
+        <p id="toast-message">
+            Operação realizada
+        </p>
+
+    </div>
+
+</div>
+
+    <!-- SCRIPTS -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+    <script src="../js/supabase.js"></script>
+    <script src="../js/auth.js"></script>
+
+    <script src="../js/global.js"></script>
+
+    <script src="../js/estoque.js"></script>
+
+</body>
+</html>

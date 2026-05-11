@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Caixa | ERP Sabor do Açaí
+    </title>
+
+    <link
+    rel="icon"
+    type="image/png"
+    href="../assets/logo.png"
+>
+
+    <!-- GLOBAL -->
+
+    <link rel="stylesheet" href="../css/global.css">
+
+    <!-- PÁGINA -->
+
+    <link rel="stylesheet" href="../css/caixa.css">
+
+    <!-- FONT -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <!-- PAGE TRANSITION -->
+
+<div class="page-transition" id="page-transition"></div>
+
+    <!-- NAVBAR MOBILE -->
+
+<header class="mobile-navbar">
+
+    <div class="mobile-left">
+
+        <img
+            src="../assets/logo.png"
+            alt="Logo"
+        >
+
+        <h2>
+            Sabor ERP
+        </h2>
+
+    </div>
+
+    <button
+        class="menu-mobile-btn"
+        onclick="toggleSidebar()"
+    >
+        ☰
+    </button>
+
+</header>
+
+<!-- OVERLAY -->
+
+<div
+    class="sidebar-overlay"
+    id="sidebar-overlay"
+    onclick="fecharSidebar()"
+></div>
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div>
+
+            <!-- TOPO -->
+
+            <div class="sidebar-top">
+
+                <img 
+                    src="../assets/logo.png"
+                    alt="Logo"
+                    class="logo"
+                >
+
+                <div>
+
+                    <h2>
+                        Sabor ERP
+                    </h2>
+
+                    <span>
+                        Sabor do Açaí
+                    </span>
+
+                </div>
+
+            </div>
+
+            <!-- MENU -->
+
+           <nav class="menu">
+
+    <a href="dashboard.html">
+        📊 Dashboard
+    </a>
+
+    <a href="caixa.html">
+        💰 Caixa
+    </a>
+
+    <a href="produtos.html">
+        🍧 Produtos
+    </a>
+
+    <a href="estoque.html">
+        📦 Estoque
+    </a>
+
+    <a href="movimentacoes.html">
+        🔄 Movimentações
+    </a>
+
+    <a href="vendas.html">
+        🧾 Vendas
+    </a>
+
+    <a href="relatorios.html">
+        📈 Relatórios
+    </a>
+
+    <a href="usuarios.html">
+        👤 Usuário
+    </a>
+
+</nav>
+
+</div>
+
+        <!-- SAIR -->
+
+        <button 
+            class="logout-btn"
+            onclick="logout()"
+        >
+            Sair
+        </button>
+
+    </aside>
+
+    <!-- MAIN -->
+
+    <main class="main-content">
+
+        <!-- HEADER -->
+
+        <header class="top-header">
+
+            <!-- ESQUERDA -->
+
+            <div class="header-left">
+
+                <h1>
+                    Caixa
+                </h1>
+
+                <p>
+                    Realize vendas e controle pedidos
+                </p>
+
+            </div>
+
+            <!-- DIREITA -->
+
+            <div class="header-right">
+
+                <!-- NOTIFICAÇÃO -->
+
+                <div class="notification-wrapper">
+
+    <button
+        class="notification-btn"
+        onclick="toggleNotifications()"
+    >
+
+        🔔
+
+        <span class="notification-badge">
+            3
+        </span>
+
+    </button>
+
+    <!-- DROPDOWN -->
+
+    <div
+        class="notification-dropdown"
+        id="notification-dropdown"
+    >
+
+        <div class="notification-header">
+
+            <h3>
+                Notificações
+            </h3>
+
+            <span>
+                3 novas
+            </span>
+
+        </div>
+
+        <!-- ITEM -->
+
+        <div class="notification-item critica">
+
+            <div class="notification-icon">
+                ⚠️
+            </div>
+
+            <div>
+
+                <strong>
+                    Estoque crítico
+                </strong>
+
+                <p>
+                    Açaí 700ML está acabando
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- ITEM -->
+
+        <div class="notification-item venda">
+
+            <div class="notification-icon">
+                💰
+            </div>
+
+            <div>
+
+                <strong>
+                    Nova venda
+                </strong>
+
+                <p>
+                    Pedido de R$ 49,90 realizado
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- ITEM -->
+
+        <div
+    class="notification-dropdown"
+    id="notification-dropdown"
+>
+
+    <div class="notification-header">
+
+        <h3>
+            Notificações
+        </h3>
+
+        <span id="notification-count">
+            0 novas
+        </span>
+
+    </div>
+
+    <!-- LISTA -->
+
+    <div id="notification-list">
+
+    </div>
+
+</div>
+
+    </div>
+
+</div>
+
+                <!-- PERFIL -->
+
+<div class="user-profile">
+
+    <div class="user-text">
+
+        <strong id="user-name">
+            Usuário
+        </strong>
+
+        <span id="user-cargo">
+            Cargo
+        </span>
+
+    </div>
+
+    <img
+        id="top-user-avatar"
+        src="../assets/user.png"
+        alt="Usuário"
+    >
+
+</div>
+
+            </div>
+
+        </header>
+
+        <!-- PDV -->
+
+        <section class="pdv-container">
+
+            <!-- PRODUTOS -->
+
+            <div class="produtos-area">
+
+                <div class="produtos-header">
+
+                    <h2>
+                        Produtos
+                    </h2>
+
+                    <input
+                        type="text"
+                        placeholder="Buscar produto..."
+                    >
+
+                </div>
+
+                <!-- GRID -->
+
+                <div 
+                    class="produtos-grid"
+                    id="produtos-grid"
+                >
+
+                </div>
+
+            </div>
+
+            <!-- CARRINHO -->
+
+            <aside class="carrinho">
+
+                <div>
+
+                    <h2>
+                        Pedido Atual
+                    </h2>
+
+                    <!-- ITENS -->
+
+                    <div 
+                        class="itens-carrinho"
+                        id="itens-carrinho"
+                    >
+
+                    </div>
+
+                </div>
+
+                <!-- RODAPÉ -->
+
+                <div class="rodape-carrinho">
+
+                    <!-- PAGAMENTO -->
+
+                    <div class="pagamento-box">
+
+                        <label>
+                            Forma de pagamento
+                        </label>
+
+                        <select id="forma-pagamento">
+
+                            <option>
+                                Dinheiro
+                            </option>
+
+                            <option>
+                                Pix
+                            </option>
+
+                            <option>
+                                Cartão
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <!-- RECEBIDO -->
+
+                    <div class="pagamento-box">
+
+                        <label>
+                            Valor recebido
+                        </label>
+
+                        <input
+                            type="number"
+                            id="valor-recebido"
+                            placeholder="0.00"
+                            oninput="calcularTroco()"
+                        >
+
+                    </div>
+
+                    <!-- TROCO -->
+
+                    <div class="troco-box">
+
+                        <span>
+                            Troco
+                        </span>
+
+                        <strong id="troco">
+                            R$ 0,00
+                        </strong>
+
+                    </div>
+
+                    <!-- TOTAL -->
+
+                    <h3 class="total-box">
+
+                        Total:
+
+                        <span id="total">
+                            R$ 0,00
+                        </span>
+
+                    </h3>
+
+                    <!-- BOTÃO -->
+
+                    <button onclick="finalizarVenda()">
+                        Finalizar Venda
+                    </button>
+
+                </div>
+
+            </aside>
+
+        </section>
+
+    </main>
+
+    <!-- POPUP -->
+
+    <div 
+        class="popup-sucesso"
+        id="popup-sucesso"
+    >
+
+        <div class="popup-box">
+
+            <div class="popup-icone">
+                ✓
+            </div>
+
+            <h2>
+                Venda Finalizada
+            </h2>
+
+            <p>
+                Pedido registrado com sucesso.
+            </p>
+
+            <button onclick="fecharPopup()">
+                Fechar
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- SCRIPTS -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+    <script src="../js/supabase.js"></script>
+
+    <script src="../js/global.js"></script>
+    <script src="../js/auth.js"></script>
+
+    <script src="../js/caixa.js"></script>
+
+</body>
+</html>

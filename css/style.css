@@ -1,0 +1,522 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: 'Poppins', sans-serif;
+
+    background: #0D1117;
+
+    color: white;
+
+    overflow-x: hidden;
+}
+
+/* CONTAINER */
+
+.container{
+    width: 100%;
+    min-height: 100vh;
+
+    display: flex;
+}
+
+/* LEFT */
+
+.left-side{
+    width: 55%;
+
+    background:
+    linear-gradient(
+        135deg,
+        #2B0A4A,
+        #12061F
+    );
+
+    position: relative;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    overflow: hidden;
+}
+
+/* OVERLAY */
+
+.overlay{
+    position: absolute;
+
+    width: 100%;
+    height: 100%;
+
+    background:
+    radial-gradient(
+        circle at top,
+        rgba(255,255,255,0.08),
+        transparent 60%
+    );
+}
+
+/* CONTENT */
+
+.left-content{
+    position: relative;
+
+    z-index: 2;
+
+    width: 80%;
+
+    max-width: 520px;
+}
+
+/* LOGO */
+
+.logo{
+    width: 140px;
+
+    object-fit: contain;
+
+    margin-bottom: 25px;
+}
+
+/* TAG */
+
+.tag{
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    height: 38px;
+
+    padding: 0 18px;
+
+    border-radius: 999px;
+
+    background: #F4B400;
+
+    color: #1E0B36;
+
+    font-weight: 700;
+
+    font-size: 14px;
+
+    margin-bottom: 25px;
+}
+
+/* TITULO */
+
+.left-content h1{
+    font-size: 48px;
+
+    line-height: 1.1;
+
+    margin-bottom: 20px;
+}
+
+/* TEXTO */
+
+.left-content p{
+    color: rgba(255,255,255,0.75);
+
+    font-size: 17px;
+
+    line-height: 1.7;
+}
+
+/* RIGHT */
+
+.right-side{
+    width: 45%;
+
+    background: #111827;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 40px;
+}
+
+/* LOGIN BOX */
+
+.login-box{
+    width: 100%;
+
+    max-width: 420px;
+
+    background: rgba(255,255,255,0.03);
+
+    border:
+    1px solid rgba(255,255,255,0.05);
+
+    border-radius: 28px;
+
+    padding: 45px;
+}
+
+/* MOBILE LOGO */
+
+.mobile-logo{
+    display: none;
+
+    justify-content: center;
+
+    margin-bottom: 25px;
+}
+
+.mobile-logo img{
+    width: 90px;
+}
+
+/* TITULO */
+
+.login-box h2{
+    font-size: 40px;
+
+    margin-bottom: 10px;
+}
+
+.subtitle{
+    color: rgba(255,255,255,0.6);
+
+    margin-bottom: 35px;
+}
+
+/* INPUTS */
+
+.input-group{
+    margin-bottom: 22px;
+}
+
+.input-group label{
+    display: block;
+
+    margin-bottom: 10px;
+
+    font-size: 14px;
+
+    color: rgba(255,255,255,0.7);
+}
+
+.input-group input{
+    width: 100%;
+    height: 58px;
+
+    border: none;
+    outline: none;
+
+    border-radius: 16px;
+
+    background: #0D1117;
+
+    color: white;
+
+    padding: 0 18px;
+
+    font-size: 15px;
+}
+
+.input-group input::placeholder{
+    color: rgba(255,255,255,0.35);
+}
+
+/* BOTÃO */
+
+button{
+    width: 100%;
+    height: 58px;
+
+    border: none;
+
+    border-radius: 16px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #6C2BD9,
+        #8E44EC
+    );
+
+    color: white;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+
+    margin-top: 10px;
+}
+
+button:hover{
+    transform: translateY(-2px);
+}
+
+/* FOOTER */
+
+.bottom-text{
+    text-align: center;
+
+    margin-top: 28px;
+
+    color: rgba(255,255,255,0.4);
+
+    font-size: 13px;
+}
+
+/* POPUP */
+
+.popup-login{
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(0,0,0,0.7);
+
+    backdrop-filter: blur(4px);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transition: 0.3s;
+
+    z-index: 999;
+}
+
+.popup-login.active{
+    opacity: 1;
+
+    pointer-events: auto;
+}
+
+.popup-box{
+    width: 90%;
+    max-width: 380px;
+
+    background: #161B22;
+
+    border-radius: 24px;
+
+    padding: 35px;
+
+    text-align: center;
+}
+
+.popup-icone{
+    width: 70px;
+    height: 70px;
+
+    margin: 0 auto 20px;
+
+    border-radius: 50%;
+
+    background: rgba(255,0,0,0.12);
+
+    color: #ff4d4d;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 28px;
+}
+
+.popup-box h2{
+    margin-bottom: 12px;
+}
+
+.popup-box p{
+    color: rgba(255,255,255,0.7);
+
+    margin-bottom: 25px;
+}
+
+/* RESPONSIVO */
+
+@media(max-width: 900px){
+
+    .container{
+        flex-direction: column;
+    }
+
+    .left-side{
+        display: none;
+    }
+
+    .right-side{
+        width: 100%;
+
+        min-height: 100vh;
+
+        padding: 20px;
+    }
+
+    .login-box{
+        padding: 35px 25px;
+    }
+
+    .mobile-logo{
+        display: flex;
+    }
+
+    .login-box h2{
+        font-size: 34px;
+
+        text-align: center;
+    }
+
+    .subtitle{
+        text-align: center;
+    }
+}
+
+/* ========================================= */
+/* FOOTER */
+/* ========================================= */
+
+.footer-login{
+
+    width: 100%;
+
+    position: fixed;
+
+    bottom: 0;
+
+    left: 0;
+
+    padding: 18px 30px;
+
+    background:
+
+    linear-gradient(
+        to top,
+        rgba(0,0,0,0.45),
+        transparent
+    );
+
+    backdrop-filter: blur(10px);
+
+    z-index: 5;
+}
+
+.footer-content{
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+/* ========================================= */
+/* LOGO */
+/* ========================================= */
+
+.footer-logo{
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+}
+
+.footer-logo img{
+
+    width: 46px;
+
+    height: 46px;
+
+    border-radius: 14px;
+
+    object-fit: cover;
+}
+
+.footer-logo strong{
+
+    display: block;
+
+    color: white;
+
+    font-size: 15px;
+}
+
+.footer-logo span{
+
+    color: rgba(255,255,255,0.5);
+
+    font-size: 13px;
+}
+
+/* ========================================= */
+/* RIGHT */
+/* ========================================= */
+
+.footer-right{
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+}
+
+.footer-right p{
+
+    color: rgba(255,255,255,0.5);
+
+    font-size: 14px;
+}
+
+.footer-right a{
+
+    text-decoration: none;
+
+    color: #A855F7;
+
+    font-weight: 600;
+
+    font-size: 15px;
+
+    transition: 0.3s;
+}
+
+.footer-right a:hover{
+
+    color: white;
+
+    transform: translateY(-1px);
+}
+
+/* ========================================= */
+/* RESPONSIVO */
+/* ========================================= */
+
+@media(max-width:700px){
+
+    .footer-content{
+
+        flex-direction: column;
+
+        text-align: center;
+    }
+
+    .footer-right{
+
+        flex-direction: column;
+
+        gap: 4px;
+    }
+}

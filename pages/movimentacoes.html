@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Movimentações | ERP Sabor do Açaí
+    </title>
+
+    <link
+    rel="icon"
+    type="image/png"
+    href="../assets/logo.png"
+>
+
+    <!-- CSS -->
+
+    <link rel="stylesheet"
+    href="../css/global.css">
+
+    <link rel="stylesheet"
+    href="../css/movimentacoes.css">
+
+    <!-- FONT -->
+
+    <link rel="preconnect"
+    href="https://fonts.googleapis.com">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div>
+
+            <!-- TOPO -->
+
+            <div class="sidebar-top">
+
+                <img
+                    src="../assets/logo.png"
+                    alt="Logo"
+                    class="logo"
+                >
+
+                <div>
+
+                    <h2>
+                        Sabor ERP
+                    </h2>
+
+                    <span>
+                        Sabor do Açaí
+                    </span>
+
+                </div>
+
+            </div>
+
+            <!-- MENU -->
+
+            <nav class="menu">
+
+    <a href="dashboard.html">
+        📊 Dashboard
+    </a>
+
+    <a href="caixa.html">
+        💰 Caixa
+    </a>
+
+    <a href="produtos.html">
+        🍧 Produtos
+    </a>
+
+    <a href="estoque.html">
+        📦 Estoque
+    </a>
+
+    <a href="movimentacoes.html">
+        🔄 Movimentações
+    </a>
+
+    <a href="vendas.html">
+        🧾 Vendas
+    </a>
+
+    <a href="relatorios.html">
+        📈 Relatórios
+    </a>
+
+    <a href="usuarios.html">
+        👤 Usuário
+    </a>
+
+</nav>
+
+        </div>
+
+        <!-- SAIR -->
+
+        <button
+            class="logout-btn"
+            onclick="logout()"
+        >
+            Sair
+        </button>
+
+    </aside>
+
+    <!-- MAIN -->
+
+    <main class="main-content">
+
+        <!-- HEADER -->
+
+        <header class="top-header">
+
+            <div class="header-left">
+
+                <h1>
+                    Histórico de Movimentações
+                </h1>
+
+                <p>
+                    Controle completo de alterações no estoque
+                </p>
+
+            </div>
+
+            <div class="header-right">
+
+                <div class="notification-btn">
+                    🔔
+                </div>
+
+                <!-- PERFIL -->
+
+<div class="user-profile">
+
+    <div class="user-text">
+
+        <strong id="user-name">
+            Usuário
+        </strong>
+
+        <span id="user-cargo">
+            Cargo
+        </span>
+
+    </div>
+
+    <img
+        id="top-user-avatar"
+        src="../assets/user.png"
+        alt="Usuário"
+    >
+
+</div>
+
+            </div>
+
+        </header>
+
+        <!-- CARDS -->
+
+        <section class="cards-mov">
+
+            <div class="card-mov">
+
+                <h3>
+                    Entradas Hoje
+                </h3>
+
+                <strong id="total-entradas">
+                    0
+                </strong>
+
+            </div>
+
+            <div class="card-mov saida">
+
+                <h3>
+                    Saídas Hoje
+                </h3>
+
+                <strong id="total-saidas">
+                    0
+                </strong>
+
+            </div>
+
+            <div class="card-mov ajuste">
+
+                <h3>
+                    Ajustes
+                </h3>
+
+                <strong id="total-ajustes">
+                    0
+                </strong>
+
+            </div>
+
+        </section>
+
+        <!-- TABELA -->
+
+        <section class="tabela-box">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Produto
+                        </th>
+
+                        <th>
+                            Tipo
+                        </th>
+
+                        <th>
+                            Quantidade
+                        </th>
+
+                        <th>
+                            Estoque Final
+                        </th>
+
+                        <th>
+                            Usuário
+                        </th>
+
+                        <th>
+                            Data
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="tabela-movimentacoes">
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+    </main>
+
+    <!-- TOAST -->
+
+    <div
+        class="toast"
+        id="toast"
+    >
+
+        <div class="toast-icon"
+        id="toast-icon">
+            ✔
+        </div>
+
+        <div class="toast-content">
+
+            <strong id="toast-title">
+                Sucesso
+            </strong>
+
+            <p id="toast-message">
+                Operação realizada
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- SCRIPTS -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+    <script src="../js/supabase.js"></script>
+
+    <script src="../js/global.js"></script>
+
+    <script src="../js/auth.js"></script>
+
+    <script src="../js/movimentacoes.js"></script>
+
+</body>
+</html>

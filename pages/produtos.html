@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Produtos | ERP Sabor do Açaí
+    </title>
+
+<link
+    rel="icon"
+    type="image/png"
+    href="../assets/logo.png"
+>
+
+    <!-- GLOBAL -->
+
+    <link rel="stylesheet" href="../css/global.css">
+
+    <!-- PÁGINA -->
+
+    <link rel="stylesheet" href="../css/produtos.css">
+
+    <!-- FONT -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+<!-- PAGE TRANSITION -->
+
+<div class="page-transition" id="page-transition"></div>
+
+<!-- NAVBAR MOBILE -->
+
+<header class="mobile-navbar">
+
+    <div class="mobile-left">
+
+        <img
+            src="../assets/logo.png"
+            alt="Logo"
+        >
+
+        <h2>
+            Sabor ERP
+        </h2>
+
+    </div>
+
+    <button
+        class="menu-mobile-btn"
+        onclick="toggleSidebar()"
+    >
+        ☰
+    </button>
+
+</header>
+
+<!-- OVERLAY -->
+
+<div
+    class="sidebar-overlay"
+    id="sidebar-overlay"
+    onclick="fecharSidebar()"
+></div>
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+    <div>
+
+        <!-- TOPO -->
+
+        <div class="sidebar-top">
+
+            <img 
+                src="../assets/logo.png"
+                alt="Logo"
+                class="logo"
+            >
+
+            <div>
+
+                <h2>
+                    Sabor ERP
+                </h2>
+
+                <span>
+                    Sabor do Açaí
+                </span>
+
+            </div>
+
+        </div>
+
+        <!-- MENU -->
+
+        <nav class="menu">
+
+    <a href="dashboard.html">
+        📊 Dashboard
+    </a>
+
+    <a href="caixa.html">
+        💰 Caixa
+    </a>
+
+    <a href="produtos.html">
+        🍧 Produtos
+    </a>
+
+    <a href="estoque.html">
+        📦 Estoque
+    </a>
+
+    <a href="movimentacoes.html">
+        🔄 Movimentações
+    </a>
+
+    <a href="vendas.html">
+        🧾 Vendas
+    </a>
+
+    <a href="relatorios.html">
+        📈 Relatórios
+    </a>
+
+    <a href="usuarios.html">
+        👤 Usuário
+    </a>
+
+</nav>
+
+</div>
+
+    <!-- SAIR -->
+
+    <button 
+        class="logout-btn"
+        onclick="logout()"
+    >
+        Sair
+    </button>
+
+</aside>
+
+<!-- MAIN -->
+
+<main class="main-content">
+
+    <!-- HEADER -->
+
+    <header class="top-header">
+
+        <!-- ESQUERDA -->
+
+        <div class="header-left">
+
+            <h1>
+                Produtos
+            </h1>
+
+            <p>
+                Gerencie os produtos da loja
+            </p>
+
+        </div>
+
+        <!-- DIREITA -->
+
+        <div class="header-right">
+
+            <div class="notification-wrapper">
+
+    <button
+        class="notification-btn"
+        onclick="toggleNotifications()"
+    >
+
+        🔔
+
+        <span class="notification-badge">
+            3
+        </span>
+
+    </button>
+
+    <!-- DROPDOWN -->
+
+    <div
+        class="notification-dropdown"
+        id="notification-dropdown"
+    >
+
+        <div class="notification-header">
+
+            <h3>
+                Notificações
+            </h3>
+
+            <span>
+                3 novas
+            </span>
+
+        </div>
+
+        <!-- ITEM -->
+
+        <div class="notification-item critica">
+
+            <div class="notification-icon">
+                ⚠️
+            </div>
+
+            <div>
+
+                <strong>
+                    Estoque crítico
+                </strong>
+
+                <p>
+                    Açaí 700ML está acabando
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- ITEM -->
+
+        <div class="notification-item venda">
+
+            <div class="notification-icon">
+                💰
+            </div>
+
+            <div>
+
+                <strong>
+                    Nova venda
+                </strong>
+
+                <p>
+                    Pedido de R$ 49,90 realizado
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- ITEM -->
+
+        <div
+    class="notification-dropdown"
+    id="notification-dropdown"
+>
+
+    <div class="notification-header">
+
+        <h3>
+            Notificações
+        </h3>
+
+        <span id="notification-count">
+            0 novas
+        </span>
+
+    </div>
+
+    <!-- LISTA -->
+
+    <div id="notification-list">
+
+    </div>
+
+</div>
+
+    </div>
+
+</div>
+
+            <!-- PERFIL -->
+
+<div class="user-profile">
+
+    <div class="user-text">
+
+        <strong id="user-name">
+            Usuário
+        </strong>
+
+        <span id="user-cargo">
+            Cargo
+        </span>
+
+    </div>
+
+    <img
+        id="top-user-avatar"
+        src="../assets/user.png"
+        alt="Usuário"
+    >
+
+</div>
+
+        </div>
+
+    </header>
+
+    <!-- FORMULÁRIO -->
+
+    <section class="produto-form-box">
+
+        <div class="form-top">
+
+            <div>
+
+                <h2>
+                    Novo Produto
+                </h2>
+
+                <p>
+                    Cadastre produtos no sistema
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- FORM -->
+
+        <div class="produto-form">
+
+            <!-- NOME -->
+
+            <input
+                type="text"
+                id="nome"
+                placeholder="Nome do produto"
+            >
+
+            <!-- PREÇO -->
+
+            <div class="money-box">
+
+                <span>
+                    R$
+                </span>
+
+                <div class="number-box">
+
+                    <button
+                        type="button"
+                        onclick="diminuirPreco()"
+                    >
+                        −
+                    </button>
+
+                    <input
+                        type="number"
+                        id="preco"
+                        placeholder="0,00"
+                        step="0.01"
+                    >
+
+                    <button
+                        type="button"
+                        onclick="aumentarPreco()"
+                    >
+                        +
+                    </button>
+
+                </div>
+
+            </div>
+
+            <!-- CATEGORIA -->
+
+            <input
+                type="text"
+                id="categoria"
+                placeholder="Categoria"
+            >
+
+            <!-- ESTOQUE -->
+
+            <div class="number-box">
+
+                <button
+                    type="button"
+                    onclick="diminuirEstoque()"
+                >
+                    −
+                </button>
+
+                <input
+                    type="number"
+                    id="estoque"
+                    placeholder="0"
+                >
+
+                <button
+                    type="button"
+                    onclick="aumentarEstoque()"
+                >
+                    +
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- BOTÃO -->
+
+        <button 
+            id="btn-salvar"
+            onclick="salvarProduto()"
+        >
+            + Salvar Produto
+        </button>
+
+    </section>
+
+    <!-- LISTA -->
+
+    <section>
+
+        <div 
+            class="lista-produtos"
+            id="lista-produtos"
+        >
+
+        </div>
+
+    </section>
+
+</main>
+
+<!-- POPUP -->
+
+<div 
+    class="popup-sucesso"
+    id="popup-sucesso"
+>
+
+    <div class="popup-box">
+
+        <div class="popup-icone">
+            ✔
+        </div>
+
+        <h2>
+            Produto cadastrado!
+        </h2>
+
+        <p>
+            O produto foi salvo com sucesso.
+        </p>
+
+        <button onclick="fecharPopup()">
+            Fechar
+        </button>
+
+    </div>
+
+</div>
+
+<!-- MODAL -->
+
+<div 
+    class="modal-editar"
+    id="modal-editar"
+>
+
+    <div class="modal-box">
+
+        <h2>
+            Editar Produto
+        </h2>
+
+        <!-- EDIT NOME -->
+
+        <input 
+            type="text"
+            id="edit-nome"
+            placeholder="Nome"
+        >
+
+        <!-- EDIT PREÇO -->
+
+        <div class="money-box">
+
+            <span>
+                R$
+            </span>
+
+            <div class="number-box">
+
+                <button
+                    type="button"
+                    onclick="diminuirEditPreco()"
+                >
+                    −
+                </button>
+
+                <input 
+                    type="number"
+                    id="edit-preco"
+                    placeholder="0,00"
+                    step="0.01"
+                >
+
+                <button
+                    type="button"
+                    onclick="aumentarEditPreco()"
+                >
+                    +
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- EDIT CATEGORIA -->
+
+        <input 
+            type="text"
+            id="edit-categoria"
+            placeholder="Categoria"
+        >
+
+        <!-- EDIT ESTOQUE -->
+
+        <div class="number-box">
+
+            <button
+                type="button"
+                onclick="diminuirEditEstoque()"
+            >
+                −
+            </button>
+
+            <input 
+                type="number"
+                id="edit-estoque"
+                placeholder="0"
+            >
+
+            <button
+                type="button"
+                onclick="aumentarEditEstoque()"
+            >
+                +
+            </button>
+
+        </div>
+
+        <!-- BOTÕES -->
+
+        <div class="modal-buttons">
+
+            <button 
+                class="cancel-btn"
+                onclick="fecharEdicao()"
+            >
+                Cancelar
+            </button>
+
+            <button onclick="salvarEdicao()">
+                Salvar
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- SCRIPTS -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+<script src="../js/supabase.js"></script>
+
+<script src="../js/global.js"></script>
+
+<script src="../js/produtos.js"></script>
+
+<!-- SPINNER CUSTOM -->
+
+<script>
+
+function aumentarPreco(){
+
+    document
+    .getElementById('preco')
+    .stepUp()
+}
+
+function diminuirPreco(){
+
+    document
+    .getElementById('preco')
+    .stepDown()
+}
+
+function aumentarEstoque(){
+
+    document
+    .getElementById('estoque')
+    .stepUp()
+}
+
+function diminuirEstoque(){
+
+    document
+    .getElementById('estoque')
+    .stepDown()
+}
+
+function aumentarEditPreco(){
+
+    document
+    .getElementById('edit-preco')
+    .stepUp()
+}
+
+function diminuirEditPreco(){
+
+    document
+    .getElementById('edit-preco')
+    .stepDown()
+}
+
+function aumentarEditEstoque(){
+
+    document
+    .getElementById('edit-estoque')
+    .stepUp()
+}
+
+function diminuirEditEstoque(){
+
+    document
+    .getElementById('edit-estoque')
+    .stepDown()
+}
+
+</script>
+<script src="../js/auth.js"></script>
+
+</body>
+</html>
