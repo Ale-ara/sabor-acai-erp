@@ -5,9 +5,7 @@ let produtoExcluindo = null
    NOTIFICAÇÃO ESTOQUE
 ========================= */
 
-async function criarNotificacaoEstoque(
-    produto
-){
+async function criarNotificacaoEstoque(produto){
 
     const {
         data: existente
@@ -49,7 +47,7 @@ async function criarNotificacaoEstoque(
 }
 
 /* =========================
-   POPUP DINÂMICO
+   POPUP
 ========================= */
 
 function abrirPopup(
@@ -78,10 +76,6 @@ function abrirPopup(
 
     .classList.add('ativo')
 }
-
-/* =========================
-   FECHAR POPUP SUCESSO
-========================= */
 
 function fecharPopup(){
 
@@ -134,8 +128,6 @@ async function salvarProduto(){
         'estoque'
     ).value
 
-    /* VALIDAÇÃO */
-
     if(
 
         nome === '' ||
@@ -161,8 +153,6 @@ async function salvarProduto(){
 
         return
     }
-
-    /* SALVA */
 
     const {
 
@@ -205,8 +195,6 @@ async function salvarProduto(){
         return
     }
 
-    /* AUDITORIA */
-
     await registrarAuditoria(
 
         'Produto criado',
@@ -215,16 +203,12 @@ async function salvarProduto(){
 
     )
 
-    /* ESTOQUE CRÍTICO */
-
     if(Number(estoque) <= 3){
 
         await criarNotificacaoEstoque(
             data[0]
         )
     }
-
-    /* LIMPAR */
 
     document.getElementById(
         'nome'
@@ -241,8 +225,6 @@ async function salvarProduto(){
     document.getElementById(
         'estoque'
     ).value = ''
-
-    /* POPUP */
 
     abrirPopup(
         '✔',
@@ -291,6 +273,70 @@ async function listarProdutos(){
         return
     }
 
+    /* FILTROS */
+
+    const filtrosContainer =
+
+    document.getElementById(
+        'filtros-categorias'
+    )
+
+    if(filtrosContainer){
+
+        const categoriasUnicas = [
+
+            ...new Set(
+
+                data.map(
+
+                    produto => produto.categoria
+                )
+            )
+        ]
+
+        filtrosContainer.innerHTML = `
+
+            <button
+                class="filtro ativo"
+                onclick="filtrarCategoria('Todos')"
+            >
+                Todos
+            </button>
+
+        `
+
+        categoriasUnicas.forEach(categoria => {
+
+            filtrosContainer.innerHTML += `
+
+                <button
+                    class="filtro"
+                    onclick="filtrarCategoria('${categoria}')"
+                >
+                    ${categoria}
+                </button>
+
+            `
+        })
+    }
+
+    renderizarProdutos(data)
+}
+
+/* =========================
+   RENDERIZAR PRODUTOS
+========================= */
+
+function renderizarProdutos(data){
+
+    const lista =
+
+    document.getElementById(
+        'lista-produtos'
+    )
+
+    lista.innerHTML = ''
+
     data.forEach(produto => {
 
         lista.innerHTML += `
@@ -310,8 +356,6 @@ async function listarProdutos(){
                         "
                     >
 
-                        <!-- EDITAR -->
-
                         <button 
                             class="edit-btn"
                             onclick="abrirEdicao(
@@ -324,8 +368,6 @@ async function listarProdutos(){
                         >
                             ✏️
                         </button>
-
-                        <!-- EXCLUIR -->
 
                         <button
                             class="edit-btn"
@@ -344,7 +386,8 @@ async function listarProdutos(){
 
                 <p>
                     Preço:
-                    R$ ${Number(produto.preco).toFixed(2)}
+                    R$ ${Number(produto.preco)
+                    .toFixed(2)}
                 </p>
 
                 <p>
@@ -364,7 +407,67 @@ async function listarProdutos(){
 }
 
 /* =========================
-   ABRIR POPUP EXCLUIR
+   FILTRAR CATEGORIA
+========================= */
+
+async function filtrarCategoria(categoria){
+
+    document
+
+    .querySelectorAll('.filtro')
+
+    .forEach(btn => {
+
+        btn.classList.remove('ativo')
+
+        if(
+
+            btn.innerText.trim() === categoria
+        ){
+
+            btn.classList.add('ativo')
+        }
+    })
+
+    let query = supabaseClient
+
+    .from('produtos')
+
+    .select('*')
+
+    .order('id', {
+
+        ascending:false
+    })
+
+    if(categoria !== 'Todos'){
+
+        query = query.eq(
+            'categoria',
+            categoria
+        )
+    }
+
+    const {
+
+        data,
+
+        error
+
+    } = await query
+
+    if(error){
+
+        console.log(error)
+
+        return
+    }
+
+    renderizarProdutos(data)
+}
+
+/* =========================
+   EXCLUIR
 ========================= */
 
 function excluirProduto(id){
@@ -380,10 +483,6 @@ function excluirProduto(id){
     .classList.add('ativo')
 }
 
-/* =========================
-   FECHAR POPUP EXCLUIR
-========================= */
-
 function fecharPopupExcluir(){
 
     document
@@ -394,10 +493,6 @@ function fecharPopupExcluir(){
 
     .classList.remove('ativo')
 }
-
-/* =========================
-   CONFIRMAR EXCLUSÃO
-========================= */
 
 async function confirmarExclusao(){
 
@@ -428,37 +523,17 @@ async function confirmarExclusao(){
             return
         }
 
-        /* FECHA POPUP EXCLUIR */
-
-        document
-
-        .getElementById(
-            'popup-excluir'
-        )
-
-        .classList.remove('ativo')
-
-        /* ESPERA ANIMAÇÃO */
+        fecharPopupExcluir()
 
         setTimeout(() => {
 
             abrirPopup(
                 '🗑️',
                 'Produto excluído!',
-                'O produto foi removido com sucesso.'
+                'O produto foi removido.'
             )
 
         }, 250)
-
-        /* AUDITORIA */
-
-        await registrarAuditoria(
-
-            'Produto excluído',
-
-            `Produto ID ${produtoExcluindo} foi removido`
-
-        )
 
         listarProdutos()
 
@@ -475,7 +550,7 @@ async function confirmarExclusao(){
 }
 
 /* =========================
-   ABRIR EDIÇÃO
+   EDITAR
 ========================= */
 
 function abrirEdicao(
@@ -529,10 +604,6 @@ function abrirEdicao(
     .classList.add('active')
 }
 
-/* =========================
-   FECHAR EDIÇÃO
-========================= */
-
 function fecharEdicao(){
 
     document
@@ -543,10 +614,6 @@ function fecharEdicao(){
 
     .classList.remove('active')
 }
-
-/* =========================
-   SALVAR EDIÇÃO
-========================= */
 
 async function salvarEdicao(){
 
@@ -628,17 +695,12 @@ async function salvarEdicao(){
         return
     }
 
-    /* AUDITORIA */
-
     await registrarAuditoria(
 
         'Produto editado',
 
-        `Produto ${nome} foi atualizado`
-
+        `Produto ${nome} atualizado`
     )
-
-    /* ESTOQUE CRÍTICO */
 
     if(Number(estoque) <= 3){
 
@@ -652,7 +714,7 @@ async function salvarEdicao(){
     abrirPopup(
         '✏️',
         'Produto atualizado!',
-        'As informações foram salvas.'
+        'Alterações salvas.'
     )
 
     listarProdutos()

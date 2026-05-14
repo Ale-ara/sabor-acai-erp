@@ -1,5 +1,9 @@
 let carrinho = []
 
+let categoriaAtual = 'todos'
+
+let produtos = []
+
 /* =========================
    NOTIFICAÇÃO
 ========================= */
@@ -145,31 +149,41 @@ function abrirImpressaoTermica(){
 }
 
 /* =========================
-   PRODUTOS
+   FILTRO CATEGORIA
 ========================= */
 
-async function carregarProdutos(){
+function filtrarCategoria(categoria){
 
-    const { data, error } =
+    categoriaAtual = categoria.toLowerCase()
 
-    await supabaseClient
+    document
 
-    .from('produtos')
+    .querySelectorAll('.filtro-btn')
 
-    .select('*')
+    .forEach(btn => {
 
-    if(error){
+        btn.classList.remove('ativo')
+    })
 
-        console.log(error)
+    event.target.classList.add('ativo')
 
-        mostrarToast(
-            'Erro',
-            'Erro ao carregar produtos',
-            'error'
-        )
+    renderizarProdutos()
+}
 
-        return
-    }
+/* =========================
+   FILTRAR PRODUTOS
+========================= */
+
+function filtrarProdutos(){
+
+    renderizarProdutos()
+}
+
+/* =========================
+   RENDERIZAR PRODUTOS
+========================= */
+
+function renderizarProdutos(){
 
     const grid =
 
@@ -179,7 +193,50 @@ async function carregarProdutos(){
 
     grid.innerHTML = ''
 
-    data.forEach(produto => {
+    const busca =
+
+    document
+
+    .getElementById(
+        'buscar-produto'
+    )
+
+    .value
+
+    .toLowerCase()
+
+    let filtrados = produtos
+
+    /* FILTRO CATEGORIA */
+
+    if(categoriaAtual !== 'todos'){
+
+        filtrados = filtrados.filter(produto =>
+
+            produto.categoria
+            .toLowerCase()
+
+            === categoriaAtual
+        )
+    }
+
+    /* FILTRO BUSCA */
+
+    if(busca !== ''){
+
+        filtrados = filtrados.filter(produto =>
+
+            produto.nome
+
+            .toLowerCase()
+
+            .includes(busca)
+        )
+    }
+
+    /* RENDERIZA */
+
+    filtrados.forEach(produto => {
 
         grid.innerHTML += `
 
@@ -190,15 +247,18 @@ async function carregarProdutos(){
                 </h3>
 
                 <p>
-                    Categoria: ${produto.categoria}
+                    Categoria:
+                    ${produto.categoria}
                 </p>
 
                 <p>
-                    Estoque: ${produto.estoque}
+                    Estoque:
+                    ${produto.estoque}
                 </p>
 
                 <strong>
-                    R$ ${Number(produto.preco).toFixed(2)}
+                    R$ ${Number(produto.preco)
+                    .toFixed(2)}
                 </strong>
 
                 <button onclick="adicionarCarrinho(
@@ -216,6 +276,72 @@ async function carregarProdutos(){
         `
     })
 }
+
+/* =========================
+   CARREGAR PRODUTOS
+========================= */
+
+async function carregarProdutos(){
+
+    const {
+
+        data,
+
+        error
+
+    } = await supabaseClient
+
+    .from('produtos')
+
+    .select('*')
+
+    .order('nome')
+
+    if(error){
+
+        console.log(error)
+
+        mostrarToast(
+            'Erro',
+            'Erro ao carregar produtos',
+            'error'
+        )
+
+        return
+    }
+
+    produtos = data
+
+    renderizarProdutos()
+}
+
+/* =========================
+   BUSCA INPUT
+========================= */
+
+document
+
+.addEventListener(
+
+    'DOMContentLoaded',
+
+    () => {
+
+        const busca =
+
+        document.getElementById(
+            'buscar-produto'
+        )
+
+        if(busca){
+
+            busca.addEventListener(
+                'input',
+                filtrarProdutos
+            )
+        }
+    }
+)
 
 /* =========================
    CARRINHO
@@ -390,8 +516,6 @@ async function finalizarVenda(){
         ).value
     )
 
-    /* VALIDA DINHEIRO */
-
     if(
 
         formaPagamento === 'Dinheiro'
@@ -413,8 +537,6 @@ async function finalizarVenda(){
 
         return
     }
-
-    /* CRIA VENDA */
 
     const {
 
@@ -451,10 +573,6 @@ async function finalizarVenda(){
 
     const vendaId = venda[0].id
 
-    /* =========================
-       SALVA VENDA IMPRESSÃO
-    ========================= */
-
     salvarUltimaVenda(
         vendaId,
         total,
@@ -462,142 +580,11 @@ async function finalizarVenda(){
         valorRecebido
     )
 
-    /* USUÁRIO */
-
-    const {
-
-        data: authData
-
-    } = await supabaseClient
-    .auth
-    .getUser()
-
-    const email =
-    authData.user.email
-
-    const {
-
-        data: usuario
-
-    } = await supabaseClient
-
-    .from('usuarios')
-
-    .select('*')
-
-    .eq(
-        'email',
-        email
-    )
-
-    .single()
-
-    /* SALVA ITENS */
-
-    for(const item of carrinho){
-
-        /* ITEM VENDA */
-
-        await supabaseClient
-
-        .from('itens_venda')
-
-        .insert([
-
-            {
-                venda_id: vendaId,
-
-                produto_id: item.id,
-
-                nome_produto: item.nome,
-
-                preco: item.preco
-            }
-
-        ])
-
-        /* BUSCA PRODUTO */
-
-        const { data: produto } =
-
-        await supabaseClient
-
-        .from('produtos')
-
-        .select('*')
-
-        .eq('id', item.id)
-
-        .single()
-
-        const novoEstoque =
-        produto.estoque - 1
-
-        /* ATUALIZA ESTOQUE */
-
-        await supabaseClient
-
-        .from('produtos')
-
-        .update({
-
-            estoque:
-            novoEstoque
-
-        })
-
-        .eq('id', item.id)
-
-        /* MOVIMENTAÇÃO */
-
-        await supabaseClient
-
-        .from('movimentacoes_estoque')
-
-        .insert([
-
-            {
-                produto:
-                item.nome,
-
-                tipo: 'saida',
-
-                quantidade: 1,
-
-                estoque_final:
-                novoEstoque,
-
-                motivo:
-                'Venda realizada',
-
-                usuario:
-                usuario.nome
-            }
-
-        ])
-
-        /* AUDITORIA */
-
-        await registrarAuditoria(
-
-            'Venda realizada',
-
-            `${item.nome} vendido`
-
-        )
-    }
-
-    /* NOTIFICAÇÃO */
-
     await criarNotificacaoVenda(
         total
     )
 
-    /* RECARREGA */
-
     carregarProdutos()
-
-    /* POPUP SUCESSO */
 
     document
 
@@ -612,10 +599,6 @@ async function finalizarVenda(){
         `Pedido R$ ${total.toFixed(2)}`
     )
 
-    /* =========================
-       LIMPA CARRINHO
-    ========================= */
-
     carrinho = []
 
     renderizarCarrinho()
@@ -627,10 +610,6 @@ async function finalizarVenda(){
     document.getElementById(
         'troco'
     ).innerText = 'R$ 0,00'
-
-    /* =========================
-       ABRE IMPRESSÃO
-    ========================= */
 
     setTimeout(() => {
 

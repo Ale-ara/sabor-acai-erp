@@ -1,172 +1,60 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
 
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>
         Caixa | ERP Sabor do Açaí
     </title>
 
     <link
-    rel="icon"
-    type="image/png"
-    href="../assets/logo.png"
->
+        rel="icon"
+        type="image/png"
+        href="../assets/logo.png"
+    >
 
     <!-- GLOBAL -->
 
-    <link rel="stylesheet" href="../css/global.css">
+    <link
+        rel="stylesheet"
+        href="../css/global.css"
+    >
 
     <!-- PÁGINA -->
 
-    <link rel="stylesheet" href="../css/caixa.css">
+    <link
+        rel="stylesheet"
+        href="../css/caixa.css"
+    >
 
     <!-- FONT -->
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- ========================================= -->
-    <!-- NOVO CSS IMPRESSÃO -->
-    <!-- ========================================= -->
-
-    <style>
-
-        .modal-impressao{
-
-            position: fixed;
-
-            inset: 0;
-
-            background: rgba(0,0,0,0.6);
-
-            display: none;
-
-            align-items: center;
-
-            justify-content: center;
-
-            z-index: 99999;
-        }
-
-        .modal-impressao.ativo{
-
-            display: flex;
-        }
-
-        .modal-impressao-box{
-
-            background: #fff;
-
-            width: 95%;
-
-            max-width: 420px;
-
-            border-radius: 18px;
-
-            padding: 30px;
-
-            text-align: center;
-
-            animation: aparecer .2s ease;
-        }
-
-        .modal-impressao-box h2{
-
-            margin-bottom: 10px;
-
-            color: #111;
-        }
-
-        .modal-impressao-box p{
-
-            color: #666;
-
-            margin-bottom: 25px;
-        }
-
-        .impressao-botoes{
-
-            display: flex;
-
-            flex-direction: column;
-
-            gap: 12px;
-        }
-
-        .impressao-botoes button{
-
-            border: none;
-
-            padding: 14px;
-
-            border-radius: 12px;
-
-            font-size: 15px;
-
-            font-weight: 600;
-
-            cursor: pointer;
-
-            transition: .2s;
-        }
-
-        .btn-a4{
-
-            background: #2563eb;
-
-            color: white;
-        }
-
-        .btn-termica{
-
-            background: #111827;
-
-            color: white;
-        }
-
-        .btn-fechar{
-
-            background: #e5e7eb;
-
-            color: #111;
-        }
-
-        .impressao-botoes button:hover{
-
-            transform: scale(1.02);
-        }
-
-        @keyframes aparecer{
-
-            from{
-
-                opacity: 0;
-                transform: scale(.9);
-            }
-
-            to{
-
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-    </style>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
 
 </head>
 
 <body>
 
-    <!-- PAGE TRANSITION -->
+<!-- PAGE TRANSITION -->
 
-<div class="page-transition" id="page-transition"></div>
+<div
+    class="page-transition"
+    id="page-transition"
+></div>
 
-    <!-- NAVBAR MOBILE -->
+<!-- NAVBAR MOBILE -->
 
 <header class="mobile-navbar">
 
@@ -200,428 +88,401 @@
     onclick="fecharSidebar()"
 ></div>
 
-    <!-- SIDEBAR -->
+<!-- SIDEBAR -->
 
-    <aside class="sidebar">
+<aside class="sidebar">
 
-        <div>
+    <div>
 
-            <!-- TOPO -->
+        <!-- TOPO -->
 
-            <div class="sidebar-top">
+        <div class="sidebar-top">
 
-                <img 
-                    src="../assets/logo.png"
-                    alt="Logo"
-                    class="logo"
+            <img 
+                src="../assets/logo.png"
+                alt="Logo"
+                class="logo"
+            >
+
+            <div>
+
+                <h2>
+                    Sabor ERP
+                </h2>
+
+                <span>
+                    Sabor do Açaí
+                </span>
+
+            </div>
+
+        </div>
+
+        <!-- MENU -->
+
+        <nav class="menu">
+
+            <a href="dashboard.html">
+                📊 Dashboard
+            </a>
+
+            <a href="caixa.html">
+                💰 Caixa
+            </a>
+
+            <a href="produtos.html">
+                🍧 Produtos
+            </a>
+
+            <a href="estoque.html">
+                📦 Estoque
+            </a>
+
+            <a href="movimentacoes.html">
+                🔄 Movimentações
+            </a>
+
+            <a href="vendas.html">
+                🧾 Vendas
+            </a>
+
+            <a href="relatorios.html">
+                📈 Relatórios
+            </a>
+
+            <a href="usuarios.html">
+                👤 Usuário
+            </a>
+
+        </nav>
+
+    </div>
+
+    <!-- SAIR -->
+
+    <button 
+        class="logout-btn"
+        onclick="logout()"
+    >
+        Sair
+    </button>
+
+</aside>
+
+<!-- MAIN -->
+
+<main class="main-content">
+
+    <!-- HEADER -->
+
+    <header class="top-header">
+
+        <!-- ESQUERDA -->
+
+        <div class="header-left">
+
+            <h1>
+                Caixa
+            </h1>
+
+            <p>
+                Realize vendas e controle pedidos
+            </p>
+
+        </div>
+
+        <!-- DIREITA -->
+
+        <div class="header-right">
+
+            <!-- NOTIFICAÇÃO -->
+
+            <div class="notification-wrapper">
+
+                <button
+                    class="notification-btn"
+                    onclick="toggleNotifications()"
                 >
 
-                <div>
+                    🔔
 
-                    <h2>
-                        Sabor ERP
-                    </h2>
+                    <span class="notification-badge">
+                        3
+                    </span>
 
-                    <span>
-                        Sabor do Açaí
+                </button>
+
+                <!-- DROPDOWN -->
+
+                <div
+                    class="notification-dropdown"
+                    id="notification-dropdown"
+                >
+
+                    <div class="notification-header">
+
+                        <h3>
+                            Notificações
+                        </h3>
+
+                        <span id="notification-count">
+                            0 novas
+                        </span>
+
+                    </div>
+
+                    <!-- LISTA -->
+
+                    <div id="notification-list">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- PERFIL -->
+
+            <div class="user-profile">
+
+                <div class="user-text">
+
+                    <strong id="user-name">
+                        Usuário
+                    </strong>
+
+                    <span id="user-cargo">
+                        Cargo
                     </span>
 
                 </div>
 
-            </div>
-
-            <!-- MENU -->
-
-           <nav class="menu">
-
-    <a href="dashboard.html">
-        📊 Dashboard
-    </a>
-
-    <a href="caixa.html">
-        💰 Caixa
-    </a>
-
-    <a href="produtos.html">
-        🍧 Produtos
-    </a>
-
-    <a href="estoque.html">
-        📦 Estoque
-    </a>
-
-    <a href="movimentacoes.html">
-        🔄 Movimentações
-    </a>
-
-    <a href="vendas.html">
-        🧾 Vendas
-    </a>
-
-    <a href="relatorios.html">
-        📈 Relatórios
-    </a>
-
-    <a href="usuarios.html">
-        👤 Usuário
-    </a>
-
-</nav>
-
-</div>
-
-        <!-- SAIR -->
-
-        <button 
-            class="logout-btn"
-            onclick="logout()"
-        >
-            Sair
-        </button>
-
-    </aside>
-
-    <!-- MAIN -->
-
-    <main class="main-content">
-
-        <!-- HEADER -->
-
-        <header class="top-header">
-
-            <!-- ESQUERDA -->
-
-            <div class="header-left">
-
-                <h1>
-                    Caixa
-                </h1>
-
-                <p>
-                    Realize vendas e controle pedidos
-                </p>
+                <img
+                    id="top-user-avatar"
+                    src="../assets/user.png"
+                    alt="Usuário"
+                >
 
             </div>
-
-            <!-- DIREITA -->
-
-            <div class="header-right">
-
-                <!-- NOTIFICAÇÃO -->
-
-                <div class="notification-wrapper">
-
-    <button
-        class="notification-btn"
-        onclick="toggleNotifications()"
-    >
-
-        🔔
-
-        <span class="notification-badge">
-            3
-        </span>
-
-    </button>
-
-    <!-- DROPDOWN -->
-
-    <div
-        class="notification-dropdown"
-        id="notification-dropdown"
-    >
-
-        <div class="notification-header">
-
-            <h3>
-                Notificações
-            </h3>
-
-            <span>
-                3 novas
-            </span>
 
         </div>
 
-        <!-- ITEM -->
+    </header>
 
-        <div class="notification-item critica">
+    <!-- PDV -->
 
-            <div class="notification-icon">
-                ⚠️
+    <section class="pdv-container">
+
+        <!-- PRODUTOS -->
+
+        <div class="produtos-area">
+
+            <!-- TOPO -->
+
+            <div class="produtos-header">
+
+                <h2>
+                    Produtos
+                </h2>
+
+                <input
+                    type="text"
+                    placeholder="Buscar produto..."
+                    id="buscar-produto"
+                >
+
             </div>
+
+            <!-- FILTROS -->
+
+            <div class="filtros-categorias">
+
+                <button
+                    onclick="filtrarCategoria('todos')"
+                    class="filtro-btn ativo"
+                >
+                    Todos
+                </button>
+
+                <button
+                    onclick="filtrarCategoria('Copos e Potes')"
+                    class="filtro-btn"
+                >
+                    🍧 Copos e Potes
+                </button>
+
+                <button
+                    onclick="filtrarCategoria('Caixa')"
+                    class="filtro-btn"
+                >
+                    📦 Caixa
+                </button>
+
+                <button
+                    onclick="filtrarCategoria('Milkshake')"
+                    class="filtro-btn"
+                >
+                    🥤 Milkshake
+                </button>
+
+                <button
+                    onclick="filtrarCategoria('Adicional')"
+                    class="filtro-btn"
+                >
+                    💎 Adicional
+                </button>
+
+            </div>
+
+            <!-- GRID -->
+
+            <div 
+                class="produtos-grid"
+                id="produtos-grid"
+            >
+
+            </div>
+
+        </div>
+
+        <!-- CARRINHO -->
+
+        <aside class="carrinho">
 
             <div>
 
-                <strong>
-                    Estoque crítico
-                </strong>
+                <h2>
+                    Pedido Atual
+                </h2>
 
-                <p>
-                    Açaí 700ML está acabando
-                </p>
-
-            </div>
-
-        </div>
-
-        <!-- ITEM -->
-
-        <div class="notification-item venda">
-
-            <div class="notification-icon">
-                💰
-            </div>
-
-            <div>
-
-                <strong>
-                    Nova venda
-                </strong>
-
-                <p>
-                    Pedido de R$ 49,90 realizado
-                </p>
-
-            </div>
-
-        </div>
-
-        <!-- ITEM -->
-
-        <div
-    class="notification-dropdown"
-    id="notification-dropdown"
->
-
-    <div class="notification-header">
-
-        <h3>
-            Notificações
-        </h3>
-
-        <span id="notification-count">
-            0 novas
-        </span>
-
-    </div>
-
-    <!-- LISTA -->
-
-    <div id="notification-list">
-
-    </div>
-
-</div>
-
-    </div>
-
-</div>
-
-                <!-- PERFIL -->
-
-<div class="user-profile">
-
-    <div class="user-text">
-
-        <strong id="user-name">
-            Usuário
-        </strong>
-
-        <span id="user-cargo">
-            Cargo
-        </span>
-
-    </div>
-
-    <img
-        id="top-user-avatar"
-        src="../assets/user.png"
-        alt="Usuário"
-    >
-
-</div>
-
-            </div>
-
-        </header>
-
-        <!-- PDV -->
-
-        <section class="pdv-container">
-
-            <!-- PRODUTOS -->
-
-            <div class="produtos-area">
-
-                <div class="produtos-header">
-
-                    <h2>
-                        Produtos
-                    </h2>
-
-                    <input
-                        type="text"
-                        placeholder="Buscar produto..."
-                    >
-
-                </div>
-
-                <!-- GRID -->
+                <!-- ITENS -->
 
                 <div 
-                    class="produtos-grid"
-                    id="produtos-grid"
+                    class="itens-carrinho"
+                    id="itens-carrinho"
                 >
 
                 </div>
 
             </div>
 
-            <!-- CARRINHO -->
+            <!-- RODAPÉ -->
 
-            <aside class="carrinho">
+            <div class="rodape-carrinho">
 
-                <div>
+                <!-- PAGAMENTO -->
 
-                    <h2>
-                        Pedido Atual
-                    </h2>
+                <div class="pagamento-box">
 
-                    <!-- ITENS -->
+                    <label>
+                        Forma de pagamento
+                    </label>
 
-                    <div 
-                        class="itens-carrinho"
-                        id="itens-carrinho"
+                    <select id="forma-pagamento">
+
+                        <option>
+                            Dinheiro
+                        </option>
+
+                        <option>
+                            Pix
+                        </option>
+
+                        <option>
+                            Cartão
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <!-- RECEBIDO -->
+
+                <div class="pagamento-box">
+
+                    <label>
+                        Valor recebido
+                    </label>
+
+                    <input
+                        type="number"
+                        id="valor-recebido"
+                        placeholder="0.00"
+                        oninput="calcularTroco()"
                     >
 
-                    </div>
+                </div>
+
+                <!-- TROCO -->
+
+                <div class="troco-box">
+
+                    <span>
+                        Troco
+                    </span>
+
+                    <strong id="troco">
+                        R$ 0,00
+                    </strong>
 
                 </div>
 
-                <!-- RODAPÉ -->
+                <!-- TOTAL -->
 
-                <div class="rodape-carrinho">
+                <h3 class="total-box">
 
-                    <!-- PAGAMENTO -->
+                    Total:
 
-                    <div class="pagamento-box">
+                    <span id="total">
+                        R$ 0,00
+                    </span>
 
-                        <label>
-                            Forma de pagamento
-                        </label>
+                </h3>
 
-                        <select id="forma-pagamento">
+                <!-- BOTÃO -->
 
-                            <option>
-                                Dinheiro
-                            </option>
+                <button onclick="finalizarVenda()">
+                    Finalizar Venda
+                </button>
 
-                            <option>
-                                Pix
-                            </option>
-
-                            <option>
-                                Cartão
-                            </option>
-
-                        </select>
-
-                    </div>
-
-                    <!-- RECEBIDO -->
-
-                    <div class="pagamento-box">
-
-                        <label>
-                            Valor recebido
-                        </label>
-
-                        <input
-                            type="number"
-                            id="valor-recebido"
-                            placeholder="0.00"
-                            oninput="calcularTroco()"
-                        >
-
-                    </div>
-
-                    <!-- TROCO -->
-
-                    <div class="troco-box">
-
-                        <span>
-                            Troco
-                        </span>
-
-                        <strong id="troco">
-                            R$ 0,00
-                        </strong>
-
-                    </div>
-
-                    <!-- TOTAL -->
-
-                    <h3 class="total-box">
-
-                        Total:
-
-                        <span id="total">
-                            R$ 0,00
-                        </span>
-
-                    </h3>
-
-                    <!-- BOTÃO -->
-
-                    <button onclick="finalizarVenda()">
-                        Finalizar Venda
-                    </button>
-
-                </div>
-
-            </aside>
-
-        </section>
-
-    </main>
-
-    <!-- POPUP -->
-
-    <div 
-        class="popup-sucesso"
-        id="popup-sucesso"
-    >
-
-        <div class="popup-box">
-
-            <div class="popup-icone">
-                ✓
             </div>
 
-            <h2>
-                Venda Finalizada
-            </h2>
+        </aside>
 
-            <p>
-                Pedido registrado com sucesso.
-            </p>
+    </section>
 
-            <button onclick="fecharPopup()">
-                Fechar
-            </button>
+</main>
 
+<!-- POPUP -->
+
+<div 
+    class="popup-sucesso"
+    id="popup-sucesso"
+>
+
+    <div class="popup-box">
+
+        <div class="popup-icone">
+            ✓
         </div>
+
+        <h2>
+            Venda Finalizada
+        </h2>
+
+        <p>
+            Pedido registrado com sucesso.
+        </p>
+
+        <button onclick="fecharPopup()">
+            Fechar
+        </button>
 
     </div>
 
-    <!-- ========================================= -->
-    <!-- NOVO MODAL IMPRESSÃO -->
-    <!-- ========================================= -->
+</div>
 
-    <!-- ========================================= -->
 <!-- POPUP IMPRESSÃO -->
-<!-- ========================================= -->
 
 <div
     class="popup-impressao"
@@ -664,9 +525,7 @@
 
 </div>
 
-<!-- ========================================= -->
 <!-- POPUP OPÇÕES IMPRESSÃO -->
-<!-- ========================================= -->
 
 <div
     class="popup-impressao"
@@ -716,63 +575,17 @@
 
 </div>
 
-    <!-- SCRIPTS -->
+<!-- SCRIPTS -->
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
-    <script src="../js/supabase.js"></script>
+<script src="../js/supabase.js"></script>
 
-    <script src="../js/global.js"></script>
+<script src="../js/global.js"></script>
 
-    <script src="../js/auth.js"></script>
+<script src="../js/auth.js"></script>
 
-    <script src="../js/caixa.js"></script>
-
-    <!-- ========================================= -->
-    <!-- NOVO SCRIPT IMPRESSÃO -->
-    <!-- ========================================= -->
-
-    <script>
-
-        function abrirModalImpressao(){
-
-            document
-
-            .getElementById(
-                'modal-impressao'
-            )
-
-            .classList.add('ativo')
-        }
-
-        function fecharModalImpressao(){
-
-            document
-
-            .getElementById(
-                'modal-impressao'
-            )
-
-            .classList.remove('ativo')
-        }
-
-        function abrirImpressaoA4(){
-
-            window.open(
-                'impressao-a4.html',
-                '_blank'
-            )
-        }
-
-        function abrirImpressaoTermica(){
-
-            window.open(
-                'impressao-termica.html',
-                '_blank'
-            )
-        }
-
-    </script>
+<script src="../js/caixa.js"></script>
 
 </body>
 </html>
