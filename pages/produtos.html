@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
 
     <meta charset="UTF-8">
@@ -10,17 +11,15 @@
         Produtos | ERP Sabor do Açaí
     </title>
 
-<link
-    rel="icon"
-    type="image/png"
-    href="../assets/logo.png"
->
+    <link
+        rel="icon"
+        type="image/png"
+        href="../assets/logo.png"
+    >
 
-    <!-- GLOBAL -->
+    <!-- CSS -->
 
     <link rel="stylesheet" href="../css/global.css">
-
-    <!-- PÁGINA -->
 
     <link rel="stylesheet" href="../css/produtos.css">
 
@@ -28,7 +27,10 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
 
 </head>
 
@@ -36,9 +38,12 @@
 
 <!-- PAGE TRANSITION -->
 
-<div class="page-transition" id="page-transition"></div>
+<div
+    class="page-transition"
+    id="page-transition"
+></div>
 
-<!-- NAVBAR MOBILE -->
+<!-- MOBILE NAVBAR -->
 
 <header class="mobile-navbar">
 
@@ -82,7 +87,7 @@
 
         <div class="sidebar-top">
 
-            <img 
+            <img
                 src="../assets/logo.png"
                 alt="Logo"
                 class="logo"
@@ -106,45 +111,45 @@
 
         <nav class="menu">
 
-    <a href="dashboard.html">
-        📊 Dashboard
-    </a>
+            <a href="dashboard.html">
+                📊 Dashboard
+            </a>
 
-    <a href="caixa.html">
-        💰 Caixa
-    </a>
+            <a href="caixa.html">
+                💰 Caixa
+            </a>
 
-    <a href="produtos.html">
-        🍧 Produtos
-    </a>
+            <a href="produtos.html">
+                🍧 Produtos
+            </a>
 
-    <a href="estoque.html">
-        📦 Estoque
-    </a>
+            <a href="estoque.html">
+                📦 Estoque
+            </a>
 
-    <a href="movimentacoes.html">
-        🔄 Movimentações
-    </a>
+            <a href="movimentacoes.html">
+                🔄 Movimentações
+            </a>
 
-    <a href="vendas.html">
-        🧾 Vendas
-    </a>
+            <a href="vendas.html">
+                🧾 Vendas
+            </a>
 
-    <a href="relatorios.html">
-        📈 Relatórios
-    </a>
+            <a href="relatorios.html">
+                📈 Relatórios
+            </a>
 
-    <a href="usuarios.html">
-        👤 Usuário
-    </a>
+            <a href="usuarios.html">
+                👤 Usuário
+            </a>
 
-</nav>
+        </nav>
 
-</div>
+    </div>
 
     <!-- SAIR -->
 
-    <button 
+    <button
         class="logout-btn"
         onclick="logout()"
     >
@@ -161,8 +166,6 @@
 
     <header class="top-header">
 
-        <!-- ESQUERDA -->
-
         <div class="header-left">
 
             <h1>
@@ -175,148 +178,33 @@
 
         </div>
 
-        <!-- DIREITA -->
+        <!-- PERFIL -->
 
-        <div class="header-right">
+        <div class="user-profile">
 
-            <div class="notification-wrapper">
+            <div class="user-text">
 
-    <button
-        class="notification-btn"
-        onclick="toggleNotifications()"
-    >
-
-        🔔
-
-        <span class="notification-badge">
-            3
-        </span>
-
-    </button>
-
-    <!-- DROPDOWN -->
-
-    <div
-        class="notification-dropdown"
-        id="notification-dropdown"
-    >
-
-        <div class="notification-header">
-
-            <h3>
-                Notificações
-            </h3>
-
-            <span>
-                3 novas
-            </span>
-
-        </div>
-
-        <!-- ITEM -->
-
-        <div class="notification-item critica">
-
-            <div class="notification-icon">
-                ⚠️
-            </div>
-
-            <div>
-
-                <strong>
-                    Estoque crítico
+                <strong id="user-name">
+                    Usuário
                 </strong>
 
-                <p>
-                    Açaí 700ML está acabando
-                </p>
+                <span id="user-cargo">
+                    Cargo
+                </span>
 
             </div>
 
-        </div>
-
-        <!-- ITEM -->
-
-        <div class="notification-item venda">
-
-            <div class="notification-icon">
-                💰
-            </div>
-
-            <div>
-
-                <strong>
-                    Nova venda
-                </strong>
-
-                <p>
-                    Pedido de R$ 49,90 realizado
-                </p>
-
-            </div>
-
-        </div>
-
-        <!-- ITEM -->
-
-        <div
-    class="notification-dropdown"
-    id="notification-dropdown"
->
-
-    <div class="notification-header">
-
-        <h3>
-            Notificações
-        </h3>
-
-        <span id="notification-count">
-            0 novas
-        </span>
-
-    </div>
-
-    <!-- LISTA -->
-
-    <div id="notification-list">
-
-    </div>
-
-</div>
-
-    </div>
-
-</div>
-
-            <!-- PERFIL -->
-
-<div class="user-profile">
-
-    <div class="user-text">
-
-        <strong id="user-name">
-            Usuário
-        </strong>
-
-        <span id="user-cargo">
-            Cargo
-        </span>
-
-    </div>
-
-    <img
-        id="top-user-avatar"
-        src="../assets/user.png"
-        alt="Usuário"
-    >
-
-</div>
+            <img
+                id="top-user-avatar"
+                src="../assets/user.png"
+                alt="Usuário"
+            >
 
         </div>
 
     </header>
 
-    <!-- FORMULÁRIO -->
+    <!-- FORM -->
 
     <section class="produto-form-box">
 
@@ -335,8 +223,6 @@
             </div>
 
         </div>
-
-        <!-- FORM -->
 
         <div class="produto-form">
 
@@ -413,7 +299,7 @@
                     onclick="aumentarEstoque()"
                 >
                     +
-                </button>
+                    </button>
 
             </div>
 
@@ -421,7 +307,7 @@
 
         <!-- BOTÃO -->
 
-        <button 
+        <button
             id="btn-salvar"
             onclick="salvarProduto()"
         >
@@ -434,7 +320,7 @@
 
     <section>
 
-        <div 
+        <div
             class="lista-produtos"
             id="lista-produtos"
         >
@@ -445,9 +331,9 @@
 
 </main>
 
-<!-- POPUP -->
+<!-- POPUP SUCESSO -->
 
-<div 
+<div
     class="popup-sucesso"
     id="popup-sucesso"
 >
@@ -466,7 +352,10 @@
             O produto foi salvo com sucesso.
         </p>
 
-        <button onclick="fecharPopup()">
+        <button
+            type="button"
+            onclick="fecharPopup()"
+        >
             Fechar
         </button>
 
@@ -474,9 +363,9 @@
 
 </div>
 
-<!-- MODAL -->
+<!-- MODAL EDITAR -->
 
-<div 
+<div
     class="modal-editar"
     id="modal-editar"
 >
@@ -487,15 +376,15 @@
             Editar Produto
         </h2>
 
-        <!-- EDIT NOME -->
+        <!-- NOME -->
 
-        <input 
+        <input
             type="text"
             id="edit-nome"
             placeholder="Nome"
         >
 
-        <!-- EDIT PREÇO -->
+        <!-- PREÇO -->
 
         <div class="money-box">
 
@@ -512,7 +401,7 @@
                     −
                 </button>
 
-                <input 
+                <input
                     type="number"
                     id="edit-preco"
                     placeholder="0,00"
@@ -530,15 +419,15 @@
 
         </div>
 
-        <!-- EDIT CATEGORIA -->
+        <!-- CATEGORIA -->
 
-        <input 
+        <input
             type="text"
             id="edit-categoria"
             placeholder="Categoria"
         >
 
-        <!-- EDIT ESTOQUE -->
+        <!-- ESTOQUE -->
 
         <div class="number-box">
 
@@ -549,7 +438,7 @@
                 −
             </button>
 
-            <input 
+            <input
                 type="number"
                 id="edit-estoque"
                 placeholder="0"
@@ -568,18 +457,106 @@
 
         <div class="modal-buttons">
 
-            <button 
+            <button
+                type="button"
                 class="cancel-btn"
                 onclick="fecharEdicao()"
             >
                 Cancelar
             </button>
 
-            <button onclick="salvarEdicao()">
+            <button
+                type="button"
+                onclick="salvarEdicao()"
+            >
                 Salvar
             </button>
 
         </div>
+
+    </div>
+
+</div>
+
+<!-- POPUP EXCLUIR -->
+
+<div
+    class="popup-excluir"
+    id="popup-excluir"
+>
+
+    <div class="popup-box">
+
+        <div class="popup-icone">
+            🗑️
+        </div>
+
+        <h2>
+            Excluir produto?
+        </h2>
+
+        <p>
+            Essa ação não poderá ser desfeita.
+        </p>
+
+        <div
+            style="
+                display:flex;
+                gap:12px;
+                width:100%;
+            "
+        >
+
+            <button
+                type="button"
+                onclick="fecharPopupExcluir()"
+                style="
+                    background:#374151;
+                "
+            >
+                Cancelar
+            </button>
+
+            <button
+                type="button"
+                onclick="confirmarExclusao()"
+            >
+                Excluir
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- POPUP SUCESSO -->
+
+<div
+    class="popup-sucesso"
+    id="popup-sucesso"
+>
+
+    <div class="popup-box">
+
+        <div class="popup-icone">
+            ✔
+        </div>
+
+        <h2>
+            Sucesso!
+        </h2>
+
+        <p>
+            Operação realizada.
+        </p>
+
+        <button
+            type="button"
+            onclick="fecharPopup()"
+        >
+            Fechar
+        </button>
 
     </div>
 
@@ -595,7 +572,9 @@
 
 <script src="../js/produtos.js"></script>
 
-<!-- SPINNER CUSTOM -->
+<script src="../js/auth.js"></script>
+
+<!-- SPINNERS -->
 
 <script>
 
@@ -656,7 +635,6 @@ function diminuirEditEstoque(){
 }
 
 </script>
-<script src="../js/auth.js"></script>
 
 </body>
 </html>

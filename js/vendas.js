@@ -46,7 +46,7 @@ async function carregarVendas(){
 
             <tr>
 
-                <td colspan="4">
+                <td colspan="5">
 
                     Nenhuma venda encontrada
 
@@ -85,13 +85,31 @@ async function carregarVendas(){
                     R$ ${Number(venda.total).toFixed(2)}
                 </td>
 
+                <td>
+
+                    <span class="${
+                        venda.status === 'cancelada'
+                        ? 'status-cancelada'
+                        : 'status-ativa'
+                    }">
+
+                        ${
+                            venda.status === 'cancelada'
+                            ? 'Cancelada'
+                            : 'Ativa'
+                        }
+
+                    </span>
+
+                </td>
+
                 <td class="acoes-venda">
 
                     <button 
                         class="ver-btn"
                         onclick="verItens(${venda.id})"
                     >
-                        Ver
+                        👁️ Ver
                     </button>
 
                     <button 
@@ -99,6 +117,13 @@ async function carregarVendas(){
                         onclick="abrirPopupImpressaoVenda(${venda.id})"
                     >
                         🖨️
+                    </button>
+
+                    <button
+                        class="cancelar-btn"
+                        onclick="cancelarVenda(${venda.id})"
+                    >
+                        🗑️
                     </button>
 
                 </td>
@@ -390,6 +415,80 @@ async function prepararVendaImpressao(){
         `Venda #${venda.id} foi impressa`
 
     )
+}
+
+/* ========================================= */
+/* CANCELAR VENDA */
+/* ========================================= */
+
+async function cancelarVenda(vendaId){
+
+    const confirmar = confirm(
+        'Deseja realmente cancelar esta venda?'
+    )
+
+    if(!confirmar) return
+
+    try{
+
+        const {
+
+            error
+
+        } = await supabaseClient
+
+        .from('vendas')
+
+        .update({
+
+            status: 'cancelada'
+
+        })
+
+        .eq('id', vendaId)
+
+        if(error){
+
+            console.log(error)
+
+            mostrarToast(
+                'Erro',
+                'Erro ao cancelar venda',
+                'error'
+            )
+
+            return
+        }
+
+        await registrarAuditoria(
+
+            'Cancelou venda',
+
+            `Venda #${vendaId} cancelada`
+
+        )
+
+        mostrarToast(
+
+            'Sucesso',
+
+            'Venda cancelada com sucesso',
+
+            'success'
+        )
+
+        carregarVendas()
+
+    }catch(err){
+
+        console.log(err)
+
+        mostrarToast(
+            'Erro',
+            'Erro inesperado',
+            'error'
+        )
+    }
 }
 
 /* ========================================= */

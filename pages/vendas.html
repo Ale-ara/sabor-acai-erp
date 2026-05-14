@@ -11,10 +11,10 @@
     </title>
 
     <link
-    rel="icon"
-    type="image/png"
-    href="../assets/logo.png"
->
+        rel="icon"
+        type="image/png"
+        href="../assets/logo.png"
+    >
 
     <!-- GLOBAL -->
 
@@ -30,47 +30,98 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+    <!-- ESTILO BOTÃO CANCELAR -->
+
+    <style>
+
+        .acoes-venda{
+
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .cancelar-btn{
+
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: .2s;
+        }
+
+        .cancelar-btn:hover{
+
+            background: #b91c1c;
+            transform: scale(1.03);
+        }
+
+        .status-cancelada{
+
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-ativa{
+
+            background: #dcfce7;
+            color: #16a34a;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+    </style>
+
 </head>
 
 <body>
 
     <!-- PAGE TRANSITION -->
 
-<div class="page-transition" id="page-transition"></div>
+    <div class="page-transition" id="page-transition"></div>
 
     <!-- NAVBAR MOBILE -->
 
-<header class="mobile-navbar">
+    <header class="mobile-navbar">
 
-    <div class="mobile-left">
+        <div class="mobile-left">
 
-        <img
-            src="../assets/logo.png"
-            alt="Logo"
+            <img
+                src="../assets/logo.png"
+                alt="Logo"
+            >
+
+            <h2>
+                Sabor ERP
+            </h2>
+
+        </div>
+
+        <button
+            class="menu-mobile-btn"
+            onclick="toggleSidebar()"
         >
+            ☰
+        </button>
 
-        <h2>
-            Sabor ERP
-        </h2>
+    </header>
 
-    </div>
+    <!-- OVERLAY -->
 
-    <button
-        class="menu-mobile-btn"
-        onclick="toggleSidebar()"
-    >
-        ☰
-    </button>
-
-</header>
-
-<!-- OVERLAY -->
-
-<div
-    class="sidebar-overlay"
-    id="sidebar-overlay"
-    onclick="fecharSidebar()"
-></div>
+    <div
+        class="sidebar-overlay"
+        id="sidebar-overlay"
+        onclick="fecharSidebar()"
+    ></div>
 
     <!-- SIDEBAR -->
 
@@ -161,8 +212,6 @@
 
         <header class="top-header">
 
-            <!-- ESQUERDA -->
-
             <div class="header-left">
 
                 <h1>
@@ -172,128 +221,6 @@
                 <p>
                     Histórico completo de vendas
                 </p>
-
-            </div>
-
-            <!-- DIREITA -->
-
-            <div class="header-right">
-
-                <!-- NOTIFICAÇÃO -->
-
-                <div class="notification-wrapper">
-
-                    <button
-                        class="notification-btn"
-                        onclick="toggleNotifications()"
-                    >
-
-                        🔔
-
-                        <span class="notification-badge">
-                            3
-                        </span>
-
-                    </button>
-
-                    <!-- DROPDOWN -->
-
-                    <div
-                        class="notification-dropdown"
-                        id="notification-dropdown"
-                    >
-
-                        <div class="notification-header">
-
-                            <h3>
-                                Notificações
-                            </h3>
-
-                            <span>
-                                3 novas
-                            </span>
-
-                        </div>
-
-                        <!-- ITEM -->
-
-                        <div class="notification-item critica">
-
-                            <div class="notification-icon">
-                                ⚠️
-                            </div>
-
-                            <div>
-
-                                <strong>
-                                    Estoque crítico
-                                </strong>
-
-                                <p>
-                                    Açaí 700ML está acabando
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                        <!-- ITEM -->
-
-                        <div class="notification-item venda">
-
-                            <div class="notification-icon">
-                                💰
-                            </div>
-
-                            <div>
-
-                                <strong>
-                                    Nova venda
-                                </strong>
-
-                                <p>
-                                    Pedido de R$ 49,90 realizado
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                        <!-- LISTA -->
-
-                        <div
-                            id="notification-list"
-                        >
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <!-- PERFIL -->
-
-                <div class="user-profile">
-
-                    <div class="user-text">
-
-                        <strong id="user-name">
-                            Usuário
-                        </strong>
-
-                        <span id="user-cargo">
-                            Cargo
-                        </span>
-
-                    </div>
-
-                    <img
-                        id="top-user-avatar"
-                        src="../assets/user.png"
-                        alt="Usuário"
-                    >
-
-                </div>
 
             </div>
 
@@ -319,6 +246,10 @@
 
                         <th>
                             Total
+                        </th>
+
+                        <th>
+                            Status
                         </th>
 
                         <th>
@@ -368,9 +299,7 @@
 
     </div>
 
-    <!-- ========================================= -->
     <!-- MODAL IMPRESSÃO -->
-    <!-- ========================================= -->
 
     <div
         class="modal-venda"

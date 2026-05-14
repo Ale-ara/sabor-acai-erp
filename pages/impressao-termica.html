@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
 
 <meta charset="UTF-8">
@@ -15,143 +16,219 @@
 
 <style>
 
+/* =========================
+RESET
+========================= */
+
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
 }
 
+/* =========================
+BODY
+========================= */
+
 body{
-    background:white;
+
+    background:#FFF;
 
     font-family:
     'Courier New',
     monospace;
 
-    padding:10px;
+    width:100%;
 
     display:flex;
 
     justify-content:center;
-}
-
-/* CUPOM */
-
-.cupom{
-    width:80mm;
 
     color:#000;
 }
 
-/* TOPO */
+/* =========================
+CUPOM
+========================= */
 
-.topo{
-    text-align:center;
+.cupom{
 
-    margin-bottom:14px;
-}
+    width:72mm;
 
-.logo{
-    width:90px;
+    padding:4mm 3mm;
 
-    margin-bottom:10px;
-}
+    color:#000;
 
-.topo h1{
-    font-size:20px;
-
-    margin-bottom:5px;
+    font-size:13px;
 
     font-weight:bold;
 }
 
+/* =========================
+TOPO
+========================= */
+
+.topo{
+
+    text-align:center;
+
+    margin-bottom:10px;
+}
+
+.logo{
+
+    width:110px;
+
+    display:block;
+
+    margin:0 auto 10px;
+
+    image-rendering: crisp-edges;
+}
+
+.topo h1{
+
+    font-size:24px;
+
+    margin-bottom:6px;
+
+    font-weight:900;
+
+    letter-spacing:1px;
+}
+
 .topo p{
-    font-size:12px;
+
+    font-size:13px;
 
     line-height:1.5;
 }
 
-/* LINHA */
+/* =========================
+LINHA
+========================= */
 
 .linha{
-    border-top:
-    1px dashed #000;
 
-    margin:12px 0;
+    border-top:
+    2px dashed #000;
+
+    margin:10px 0;
 }
 
-/* INFOS */
+/* =========================
+INFOS
+========================= */
 
 .info{
-    font-size:13px;
 
-    margin-bottom:5px;
+    font-size:14px;
+
+    margin-bottom:6px;
 
     display:flex;
 
     justify-content:space-between;
+
+    align-items:center;
 
     gap:10px;
 }
 
-/* PRODUTOS */
+/* =========================
+ITENS
+========================= */
 
 .item{
-    margin-bottom:10px;
+
+    margin-bottom:12px;
 }
 
 .item-nome{
-    font-size:13px;
+
+    font-size:15px;
 
     margin-bottom:4px;
 
     word-break:break-word;
+
+    font-weight:bold;
+
+    text-transform:uppercase;
 }
 
 .item-preco{
+
     display:flex;
 
     justify-content:space-between;
 
-    font-size:13px;
+    font-size:14px;
 }
 
-/* TOTAL */
+/* =========================
+TOTAL
+========================= */
 
 .total{
-    margin-top:14px;
 
-    font-size:18px;
+    margin-top:16px;
 
-    font-weight:bold;
+    font-size:28px;
+
+    font-weight:900;
 
     text-align:right;
 }
 
-/* FINAL */
 
-.final{
-    margin-top:25px;
 
-    text-align:center;
+/* =========================
+PRINT
+========================= */
 
-    font-size:12px;
+@page{
 
-    line-height:1.6;
+    size:80mm auto;
+
+    margin:0;
 }
-
-/* PRINT */
 
 @media print{
 
+    html,
     body{
+
         width:80mm;
+
+        background:#FFF;
+    }
+
+    body{
+
+        margin:0;
 
         padding:0;
     }
 
     .cupom{
-        width:100%;
+    width:100%;
+    max-width:80mm;
+}
+
+    .linha{
+
+        border-top:
+        2px dashed #000;
+    }
+
+    *{
+
+        color:#000 !important;
+
+        -webkit-print-color-adjust:exact;
+
+        print-color-adjust:exact;
     }
 }
 
@@ -245,7 +322,7 @@ body{
     <div class="info">
 
         <span>
-            Troco
+            Troco:
         </span>
 
         <strong id="troco"></strong>
@@ -259,20 +336,16 @@ body{
         id="total"
     ></div>
 
-    <!-- FINAL -->
 
-    <div class="final">
-
-        Obrigado pela preferência!
-        <br>
-
-        Volte sempre
-
-    </div>
+  
 
 </div>
 
 <script>
+
+/* =========================
+DADOS VENDA
+========================= */
 
 const venda = JSON.parse(
 
@@ -281,78 +354,106 @@ const venda = JSON.parse(
     )
 )
 
-/* INFOS */
+/* =========================
+VALIDAÇÃO
+========================= */
 
-document.getElementById(
-    'pedido'
-).innerText =
+if(!venda){
 
-`#${venda.vendaId}`
-
-document.getElementById(
-    'data'
-).innerText = venda.data
-
-document.getElementById(
-    'pagamento'
-).innerText = venda.pagamento
-
-document.getElementById(
-    'troco'
-).innerText =
-
-`R$ ${venda.troco.toFixed(2)}`
-
-document.getElementById(
-    'total'
-).innerText =
-
-`TOTAL: R$ ${venda.total.toFixed(2)}`
-
-/* ITENS */
-
-const itens = document.getElementById(
-    'itens'
-)
-
-venda.itens.forEach(item => {
-
-    itens.innerHTML += `
-
-        <div class="item">
-
-            <div class="item-nome">
-
-                ${item.nome}
-
-            </div>
-
-            <div class="item-preco">
-
-                <span>
-                    1x
-                </span>
-
-                <strong>
-                    R$ ${item.preco.toFixed(2)}
-                </strong>
-
-            </div>
-
-        </div>
+    document.body.innerHTML =
 
     `
-})
+        <div
+            style="
+                padding:40px;
+                font-family:Arial;
+            "
+        >
+            Nenhuma venda encontrada.
+        </div>
+    `
 
-/* PRINT */
+}else{
 
-window.onload = () => {
+    /* =========================
+    INFOS
+    ========================= */
 
-    setTimeout(() => {
+    document.getElementById(
+        'pedido'
+    ).innerText =
 
-        window.print()
+    `#${venda.vendaId}`
 
-    }, 300)
+    document.getElementById(
+        'data'
+    ).innerText = venda.data
+
+    document.getElementById(
+        'pagamento'
+    ).innerText = venda.pagamento
+
+    document.getElementById(
+        'troco'
+    ).innerText =
+
+    `R$ ${Number(venda.troco).toFixed(2)}`
+
+    document.getElementById(
+        'total'
+    ).innerText =
+
+    `TOTAL: R$ ${Number(venda.total).toFixed(2)}`
+
+    /* =========================
+    ITENS
+    ========================= */
+
+    const itens = document.getElementById(
+        'itens'
+    )
+
+    venda.itens.forEach(item => {
+
+        itens.innerHTML += `
+
+            <div class="item">
+
+                <div class="item-nome">
+
+                    ${item.nome}
+
+                </div>
+
+                <div class="item-preco">
+
+                    <span>
+                        1x
+                    </span>
+
+                    <strong>
+                        R$ ${Number(item.preco).toFixed(2)}
+                    </strong>
+
+                </div>
+
+            </div>
+
+        `
+    })
+
+    /* =========================
+    IMPRIMIR
+    ========================= */
+
+    window.onload = () => {
+
+        setTimeout(() => {
+
+            window.print()
+
+        }, 500)
+    }
 }
 
 </script>

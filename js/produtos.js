@@ -1,4 +1,5 @@
 let produtoEditando = null
+let produtoExcluindo = null
 
 /* =========================
    NOTIFICAÇÃO ESTOQUE
@@ -45,6 +46,52 @@ async function criarNotificacaoEstoque(
 
         ])
     }
+}
+
+/* =========================
+   POPUP DINÂMICO
+========================= */
+
+function abrirPopup(
+    icone,
+    titulo,
+    texto
+){
+
+    document.querySelector(
+        '#popup-sucesso .popup-icone'
+    ).innerHTML = icone
+
+    document.querySelector(
+        '#popup-sucesso h2'
+    ).innerText = titulo
+
+    document.querySelector(
+        '#popup-sucesso p'
+    ).innerText = texto
+
+    document
+
+    .getElementById(
+        'popup-sucesso'
+    )
+
+    .classList.add('ativo')
+}
+
+/* =========================
+   FECHAR POPUP SUCESSO
+========================= */
+
+function fecharPopup(){
+
+    document
+
+    .getElementById(
+        'popup-sucesso'
+    )
+
+    .classList.remove('ativo')
 }
 
 /* =========================
@@ -98,6 +145,7 @@ async function salvarProduto(){
         categoria === '' ||
 
         estoque === ''
+
     ){
 
         mostrarToast(
@@ -176,7 +224,7 @@ async function salvarProduto(){
         )
     }
 
-    /* LIMPA */
+    /* LIMPAR */
 
     document.getElementById(
         'nome'
@@ -196,24 +244,17 @@ async function salvarProduto(){
 
     /* POPUP */
 
-    document
-
-    .getElementById(
-        'popup-sucesso'
-    )
-
-    .classList.add('active')
-
-    mostrarToast(
-        'Sucesso',
-        'Produto salvo com sucesso'
+    abrirPopup(
+        '✔',
+        'Produto cadastrado!',
+        'O produto foi salvo com sucesso.'
     )
 
     listarProdutos()
 }
 
 /* =========================
-   LISTAR
+   LISTAR PRODUTOS
 ========================= */
 
 async function listarProdutos(){
@@ -262,18 +303,42 @@ async function listarProdutos(){
                         ${produto.nome}
                     </h3>
 
-                    <button 
-                        class="edit-btn"
-                        onclick="abrirEdicao(
-                            ${produto.id},
-                            '${produto.nome}',
-                            '${produto.preco}',
-                            '${produto.categoria}',
-                            '${produto.estoque}'
-                        )"
+                    <div
+                        style="
+                            display:flex;
+                            gap:8px;
+                        "
                     >
-                        ✏️
-                    </button>
+
+                        <!-- EDITAR -->
+
+                        <button 
+                            class="edit-btn"
+                            onclick="abrirEdicao(
+                                ${produto.id},
+                                '${produto.nome}',
+                                '${produto.preco}',
+                                '${produto.categoria}',
+                                '${produto.estoque}'
+                            )"
+                        >
+                            ✏️
+                        </button>
+
+                        <!-- EXCLUIR -->
+
+                        <button
+                            class="edit-btn"
+                            style="
+                                background:#dc2626;
+                                color:white;
+                            "
+                            onclick="excluirProduto(${produto.id})"
+                        >
+                            🗑️
+                        </button>
+
+                    </div>
 
                 </div>
 
@@ -299,22 +364,118 @@ async function listarProdutos(){
 }
 
 /* =========================
-   POPUP
+   ABRIR POPUP EXCLUIR
 ========================= */
 
-function fecharPopup(){
+function excluirProduto(id){
+
+    produtoExcluindo = id
 
     document
 
     .getElementById(
-        'popup-sucesso'
+        'popup-excluir'
     )
 
-    .classList.remove('active')
+    .classList.add('ativo')
 }
 
 /* =========================
-   EDITAR
+   FECHAR POPUP EXCLUIR
+========================= */
+
+function fecharPopupExcluir(){
+
+    document
+
+    .getElementById(
+        'popup-excluir'
+    )
+
+    .classList.remove('ativo')
+}
+
+/* =========================
+   CONFIRMAR EXCLUSÃO
+========================= */
+
+async function confirmarExclusao(){
+
+    try{
+
+        const {
+
+            error
+
+        } = await supabaseClient
+
+        .from('produtos')
+
+        .delete()
+
+        .eq('id', produtoExcluindo)
+
+        if(error){
+
+            console.log(error)
+
+            mostrarToast(
+                'Erro',
+                'Erro ao excluir produto',
+                'error'
+            )
+
+            return
+        }
+
+        /* FECHA POPUP EXCLUIR */
+
+        document
+
+        .getElementById(
+            'popup-excluir'
+        )
+
+        .classList.remove('ativo')
+
+        /* ESPERA ANIMAÇÃO */
+
+        setTimeout(() => {
+
+            abrirPopup(
+                '🗑️',
+                'Produto excluído!',
+                'O produto foi removido com sucesso.'
+            )
+
+        }, 250)
+
+        /* AUDITORIA */
+
+        await registrarAuditoria(
+
+            'Produto excluído',
+
+            `Produto ID ${produtoExcluindo} foi removido`
+
+        )
+
+        listarProdutos()
+
+    }catch(err){
+
+        console.log(err)
+
+        mostrarToast(
+            'Erro',
+            'Erro inesperado',
+            'error'
+        )
+    }
+}
+
+/* =========================
+   ABRIR EDIÇÃO
 ========================= */
 
 function abrirEdicao(
@@ -367,6 +528,10 @@ function abrirEdicao(
 
     .classList.add('active')
 }
+
+/* =========================
+   FECHAR EDIÇÃO
+========================= */
 
 function fecharEdicao(){
 
@@ -484,9 +649,10 @@ async function salvarEdicao(){
 
     fecharEdicao()
 
-    mostrarToast(
-        'Sucesso',
-        'Produto atualizado'
+    abrirPopup(
+        '✏️',
+        'Produto atualizado!',
+        'As informações foram salvas.'
     )
 
     listarProdutos()
