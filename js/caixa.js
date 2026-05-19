@@ -491,7 +491,7 @@ async function baixarEstoqueVenda(vendaId){
 
     for(const item of itensAgrupados){
         const produtoAtual =
-        produtos.find(produto => Number(produto.id) === Number(item.id))
+        produtos.find(produto => String(produto.id) === String(item.id))
 
         if(!produtoAtual){
             continue
@@ -851,10 +851,11 @@ function renderizarProdutos(){
         ? produto.nome.trim().charAt(0).toUpperCase()
         : 'P'
 
+        const idSeguro =
+        JSON.stringify(String(produto.id))
+
         const nomeSeguro =
-        String(produto.nome || '')
-        .replace(/\\/g, '\\\\')
-        .replace(/'/g, "\\'")
+        JSON.stringify(String(produto.nome || ''))
 
         const imagem =
         produto.imagem || ''
@@ -899,8 +900,8 @@ function renderizarProdutos(){
                 <button
                     ${estoque <= 0 ? 'disabled' : ''}
                     onclick="adicionarCarrinho(
-                    ${produto.id},
-                    '${nomeSeguro}',
+                    ${idSeguro},
+                    ${nomeSeguro},
                     ${Number(produto.preco)}
                 )">
 
