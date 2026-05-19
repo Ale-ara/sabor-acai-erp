@@ -58,6 +58,9 @@ function renderizarCategorias(){
         ? categoria.nome.trim().charAt(0).toUpperCase()
         : 'C'
 
+        const idSeguro =
+        JSON.stringify(String(categoria.id))
+
         lista.innerHTML += `
             <div class="categoria-card">
                 <div class="categoria-card-top">
@@ -73,11 +76,11 @@ function renderizarCategorias(){
                 <p>${categoria.descricao || 'Sem descricao.'}</p>
 
                 <div class="categoria-actions">
-                    <button type="button" onclick="editarCategoria(${categoria.id})">
+                    <button type="button" onclick="editarCategoria(${idSeguro})">
                         Editar
                     </button>
 
-                    <button type="button" class="delete-btn" onclick="abrirPopupExcluirCategoria(${categoria.id})">
+                    <button type="button" class="delete-btn" onclick="abrirPopupExcluirCategoria(${idSeguro})">
                         Excluir
                     </button>
                 </div>
@@ -179,7 +182,7 @@ async function salvarCategoria(){
 function editarCategoria(id){
     const categoria =
     categoriasCache.find(item =>
-        Number(item.id) === Number(id)
+        String(item.id) === String(id)
     )
 
     if(!categoria) return
@@ -190,6 +193,13 @@ function editarCategoria(id){
     document.getElementById('categoria-descricao').value = categoria.descricao || ''
     document.getElementById('form-categoria-titulo').innerText = 'Editar categoria'
     document.getElementById('btn-salvar-categoria').innerText = 'Salvar alteracoes'
+
+    document
+    .querySelector('.categoria-form-box')
+    ?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+    })
 }
 
 function abrirPopupExcluirCategoria(id){
