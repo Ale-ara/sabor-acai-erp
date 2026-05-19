@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Relatórios | ERP Sabor do Açaí
+    </title>
+
+    <link
+    rel="icon"
+    type="image/png"
+    href="../assets/logo.png"
+>
+
+    <!-- GLOBAL -->
+
+    <link rel="stylesheet" href="../css/global.css">
+
+    <!-- PÁGINA -->
+
+    <link rel="stylesheet" href="../css/relatorios.css">
+
+    <!-- FONT -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <!-- PAGE TRANSITION -->
+
+<div class="page-transition" id="page-transition"></div>
+
+    <!-- NAVBAR MOBILE -->
+
+<header class="mobile-navbar">
+
+    <div class="mobile-left">
+
+        <img
+            src="../assets/logo.png"
+            alt="Logo"
+        >
+
+        <h2>
+            Sabor ERP
+        </h2>
+
+    </div>
+
+    <button
+        class="menu-mobile-btn"
+        onclick="toggleSidebar()"
+    >
+        ☰
+    </button>
+
+</header>
+
+<!-- OVERLAY -->
+
+<div
+    class="sidebar-overlay"
+    id="sidebar-overlay"
+    onclick="fecharSidebar()"
+></div>
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div>
+
+            <!-- TOPO -->
+
+            <div class="sidebar-top">
+
+                <img
+                    src="../assets/logo.png"
+                    alt="Logo"
+                    class="logo"
+                >
+
+                <div>
+
+                    <h2>
+                        Sabor ERP
+                    </h2>
+
+                    <span>
+                        Sabor do Açaí
+                    </span>
+
+                </div>
+
+            </div>
+
+            <!-- MENU -->
+
+            <nav class="menu">
+
+    <a href="dashboard.html">
+        📊 Dashboard
+    </a>
+
+    <a href="caixa.html">
+        💰 Caixa
+    </a>
+
+    <a href="produtos.html">
+        🍧 Produtos
+    </a>
+
+            <a href="categorias.html">
+                Categorias
+            </a>
+
+    <a href="estoque.html">
+        📦 Estoque
+    </a>
+
+    <a href="movimentacoes.html">
+        🔄 Movimentações
+    </a>
+
+    <a href="vendas.html">
+        🧾 Vendas
+    </a>
+
+    <a href="relatorios.html">
+        📈 Relatórios
+    </a>
+
+    <a href="usuarios.html">
+        👤 Usuário
+    </a>
+
+</nav>
+
+</div>
+
+        <!-- SAIR -->
+
+        <button 
+            class="logout-btn"
+            onclick="logout()"
+        >
+            Sair
+        </button>
+
+    </aside>
+
+    <!-- MAIN -->
+
+    <main class="main-content">
+
+        <!-- HEADER -->
+
+        <header class="top-header">
+
+            <!-- ESQUERDA -->
+
+            <div class="header-left">
+
+                <h1>
+                    Relatórios
+                </h1>
+
+                <p>
+                    Analise vendas, faturamento e desempenho
+                </p>
+
+            </div>
+
+            <!-- DIREITA -->
+
+            <div class="header-right">
+
+                <div class="notification-wrapper">
+
+    <button
+        class="notification-btn"
+        onclick="toggleNotifications()"
+    >
+
+        🔔
+
+        <span class="notification-badge">
+            3
+        </span>
+
+    </button>
+
+    <!-- DROPDOWN -->
+
+    <div
+        class="notification-dropdown"
+        id="notification-dropdown"
+    >
+
+        <div class="notification-header">
+
+            <h3>
+                Notificações
+            </h3>
+
+            <span>
+                3 novas
+            </span>
+
+        </div>
+
+        <!-- ITEM -->
+
+        <div class="notification-item critica">
+
+            <div class="notification-icon">
+                ⚠️
+            </div>
+
+            <div>
+
+                <strong>
+                    Estoque crítico
+                </strong>
+
+                <p>
+                    Açaí 700ML está acabando
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- ITEM -->
+
+        <div class="notification-item venda">
+
+            <div class="notification-icon">
+                💰
+            </div>
+
+            <div>
+
+                <strong>
+                    Nova venda
+                </strong>
+
+                <p>
+                    Pedido de R$ 49,90 realizado
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- ITEM -->
+
+        <div
+    class="notification-dropdown"
+    id="notification-dropdown"
+>
+
+    <div class="notification-header">
+
+        <h3>
+            Notificações
+        </h3>
+
+        <span id="notification-count">
+            0 novas
+        </span>
+
+    </div>
+
+    <!-- LISTA -->
+
+    <div id="notification-list">
+
+    </div>
+
+</div>
+
+    </div>
+
+</div>
+
+                <!-- PERFIL -->
+
+<div class="user-profile">
+
+    <div class="user-text">
+
+        <strong id="user-name">
+            Usuário
+        </strong>
+
+        <span id="user-cargo">
+            Cargo
+        </span>
+
+    </div>
+
+    <img
+        id="top-user-avatar"
+        src="../assets/user.png"
+        alt="Usuário"
+    >
+
+</div>
+
+            </div>
+
+        </header>
+
+        <!-- FILTROS -->
+
+        <section class="filtros-box">
+
+            <div class="filtro-item">
+
+                <label>
+                    Data Inicial
+                </label>
+
+                <input
+                    type="date"
+                    id="data-inicial"
+                >
+
+            </div>
+
+            <div class="filtro-item">
+
+                <label>
+                    Data Final
+                </label>
+
+                <input
+                    type="date"
+                    id="data-final"
+                >
+
+            </div>
+
+            <button onclick="filtrarRelatorio()">
+                Filtrar Relatório
+            </button>
+
+            <button 
+                onclick="gerarPDF()"
+                class="btn-pdf"
+            >
+                📄 Gerar PDF
+            </button>
+
+        </section>
+
+        <!-- CARDS -->
+
+        <section class="cards-relatorio">
+
+            <div class="card-relatorio">
+
+                <h3>
+                    Faturamento
+                </h3>
+
+                <strong id="faturamento-total">
+                    R$ 0,00
+                </strong>
+
+            </div>
+
+            <div class="card-relatorio">
+
+                <h3>
+                    Total de Vendas
+                </h3>
+
+                <strong id="total-vendas">
+                    0
+                </strong>
+
+            </div>
+
+            <div class="card-relatorio destaque">
+
+                <h3>
+                    Ticket Médio
+                </h3>
+
+                <strong id="ticket-medio">
+                    R$ 0,00
+                </strong>
+
+            </div>
+
+        </section>
+
+        <!-- PRODUTOS -->
+
+        <section class="tabela-box">
+
+            <div class="table-header">
+
+                <h2>
+                    Produtos Mais Vendidos
+                </h2>
+
+            </div>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Produto
+                        </th>
+
+                        <th>
+                            Quantidade Vendida
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="produtos-vendidos">
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+        <!-- HISTÓRICO -->
+
+        <section class="tabela-box">
+
+            <div class="table-header">
+
+                <h2>
+                    Histórico de Vendas
+                </h2>
+
+            </div>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Venda
+                        </th>
+
+                        <th>
+                            Data
+                        </th>
+
+                        <th>
+                            Total
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="historico-vendas">
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+    </main>
+
+    <!-- SCRIPTS -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+    <script src="../js/supabase.js"></script>
+
+    <script src="../js/global.js"></script>
+<script src="../js/auth.js"></script>
+    <script src="../js/relatorios.js?v=2"></script>
+
+</body>
+</html>

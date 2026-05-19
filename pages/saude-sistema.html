@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saúde do sistema | ERP Sabor do Açaí</title>
+    <link rel="icon" type="image/png" href="../assets/logo.png">
+    <link rel="stylesheet" href="../css/global.css?v=3">
+    <link rel="stylesheet" href="../css/saude-sistema.css?v=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="saude-page">
+<div class="page-transition" id="page-transition"></div>
+
+<header class="mobile-navbar">
+    <div class="mobile-left">
+        <img src="../assets/logo.png" alt="Logo">
+        <h2>Sabor ERP</h2>
+    </div>
+
+    <button class="menu-mobile-btn" type="button" onclick="toggleSidebar()">Menu</button>
+</header>
+
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="fecharSidebar()"></div>
+
+<aside class="sidebar">
+    <div>
+        <div class="sidebar-top">
+            <img src="../assets/logo.png" alt="Logo" class="logo">
+            <div>
+                <h2>Sabor ERP</h2>
+                <span>Sabor do Açaí</span>
+            </div>
+        </div>
+
+        <nav class="menu">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="caixa.html">Caixa</a>
+            <a href="produtos.html">Produtos</a>
+            <a href="categorias.html">Categorias</a>
+            <a href="estoque.html">Estoque</a>
+            <a href="movimentacoes.html">Movimentações</a>
+            <a href="vendas.html">Vendas</a>
+            <a href="relatorios.html">Relatórios</a>
+            <a href="usuarios.html">Usuários</a>
+            <a href="certificados.html">Certificados digitais</a>
+            <a href="saude-sistema.html" class="active">Saúde do sistema</a>
+            <a href="configuracoes.html">Configurações</a>
+        </nav>
+    </div>
+
+    <button class="logout-btn" type="button" onclick="logout()">Sair</button>
+</aside>
+
+<main class="main-content">
+    <header class="top-header">
+        <div class="header-left">
+            <h1>Saúde do sistema</h1>
+            <p>Diagnóstico de tabelas, buckets e permissões do Supabase</p>
+        </div>
+
+        <div class="header-right">
+            <div class="notification-wrapper"></div>
+
+            <button class="user-profile" type="button">
+                <div class="user-text">
+                    <strong id="user-name">Usuário</strong>
+                    <span id="user-cargo">Cargo</span>
+                </div>
+
+                <img id="top-user-avatar" src="../assets/logo.png" alt="Usuário">
+            </button>
+        </div>
+    </header>
+
+    <section class="saude-summary">
+        <div>
+            <span>Status geral</span>
+            <strong id="status-geral">Verificando...</strong>
+        </div>
+
+        <button type="button" onclick="verificarSaudeSistema()">Verificar agora</button>
+    </section>
+
+    <section class="saude-grid" id="saude-grid"></section>
+</main>
+
+<div class="toast" id="toast">
+    <div class="toast-icon" id="toast-icon">OK</div>
+    <div class="toast-content">
+        <strong id="toast-title">Sucesso</strong>
+        <p id="toast-message">Operação realizada</p>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="../js/supabase.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/global.js?v=3"></script>
+<script src="../js/saude-sistema.js?v=1"></script>
+</body>
+</html>

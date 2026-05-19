@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificados digitais | ERP Sabor do Açaí</title>
+    <link rel="icon" type="image/png" href="../assets/logo.png">
+    <link rel="stylesheet" href="../css/global.css?v=3">
+    <link rel="stylesheet" href="../css/certificados.css?v=2">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="certificados-page">
+<div class="page-transition" id="page-transition"></div>
+
+<header class="mobile-navbar">
+    <div class="mobile-left">
+        <img src="../assets/logo.png" alt="Logo">
+        <h2>Sabor ERP</h2>
+    </div>
+
+    <button class="menu-mobile-btn" type="button" onclick="toggleSidebar()">Menu</button>
+</header>
+
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="fecharSidebar()"></div>
+
+<aside class="sidebar">
+    <div>
+        <div class="sidebar-top">
+            <img src="../assets/logo.png" alt="Logo" class="logo">
+            <div>
+                <h2>Sabor ERP</h2>
+                <span>Sabor do Açaí</span>
+            </div>
+        </div>
+
+        <nav class="menu">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="caixa.html">Caixa</a>
+            <a href="produtos.html">Produtos</a>
+            <a href="categorias.html">Categorias</a>
+            <a href="estoque.html">Estoque</a>
+            <a href="movimentacoes.html">Movimentações</a>
+            <a href="vendas.html">Vendas</a>
+            <a href="relatorios.html">Relatórios</a>
+            <a href="usuarios.html">Usuários</a>
+            <a href="certificados.html" class="active">Certificados digitais</a>
+            <a href="configuracoes.html">Configurações</a>
+        </nav>
+    </div>
+
+    <button class="logout-btn" type="button" onclick="logout()">Sair</button>
+</aside>
+
+<main class="main-content">
+    <header class="top-header">
+        <div class="header-left">
+            <h1>Certificados digitais</h1>
+            <p>Controle e exportação de certificados A1 e configurações A3</p>
+        </div>
+
+        <div class="header-right">
+            <div class="notification-wrapper"></div>
+
+            <button class="user-profile" type="button">
+                <div class="user-text">
+                    <strong id="user-name">Usuário</strong>
+                    <span id="user-cargo">Cargo</span>
+                </div>
+
+                <img id="top-user-avatar" src="../assets/logo.png" alt="Usuário">
+            </button>
+        </div>
+    </header>
+
+    <section class="cert-panel">
+        <h2>Selecione qual é o certificado digital da sua empresa:</h2>
+
+        <div class="cert-choice-grid">
+            <button
+                type="button"
+                class="cert-choice active"
+                id="cert-choice-a1"
+                onclick="selecionarTipoCertificado('a1')"
+            >
+                <span>Certificado A1</span>
+                <small>Arquivo digital .pfx ou .p12, normalmente válido por 1 ano.</small>
+            </button>
+
+            <button
+                type="button"
+                class="cert-choice"
+                id="cert-choice-a3"
+                onclick="selecionarTipoCertificado('a3')"
+            >
+                <span>Certificado A3</span>
+                <small>Token, cartão ou nuvem. A chave fica protegida no dispositivo.</small>
+            </button>
+        </div>
+
+        <div class="cert-selected" id="painel-a1">
+            <strong id="a1-status-text">Nenhum certificado A1 importado.</strong>
+            <p id="a1-meta">Importe um arquivo A1 para conseguir exportar com um clique depois.</p>
+
+            <label class="cert-upload-inline" for="cert-a1-arquivo">
+                Importar certificado A1
+            </label>
+
+            <input id="cert-a1-arquivo" type="file" accept=".pfx,.p12,application/x-pkcs12">
+
+            <div class="cert-mini-form">
+                <input id="cert-a1-nome" type="text" placeholder="Nome de identificação">
+                <input id="cert-a1-vencimento" type="date">
+            </div>
+
+            <div class="cert-actions central">
+                <button type="button" onclick="salvarCertificadoA1()">Salvar certificado</button>
+                <button type="button" class="secondary" onclick="exportarCertificadoA1()">Exportar certificado</button>
+                <button type="button" class="danger" onclick="removerCertificadoA1()">Remover certificado</button>
+            </div>
+        </div>
+
+        <div class="cert-selected hidden" id="painel-a3">
+            <strong id="a3-status-text">Certificado A3 configurado pelo dispositivo físico.</strong>
+            <p>O A3 não vira arquivo exportável pelo navegador. O botão abaixo exporta a configuração de suporte.</p>
+
+            <div class="cert-mini-form">
+                <input id="cert-a3-nome" type="text" placeholder="Apelido do certificado">
+                <select id="cert-a3-tipo">
+                    <option value="token-usb">Token USB</option>
+                    <option value="cartao">Cartão + leitora</option>
+                    <option value="nuvem">Certificado em nuvem</option>
+                </select>
+                <input id="cert-a3-fornecedor" type="text" placeholder="Fornecedor">
+                <input id="cert-a3-vencimento" type="date">
+            </div>
+
+            <div class="cert-actions central">
+                <button type="button" onclick="salvarConfiguracaoA3()">Salvar configuração</button>
+                <button type="button" class="secondary" onclick="exportarConfiguracaoA3()">Exportar configuração</button>
+            </div>
+        </div>
+    </section>
+</main>
+
+<div class="toast" id="toast">
+    <div class="toast-icon" id="toast-icon">OK</div>
+    <div class="toast-content">
+        <strong id="toast-title">Sucesso</strong>
+        <p id="toast-message">Operação realizada</p>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="../js/supabase.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/global.js?v=3"></script>
+<script src="../js/certificados.js?v=2"></script>
+</body>
+</html>

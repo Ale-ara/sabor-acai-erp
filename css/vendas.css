@@ -1,0 +1,313 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: 'Poppins', sans-serif;
+    background: #0D1117;
+    color: white;
+}
+
+/* MAIN */
+
+.main-content{
+    margin-left: 250px;
+    padding: 35px;
+}
+
+/* HEADER */
+
+.topbar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 35px;
+}
+
+.topbar p{
+    color: rgba(255,255,255,0.6);
+}
+
+/* USER */
+
+.user-box{
+    background: #161B22;
+
+    padding: 14px 18px;
+
+    border-radius: 16px;
+
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.user-info strong{
+    display: block;
+}
+
+.user-info span{
+    color: rgba(255,255,255,0.5);
+    font-size: 13px;
+}
+
+.user-avatar{
+    width: 42px;
+    height: 42px;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+}
+
+/* TABELA */
+
+.tabela-box{
+    background: #161B22;
+
+    border-radius: 24px;
+
+    padding: 25px;
+
+    overflow-x: auto;
+}
+
+table{
+    width: 100%;
+
+    border-collapse: collapse;
+}
+
+th{
+    text-align: left;
+
+    padding-bottom: 18px;
+
+    color: rgba(255,255,255,0.55);
+
+    font-size: 14px;
+}
+
+td{
+    padding: 22px 0;
+
+    border-top:
+    1px solid rgba(255,255,255,0.05);
+}
+
+/* BOTÃO */
+
+.ver-btn{
+    border: none;
+
+    background:
+    linear-gradient(
+        135deg,
+        #6C2BD9,
+        #8E44EC
+    );
+
+    color: white;
+
+    padding: 12px 18px;
+
+    border-radius: 12px;
+
+    cursor: pointer;
+
+    font-weight: 600;
+
+    transition: 0.3s;
+}
+
+.ver-btn:hover{
+    transform: translateY(-2px);
+}
+
+/* MODAL */
+
+.modal-venda{
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background: rgba(0,0,0,0.7);
+
+    backdrop-filter: blur(5px);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transition: 0.3s;
+
+    z-index: 999;
+}
+
+.modal-venda.active{
+    opacity: 1;
+
+    pointer-events: auto;
+}
+
+.modal-box{
+    width: 500px;
+
+    max-height: 80vh;
+
+    overflow-y: auto;
+
+    background: #161B22;
+
+    border-radius: 24px;
+
+    padding: 30px;
+}
+
+.modal-topo{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 25px;
+}
+
+.modal-topo button{
+    width: 40px;
+    height: 40px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background: #0D1117;
+
+    color: white;
+
+    cursor: pointer;
+
+    font-size: 18px;
+}
+
+/* ITEM */
+
+.item-venda{
+    background: #0D1117;
+
+    padding: 18px;
+
+    border-radius: 16px;
+
+    margin-bottom: 15px;
+}
+
+.item-venda h3{
+    margin-bottom: 8px;
+}
+
+.item-venda p{
+    color: #F4B400;
+
+    font-weight: 600;
+}
+
+/* MOBILE */
+
+@media(max-width: 900px){
+
+    .main-content{
+        margin-left: 0;
+
+        padding: 95px 18px 30px;
+    }
+
+    .topbar{
+        flex-direction: column;
+        align-items: flex-start;
+
+        gap: 20px;
+    }
+
+    .user-box{
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .tabela-box{
+        padding: 15px;
+    }
+
+    table{
+        min-width: 100%;
+    }
+
+    th{
+        font-size: 12px;
+    }
+
+    td{
+        font-size: 13px;
+
+        padding: 18px 0;
+    }
+
+    .ver-btn{
+        width: 70px;
+
+        padding: 10px 0;
+
+        font-size: 13px;
+    }
+
+    .modal-box{
+        width: 92%;
+
+        padding: 22px;
+    }
+}
+
+/* ========================================= */
+/* AÇÕES VENDA */
+/* ========================================= */
+
+.acoes-venda{
+    display:flex;
+
+    gap:10px;
+}
+
+.print-btn{
+    border:none;
+
+    background:#1f2937;
+
+    color:white;
+
+    width:44px;
+    height:44px;
+
+    border-radius:12px;
+
+    cursor:pointer;
+
+    font-size:18px;
+
+    transition:0.2s;
+}
+
+.print-btn:hover{
+    transform:translateY(-2px);
+
+    background:#111827;
+}
