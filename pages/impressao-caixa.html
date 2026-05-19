@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Impressão do Caixa</title>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    background:#f3f4f6;
+    color:#111827;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+.relatorio{
+    width:80mm;
+    min-height:100vh;
+    margin:0 auto;
+    padding:14px 12px 24px;
+    background:#fff;
+}
+
+.empresa{
+    text-align:center;
+}
+
+.empresa h1{
+    margin:0 0 6px;
+    font-size:18px;
+}
+
+.empresa p,
+.info,
+.item,
+.observacao,
+.vazio{
+    margin:0;
+    font-size:12px;
+    line-height:1.4;
+}
+
+.linha{
+    margin:12px 0;
+    border-top:1px dashed #111827;
+}
+
+.titulo{
+    margin:0 0 8px;
+    text-align:center;
+    font-size:15px;
+    text-transform:uppercase;
+}
+
+.info,
+.item{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.info strong,
+.item strong{
+    text-align:right;
+}
+
+.secao{
+    margin:0 0 8px;
+    font-size:12px;
+    font-weight:700;
+    text-transform:uppercase;
+}
+
+.item{
+    padding:3px 0;
+}
+
+.item span{
+    flex:1;
+}
+
+.total{
+    margin-top:8px;
+    padding-top:8px;
+    border-top:1px solid #111827;
+    font-size:14px;
+    font-weight:700;
+}
+
+.observacao{
+    white-space:pre-wrap;
+}
+
+.print{
+    position:fixed;
+    right:18px;
+    bottom:18px;
+    border:0;
+    border-radius:8px;
+    padding:12px 16px;
+    background:#16a34a;
+    color:#fff;
+    font-weight:700;
+    cursor:pointer;
+}
+
+@media print{
+    body{
+        background:#fff;
+    }
+
+    .relatorio{
+        width:80mm;
+        margin:0;
+        padding:0;
+        min-height:auto;
+    }
+
+    .print{
+        display:none;
+    }
+}
+</style>
+</head>
+
+<body>
+<main class="relatorio">
+    <div class="empresa">
+        <h1>SABOR DO ACAI</h1>
+        <p>CNPJ: 31.259.610/0001-38</p>
+        <p>R. Joaquim Pecanha, 80</p>
+        <p>Parque Lafaiete</p>
+        <p>Duque de Caxias/RJ</p>
+        <p>(21) 96673-8735</p>
+    </div>
+
+    <div class="linha"></div>
+
+    <h2 class="titulo" id="titulo">Relatorio de caixa</h2>
+
+    <div id="conteudo"></div>
+</main>
+
+<button class="print" onclick="window.print()">
+    Imprimir
+</button>
+
+<script>
+const relatorio = JSON.parse(
+    localStorage.getItem('ultimoRelatorioCaixa')
+)
+
+function moeda(valor){
+    return Number(valor || 0).toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+    })
+}
+
+function dataHora(valor){
+    if(!valor) return '-'
+
+    return new Date(valor).toLocaleString('pt-BR')
+}
+
+function linhaInfo(rotulo, valor){
+    return `
+        <div class="info">
+            <span>${rotulo}</span>
+            <strong>${valor}</strong>
+        </div>
+    `
+}
+
+function agruparItens(vendas){
+    return vendas.reduce((itens, venda) => {
+        ;(venda.itens || []).forEach(item => {
+            const chave = item.id || item.nome
+
+            if(!itens[chave]){
+                itens[chave] = {
+                    nome: item.nome,
+                    quantidade: 0,
+                    total: 0
+                }
+            }
+
+            itens[chave].quantidade += 1
+            itens[chave].total += Number(item.preco || 0)
+        })
+
+        return itens
+    }, {})
+}
+
+function renderizarAbertura(caixa){
+    return `
+        ${linhaInfo('Caixa', caixa.id)}
+        ${linhaInfo('Abertura', dataHora(caixa.abertoEm))}
+        ${linhaInfo('Saldo inicial', moeda(caixa.saldoInicial))}
+    `
+}
+
+function renderizarFechamento(caixa){
+    const itens = Object.values(agruparItens(caixa.vendas || []))
+
+    const itensHtml = itens.length
+    ? itens.map(item => `
+        <div class="item">
+            <span>${item.quantidade}x ${item.nome}</span>
+            <strong>${moeda(item.total)}</strong>
+        </div>
+    `).join('')
+    : '<p class="vazio">Nenhum item vendido neste caixa.</p>'
+
+    const observacao = caixa.observacao
+    ? `
+        <div class="linha"></div>
+        <p class="secao">Observacao</p>
+        <p class="observacao">${caixa.observacao}</p>
+    `
+    : ''
+
+    return `
+        ${linhaInfo('Caixa', caixa.id)}
+        ${linhaInfo('Abertura', dataHora(caixa.abertoEm))}
+        ${linhaInfo('Fechamento', dataHora(caixa.fechadoEm))}
+        ${linhaInfo('Vendas', (caixa.vendas || []).length)}
+
+        <div class="linha"></div>
+        <p class="secao">Valores</p>
+        ${linhaInfo('Saldo inicial', moeda(caixa.saldoInicial))}
+        ${linhaInfo('Dinheiro vendido', moeda(caixa.totais?.dinheiro))}
+        ${linhaInfo('Pix', moeda(caixa.totais?.pix))}
+        ${linhaInfo('Cartao', moeda(caixa.totais?.cartao))}
+        ${linhaInfo('Dinheiro esperado', moeda(caixa.dinheiroEsperado))}
+        ${linhaInfo('Dinheiro contado', moeda(caixa.dinheiroContado))}
+        ${linhaInfo('Diferenca', moeda(caixa.diferenca))}
+        <div class="info total">
+            <span>Total vendido</span>
+            <strong>${moeda(caixa.totais?.total)}</strong>
+        </div>
+
+        <div class="linha"></div>
+        <p class="secao">Itens vendidos</p>
+        ${itensHtml}
+        ${observacao}
+    `
+}
+
+if(!relatorio || !relatorio.caixa){
+    document.getElementById('conteudo').innerHTML =
+    '<p class="vazio">Nenhum relatorio de caixa encontrado.</p>'
+}else{
+    const titulo = relatorio.tipo === 'fechamento'
+    ? 'Fechamento de caixa'
+    : 'Abertura de caixa'
+
+    document.getElementById('titulo').innerText = titulo
+    document.getElementById('conteudo').innerHTML =
+    relatorio.tipo === 'fechamento'
+    ? renderizarFechamento(relatorio.caixa)
+    : renderizarAbertura(relatorio.caixa)
+
+    window.onload = () => {
+        setTimeout(() => {
+            window.print()
+        }, 500)
+    }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>
+    Impressão A4
+</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#f3f3f3;
+
+    font-family: Arial, sans-serif;
+
+    padding:25px;
+}
+
+/* FOLHA */
+
+.folha{
+    width:210mm;
+
+    min-height:297mm;
+
+    background:white;
+
+    margin:auto;
+
+    padding:18px;
+
+    border:1px solid #dcdcdc;
+}
+
+/* TOPO */
+
+.topo{
+    border:1px solid #cfcfcf;
+
+    padding:18px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    margin-bottom:12px;
+}
+
+.logo-area{
+    display:flex;
+
+    align-items:flex-start;
+
+    gap:18px;
+}
+
+.logo{
+    width:110px;
+
+    object-fit:contain;
+}
+
+.empresa h1{
+    font-size:18px;
+
+    margin-bottom:5px;
+}
+
+.empresa p{
+    font-size:14px;
+
+    line-height:1.5;
+}
+
+.topo-direita{
+    text-align:right;
+}
+
+.topo-direita p{
+    font-size:14px;
+
+    margin-bottom:4px;
+}
+
+/* BARRAS */
+
+.barra{
+    width:100%;
+
+    background:#ececec;
+
+    border:1px solid #d4d4d4;
+
+    padding:8px 12px;
+
+    font-weight:bold;
+
+    margin-bottom:10px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+}
+
+/* TABELA */
+
+table{
+    width:100%;
+
+    border-collapse:collapse;
+
+    margin-top:10px;
+}
+
+table th{
+    background:#ececec;
+
+    border:1px solid #d4d4d4;
+
+    padding:10px;
+
+    text-align:left;
+
+    font-size:14px;
+}
+
+table td{
+    border:1px solid #d4d4d4;
+
+    padding:10px;
+
+    font-size:14px;
+}
+
+/* TOTAL */
+
+.total-area{
+    margin-top:18px;
+
+    display:flex;
+
+    justify-content:flex-end;
+}
+
+.total-box{
+    width:320px;
+
+    border:1px solid #d4d4d4;
+}
+
+.total-linha{
+    display:flex;
+
+    justify-content:space-between;
+
+    padding:12px 14px;
+
+    border-bottom:1px solid #dcdcdc;
+
+    font-size:15px;
+}
+
+.total-linha:last-child{
+    background:#f5f5f5;
+
+    font-weight:bold;
+
+    font-size:20px;
+
+    border-bottom:none;
+}
+
+/* RODAPÉ */
+
+.rodape{
+    margin-top:50px;
+
+    text-align:center;
+
+    color:#666;
+
+    font-size:13px;
+}
+
+/* PRINT */
+
+@media print{
+
+    body{
+        background:white;
+
+        padding:0;
+    }
+
+    .folha{
+        border:none;
+
+        margin:0;
+
+        width:100%;
+
+        min-height:auto;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="folha">
+
+    <!-- TOPO -->
+
+    <div class="topo">
+
+        <div class="logo-area">
+
+            <img
+                src="../assets/logo.png"
+                class="logo"
+            >
+
+            <div class="empresa">
+
+                <h1>
+                    SABOR DO AÇAÍ
+                </h1>
+
+                <p>
+                    CNPJ: 31.259.610/0001-38
+                </p>
+
+                <p>
+                    R. Joaquim Peçanha, 80
+                </p>
+
+                <p>
+                    Parque Lafaiete
+                </p>
+
+                <p>
+                    Duque de Caxias/RJ
+                </p>
+
+                <p>
+                    (21) 96673-8735
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="topo-direita">
+
+            <p id="pedido-id"></p>
+
+            <p id="data-venda"></p>
+
+            <p id="pagamento"></p>
+
+        </div>
+
+    </div>
+
+    <!-- TÍTULO -->
+
+    <div class="barra">
+
+        <span>
+            COMPROVANTE DE VENDA
+        </span>
+
+    </div>
+
+    <!-- PRODUTOS -->
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th width="70">
+                    ITEM
+                </th>
+
+                <th>
+                    PRODUTO
+                </th>
+
+                <th width="180">
+                    VALOR
+                </th>
+
+            </tr>
+
+        </thead>
+
+        <tbody id="lista-produtos">
+
+        </tbody>
+
+    </table>
+
+    <!-- TOTAL -->
+
+    <div class="total-area">
+
+        <div class="total-box">
+
+            <div class="total-linha">
+
+                <span>
+                    Forma Pagamento
+                </span>
+
+                <span id="forma-pagamento"></span>
+
+            </div>
+
+            <div class="total-linha">
+
+                <span>
+                    Troco
+                </span>
+
+                <span id="troco"></span>
+
+            </div>
+
+            <div class="total-linha">
+
+                <span>
+                    TOTAL
+                </span>
+
+                <span id="total"></span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- RODAPÉ -->
+
+    <div class="rodape">
+
+        Obrigado pela preferência ❤️
+
+    </div>
+
+</div>
+
+<script>
+
+const venda = JSON.parse(
+
+    localStorage.getItem(
+        'ultimaVenda'
+    )
+)
+
+/* DADOS */
+
+document.getElementById(
+    'pedido-id'
+).innerText =
+
+`Pedido Nº ${venda.vendaId}`
+
+document.getElementById(
+    'data-venda'
+).innerText = venda.data
+
+document.getElementById(
+    'pagamento'
+).innerText =
+
+`Pagamento: ${venda.pagamento}`
+
+document.getElementById(
+    'forma-pagamento'
+).innerText = venda.pagamento
+
+document.getElementById(
+    'troco'
+).innerText =
+
+`R$ ${venda.troco.toFixed(2)}`
+
+document.getElementById(
+    'total'
+).innerText =
+
+`R$ ${venda.total.toFixed(2)}`
+
+/* PRODUTOS */
+
+const lista = document.getElementById(
+    'lista-produtos'
+)
+
+venda.itens.forEach((item, index) => {
+
+    lista.innerHTML += `
+
+        <tr>
+
+            <td>
+                ${index + 1}
+            </td>
+
+            <td>
+                ${item.nome}
+            </td>
+
+            <td>
+                R$ ${item.preco.toFixed(2)}
+            </td>
+
+        </tr>
+
+    `
+})
+
+/* PRINT */
+
+window.onload = () => {
+
+    setTimeout(() => {
+
+        window.print()
+
+    }, 300)
+}
+
+</script>
+
+</body>
+</html>
