@@ -129,7 +129,7 @@ async function uploadProdutoImagem(inputId){
     const input = document.getElementById(inputId)
 
     if(!input || !input.files || input.files.length === 0){
-        return ''
+        return null
     }
 
     const file = input.files[0]
@@ -146,11 +146,11 @@ async function uploadProdutoImagem(inputId){
 
         mostrarToast(
             'Erro',
-            'Erro ao enviar foto do produto',
+            uploadError.message || 'Erro ao enviar foto do produto',
             'error'
         )
 
-        return ''
+        throw uploadError
     }
 
     const { data } = supabaseClient
@@ -158,7 +158,7 @@ async function uploadProdutoImagem(inputId){
     .from(PRODUTOS_BUCKET)
     .getPublicUrl(fileName)
 
-    return data.publicUrl
+    return data.publicUrl || null
 }
 
 function limparFotoCadastro(){
@@ -274,7 +274,16 @@ async function salvarProduto(){
         return
     }
 
-    const imagem = await uploadProdutoImagem('produto-foto')
+    let imagem = null
+
+    try{
+        imagem = await uploadProdutoImagem('produto-foto')
+    }catch(error){
+        btn.disabled = false
+        btn.innerText = '+ Salvar Produto'
+
+        return
+    }
 
     const payload = {
         nome,
@@ -635,7 +644,13 @@ async function salvarEdicao(){
         return
     }
 
-    const novaImagem = await uploadProdutoImagem('edit-foto')
+    let novaImagem = null
+
+    try{
+        novaImagem = await uploadProdutoImagem('edit-foto')
+    }catch(error){
+        return
+    }
 
     const payload = {
         nome,
