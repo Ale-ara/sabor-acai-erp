@@ -25,6 +25,14 @@ function formatarMoeda(valor){
     })
 }
 
+function escaparHtml(valor){
+    return String(valor ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+}
+
 function obterTotalCarrinho(){
     return carrinho.reduce((total, item) =>
         total + Number(item.preco || 0), 0
@@ -763,6 +771,44 @@ function filtrarProdutos(){
     renderizarProdutos()
 }
 
+function configurarAcoesProdutosCaixa(){
+    const grid =
+    document.getElementById('produtos-grid')
+
+    if(!grid) return
+
+    grid.addEventListener('click', event => {
+        const botao =
+        event.target.closest('.adicionar-produto-btn')
+
+        if(!botao || botao.disabled) return
+
+        const id =
+        botao.dataset.produtoId
+
+        const produto =
+        produtos.find(item =>
+            String(item.id) === String(id)
+        )
+
+        if(!produto){
+            mostrarToast(
+                'Produto nao encontrado',
+                'Atualize a pagina e tente novamente',
+                'warning'
+            )
+
+            return
+        }
+
+        adicionarCarrinho(
+            String(produto.id),
+            produto.nome,
+            Number(produto.preco || 0)
+        )
+    })
+}
+
 /* =========================
    RENDERIZAR PRODUTOS
 ========================= */
@@ -852,10 +898,7 @@ function renderizarProdutos(){
         : 'P'
 
         const idSeguro =
-        JSON.stringify(String(produto.id))
-
-        const nomeSeguro =
-        JSON.stringify(String(produto.nome || ''))
+        escaparHtml(produto.id)
 
         const imagem =
         produto.imagem || ''
@@ -898,12 +941,11 @@ function renderizarProdutos(){
                 </strong>
 
                 <button
+                    type="button"
+                    class="adicionar-produto-btn"
+                    data-produto-id="${idSeguro}"
                     ${estoque <= 0 ? 'disabled' : ''}
-                    onclick="adicionarCarrinho(
-                    ${idSeguro},
-                    ${nomeSeguro},
-                    ${Number(produto.preco)}
-                )">
+                >
 
                     ${estoque <= 0 ? 'Sem estoque' : 'Adicionar'}
 
@@ -980,6 +1022,8 @@ document
                 filtrarProdutos
             )
         }
+
+        configurarAcoesProdutosCaixa()
     }
 )
 
