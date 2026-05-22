@@ -1,0 +1,326 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: 'Poppins', sans-serif;
+    background: #0D1117;
+    color: white;
+}
+
+/* MAIN */
+
+.main-content{
+    margin-left: 250px;
+    padding: 35px;
+}
+
+/* HEADER */
+
+.topbar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 35px;
+}
+
+.topbar p{
+    color: rgba(255,255,255,0.6);
+}
+
+/* USER */
+
+.user-box{
+    background: #161B22;
+
+    padding: 14px 18px;
+
+    border-radius: 16px;
+}
+
+/* FILTROS */
+
+.filtros-box{
+    background: #161B22;
+
+    border-radius: 24px;
+
+    padding: 25px;
+
+    display: flex;
+    align-items: end;
+    gap: 20px;
+
+    margin-bottom: 30px;
+
+    flex-wrap: wrap;
+}
+
+.filtro-item{
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+.filtro-item label{
+    color: rgba(255,255,255,0.7);
+
+    font-size: 14px;
+}
+
+.filtro-item input{
+    width: 220px;
+    height: 50px;
+
+    border: none;
+    outline: none;
+
+    border-radius: 14px;
+
+    background: #0D1117;
+
+    color: white;
+
+    padding: 0 15px;
+}
+
+.filtros-box button{
+    height: 50px;
+
+    border: none;
+
+    border-radius: 14px;
+
+    padding: 0 25px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #6C2BD9,
+        #8E44EC
+    );
+
+    color: white;
+
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+/* CARDS */
+
+.cards-relatorio{
+    display: grid;
+
+    grid-template-columns:
+    repeat(auto-fit, minmax(220px, 1fr));
+
+    gap: 20px;
+
+    margin-bottom: 30px;
+}
+
+.card-relatorio{
+    background: #161B22;
+
+    padding: 25px;
+
+    border-radius: 24px;
+}
+
+.card-relatorio h3{
+    color: rgba(255,255,255,0.6);
+
+    margin-bottom: 12px;
+}
+
+.card-relatorio strong{
+    font-size: 34px;
+
+    color: #F4B400;
+}
+
+.destaque{
+    border-left: 6px solid #F4B400;
+}
+
+/* TABELAS */
+
+.tabela-box{
+    background: #161B22;
+
+    border-radius: 24px;
+
+    padding: 25px;
+
+    margin-bottom: 30px;
+
+    overflow-x: auto;
+}
+
+.table-header{
+    margin-bottom: 20px;
+}
+
+table{
+    width: 100%;
+
+    border-collapse: collapse;
+}
+
+th{
+    text-align: left;
+
+    padding-bottom: 18px;
+
+    color: rgba(255,255,255,0.55);
+
+    font-size: 14px;
+}
+
+td{
+    padding: 18px 0;
+
+    border-top:
+    1px solid rgba(255,255,255,0.05);
+}
+
+/* MOBILE */
+
+@media(max-width: 900px){
+
+    .main-content{
+        margin-left: 0;
+
+        padding: 95px 16px 20px;
+    }
+
+    .topbar{
+        flex-direction: column;
+        align-items: flex-start;
+
+        gap: 18px;
+    }
+
+    .user-box{
+        width: 100%;
+    }
+
+    /* FILTROS */
+
+    .filtros-box{
+        flex-direction: column;
+        align-items: stretch;
+
+        padding: 18px;
+    }
+
+    .filtro-item{
+        width: 100%;
+    }
+
+    .filtro-item input{
+        width: 100%;
+    }
+
+    .filtros-box button{
+        width: 100%;
+    }
+
+    /* CARDS */
+
+    .cards-relatorio{
+        grid-template-columns: 1fr;
+    }
+
+    .card-relatorio{
+        padding: 22px;
+    }
+
+    .card-relatorio strong{
+        font-size: 28px;
+    }
+
+    /* TABELAS */
+
+    .tabela-box{
+        padding: 16px;
+    }
+
+    table{
+        min-width: 520px;
+    }
+
+    th{
+        font-size: 12px;
+    }
+
+    td{
+        font-size: 13px;
+    }
+}
+
+/* MOBILE EXTRA */
+
+@media(max-width: 600px){
+
+    .main-content{
+        padding: 95px 12px 20px;
+    }
+
+    .cards-relatorio{
+        gap: 14px;
+    }
+
+    .card-relatorio{
+        padding: 18px;
+    }
+
+    .card-relatorio h3{
+        font-size: 15px;
+    }
+
+    .card-relatorio strong{
+        font-size: 24px;
+    }
+
+    .tabela-box{
+        padding: 14px;
+
+        overflow-x: auto;
+    }
+
+    table{
+        min-width: 480px;
+    }
+
+    th{
+        font-size: 11px;
+
+        white-space: nowrap;
+    }
+
+    td{
+        font-size: 12px;
+
+        white-space: nowrap;
+    }
+
+    .table-header h2{
+        font-size: 20px;
+    }
+
+    /* PRODUTOS GRANDES */
+
+    td:first-child{
+        max-width: 140px;
+
+        overflow: hidden;
+
+        text-overflow: ellipsis;
+    }
+}

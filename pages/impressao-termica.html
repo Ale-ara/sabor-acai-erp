@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>
+    Impressão Térmica
+</title>
+
+<style>
+
+/* =========================
+RESET
+========================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+/* =========================
+BODY
+========================= */
+
+body{
+
+    background:#FFF;
+
+    font-family:
+    'Courier New',
+    monospace;
+
+    width:100%;
+
+    display:flex;
+
+    justify-content:center;
+
+    color:#000;
+}
+
+/* =========================
+CUPOM
+========================= */
+
+.cupom{
+
+    width:72mm;
+
+    padding:4mm 3mm;
+
+    color:#000;
+
+    font-size:13px;
+
+    font-weight:bold;
+}
+
+/* =========================
+TOPO
+========================= */
+
+.topo{
+
+    text-align:center;
+
+    margin-bottom:10px;
+}
+
+.logo{
+
+    width:110px;
+
+    display:block;
+
+    margin:0 auto 10px;
+
+    image-rendering: crisp-edges;
+}
+
+.topo h1{
+
+    font-size:24px;
+
+    margin-bottom:6px;
+
+    font-weight:900;
+
+    letter-spacing:1px;
+}
+
+.topo p{
+
+    font-size:13px;
+
+    line-height:1.5;
+}
+
+/* =========================
+LINHA
+========================= */
+
+.linha{
+
+    border-top:
+    2px dashed #000;
+
+    margin:10px 0;
+}
+
+/* =========================
+INFOS
+========================= */
+
+.info{
+
+    font-size:14px;
+
+    margin-bottom:6px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:10px;
+}
+
+/* =========================
+ITENS
+========================= */
+
+.item{
+
+    margin-bottom:12px;
+}
+
+.item-nome{
+
+    font-size:15px;
+
+    margin-bottom:4px;
+
+    word-break:break-word;
+
+    font-weight:bold;
+
+    text-transform:uppercase;
+}
+
+.item-preco{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    font-size:14px;
+}
+
+/* =========================
+TOTAL
+========================= */
+
+.total{
+
+    margin-top:16px;
+
+    font-size:28px;
+
+    font-weight:900;
+
+    text-align:right;
+}
+
+
+
+/* =========================
+PRINT
+========================= */
+
+@page{
+
+    size:80mm auto;
+
+    margin:0;
+}
+
+@media print{
+
+    html,
+    body{
+
+        width:80mm;
+
+        background:#FFF;
+    }
+
+    body{
+
+        margin:0;
+
+        padding:0;
+    }
+
+    .cupom{
+    width:100%;
+    max-width:80mm;
+}
+
+    .linha{
+
+        border-top:
+        2px dashed #000;
+    }
+
+    *{
+
+        color:#000 !important;
+
+        -webkit-print-color-adjust:exact;
+
+        print-color-adjust:exact;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="cupom">
+
+    <!-- TOPO -->
+
+    <div class="topo">
+
+        <img
+            src="../assets/logo.png"
+            class="logo"
+        >
+
+        <h1>
+            SABOR DO AÇAÍ
+        </h1>
+
+        <p>
+            CNPJ: 31.259.610/0001-38
+        </p>
+
+        <p>
+            R. Joaquim Peçanha, 80
+        </p>
+
+        <p>
+            Parque Lafaiete
+        </p>
+
+        <p>
+            Duque de Caxias/RJ
+        </p>
+
+        <p>
+            (21) 96673-8735
+        </p>
+
+    </div>
+
+    <div class="linha"></div>
+
+    <!-- INFOS -->
+
+    <div class="info">
+
+        <span>
+            Pedido:
+        </span>
+
+        <strong id="pedido"></strong>
+
+    </div>
+
+    <div class="info">
+
+        <span>
+            Data:
+        </span>
+
+        <strong id="data"></strong>
+
+    </div>
+
+    <div class="info">
+
+        <span>
+            Pagamento:
+        </span>
+
+        <strong id="pagamento"></strong>
+
+    </div>
+
+    <div class="linha"></div>
+
+    <!-- ITENS -->
+
+    <div id="itens"></div>
+
+    <div class="linha"></div>
+
+    <!-- TROCO -->
+
+    <div class="info">
+
+        <span>
+            Troco:
+        </span>
+
+        <strong id="troco"></strong>
+
+    </div>
+
+    <!-- TOTAL -->
+
+    <div
+        class="total"
+        id="total"
+    ></div>
+
+
+  
+
+</div>
+
+<script>
+
+/* =========================
+DADOS VENDA
+========================= */
+
+const venda = JSON.parse(
+
+    localStorage.getItem(
+        'ultimaVenda'
+    )
+)
+
+/* =========================
+VALIDAÇÃO
+========================= */
+
+if(!venda){
+
+    document.body.innerHTML =
+
+    `
+        <div
+            style="
+                padding:40px;
+                font-family:Arial;
+            "
+        >
+            Nenhuma venda encontrada.
+        </div>
+    `
+
+}else{
+
+    /* =========================
+    INFOS
+    ========================= */
+
+    document.getElementById(
+        'pedido'
+    ).innerText =
+
+    `#${venda.vendaId}`
+
+    document.getElementById(
+        'data'
+    ).innerText = venda.data
+
+    document.getElementById(
+        'pagamento'
+    ).innerText = venda.pagamento
+
+    document.getElementById(
+        'troco'
+    ).innerText =
+
+    `R$ ${Number(venda.troco).toFixed(2)}`
+
+    document.getElementById(
+        'total'
+    ).innerText =
+
+    `TOTAL: R$ ${Number(venda.total).toFixed(2)}`
+
+    /* =========================
+    ITENS
+    ========================= */
+
+    const itens = document.getElementById(
+        'itens'
+    )
+
+    venda.itens.forEach(item => {
+
+        itens.innerHTML += `
+
+            <div class="item">
+
+                <div class="item-nome">
+
+                    ${item.nome}
+
+                </div>
+
+                <div class="item-preco">
+
+                    <span>
+                        1x
+                    </span>
+
+                    <strong>
+                        R$ ${Number(item.preco).toFixed(2)}
+                    </strong>
+
+                </div>
+
+            </div>
+
+        `
+    })
+
+    /* =========================
+    IMPRIMIR
+    ========================= */
+
+    window.onload = () => {
+
+        setTimeout(() => {
+
+            window.print()
+
+        }, 500)
+    }
+}
+
+</script>
+
+</body>
+</html>
