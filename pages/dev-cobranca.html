@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do desenvolvedor | Cobrança</title>
+    <link rel="icon" type="image/png" href="../assets/logo.png">
+    <link rel="stylesheet" href="../css/dev-cobranca.css?v=2">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <main class="dev-shell" id="dev-shell" hidden>
+        <header class="dev-header">
+            <div>
+                <span>Painel privado</span>
+                <h1>Cobrança do sistema</h1>
+                <p>Controle o teste grátis, status da assinatura e mensagem exibida para a cliente.</p>
+            </div>
+
+            <button type="button" onclick="logout()">Sair</button>
+        </header>
+
+        <section class="dev-status">
+            <div>
+                <span>Status atual</span>
+                <strong id="dev-status-atual">Carregando...</strong>
+            </div>
+
+            <div>
+                <span>Dias restantes</span>
+                <strong id="dev-dias-restantes">-</strong>
+            </div>
+        </section>
+
+        <form class="dev-card" onsubmit="salvarAssinaturaDev(event)">
+            <div class="dev-grid">
+                <label>
+                    Nome da cliente
+                    <input id="dev-cliente" type="text" placeholder="Nome da cliente">
+                </label>
+
+                <label>
+                    Status
+                    <select id="dev-status">
+                        <option value="teste">Teste grátis</option>
+                        <option value="ativo">Pago/ativo</option>
+                        <option value="vencido">Vencido</option>
+                        <option value="bloqueado">Bloqueado</option>
+                    </select>
+                </label>
+
+                <label>
+                    Início do teste
+                    <input id="dev-inicio" type="date">
+                </label>
+
+                <label>
+                    Fim do teste
+                    <input id="dev-fim" type="date">
+                </label>
+
+                <label>
+                    Valor mensal
+                    <input id="dev-valor" type="number" min="0" step="0.01" placeholder="0.00">
+                </label>
+
+                <label>
+                    Link de pagamento
+                    <input id="dev-link" type="url" placeholder="https://...">
+                </label>
+
+                <label>
+                    Chave Pix
+                    <input id="dev-pix" type="text" placeholder="Chave Pix">
+                </label>
+            </div>
+
+            <label class="dev-message">
+                Mensagem para a cliente
+                <textarea id="dev-mensagem" placeholder="Mensagem de cobrança"></textarea>
+            </label>
+
+            <div class="dev-actions">
+                <button type="submit">Salvar cobrança</button>
+                <button type="button" onclick="marcarVencido()">Marcar vencido</button>
+                <button type="button" onclick="marcarAtivo()">Marcar pago</button>
+            </div>
+        </form>
+    </main>
+
+    <section class="dev-login" id="dev-login">
+        <div>
+            <span>Painel privado</span>
+            <h1>Entrar como desenvolvedor</h1>
+            <p>Use sua conta autorizada para acessar a cobrança do sistema.</p>
+        </div>
+
+        <form onsubmit="entrarDev(event)">
+            <label>
+                E-mail
+                <input id="dev-login-email" type="email" value="galego.x@hotmail.com" autocomplete="username">
+            </label>
+
+            <label>
+                Senha
+                <input id="dev-login-senha" type="password" autocomplete="current-password">
+            </label>
+
+            <button type="submit">Entrar no painel</button>
+        </form>
+    </section>
+
+    <section class="dev-locked" id="dev-locked" hidden>
+        <h1>Acesso privado</h1>
+        <p>Essa conta não está autorizada para o painel do desenvolvedor.</p>
+        <button type="button" onclick="logout()">Sair e trocar conta</button>
+    </section>
+
+    <div class="toast" id="toast">
+        <strong id="toast-title">Aviso</strong>
+        <p id="toast-message">Mensagem</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="../js/supabase.js"></script>
+    <script src="../js/dev-cobranca.js?v=2"></script>
+</body>
+</html>

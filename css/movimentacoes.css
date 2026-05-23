@@ -1,0 +1,296 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: 'Poppins', sans-serif;
+
+    background: #0D1117;
+
+    color: white;
+
+    display: flex;
+}
+
+/* ========================================= */
+/* MAIN */
+/* ========================================= */
+
+.main-content{
+    margin-left: 260px;
+
+    width: calc(100% - 260px);
+
+    padding: 35px;
+}
+
+/* ========================================= */
+/* HEADER */
+/* ========================================= */
+
+.top-header{
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 35px;
+
+    gap: 20px;
+}
+
+.header-left h1{
+    font-size: 32px;
+
+    margin-bottom: 6px;
+}
+
+.header-left p{
+    color: rgba(255,255,255,0.6);
+}
+
+.header-right{
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+}
+
+/* ========================================= */
+/* NOTIFICAÇÃO */
+/* ========================================= */
+
+.notification-btn{
+    width: 52px;
+    height: 52px;
+
+    border-radius: 16px;
+
+    background: #161B22;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    cursor: pointer;
+
+    font-size: 20px;
+
+    transition: 0.3s;
+}
+
+.notification-btn:hover{
+    transform: translateY(-2px);
+
+    background: #1d2430;
+}
+
+/* ========================================= */
+/* USER */
+/* ========================================= */
+
+.user-profile{
+    background: #161B22;
+
+    border-radius: 18px;
+
+    padding: 10px 14px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+}
+
+.user-text{
+    display: flex;
+
+    flex-direction: column;
+}
+
+.user-text strong{
+    font-size: 15px;
+}
+
+.user-text span{
+    font-size: 13px;
+
+    color: rgba(255,255,255,0.6);
+}
+
+.user-profile img{
+    width: 48px;
+    height: 48px;
+
+    border-radius: 14px;
+
+    object-fit: cover;
+}
+
+/* ========================================= */
+/* CARDS */
+/* ========================================= */
+
+.cards-mov{
+    display: grid;
+
+    grid-template-columns:
+    repeat(auto-fit, minmax(220px, 1fr));
+
+    gap: 20px;
+
+    margin-bottom: 30px;
+}
+
+.card-mov{
+    background: #161B22;
+
+    border-radius: 24px;
+
+    padding: 25px;
+
+    border-left:
+    6px solid #22c55e;
+}
+
+.card-mov.saida{
+    border-left:
+    6px solid #ff4d4d;
+}
+
+.card-mov.ajuste{
+    border-left:
+    6px solid #F4B400;
+}
+
+.card-mov h3{
+    color: rgba(255,255,255,0.6);
+
+    margin-bottom: 10px;
+
+    font-size: 15px;
+}
+
+.card-mov strong{
+    font-size: 34px;
+}
+
+/* ========================================= */
+/* TABELA */
+/* ========================================= */
+
+.tabela-box{
+    background: #161B22;
+
+    border-radius: 24px;
+
+    padding: 25px;
+
+    overflow-x: auto;
+}
+
+table{
+    width: 100%;
+
+    border-collapse: collapse;
+}
+
+th{
+    text-align: left;
+
+    padding-bottom: 18px;
+
+    color: rgba(255,255,255,0.55);
+
+    font-size: 14px;
+
+    font-weight: 500;
+}
+
+td{
+    padding: 18px 0;
+
+    border-top:
+    1px solid rgba(255,255,255,0.05);
+
+    font-size: 14px;
+}
+
+/* ========================================= */
+/* STATUS */
+/* ========================================= */
+
+.tipo{
+    padding: 8px 14px;
+
+    border-radius: 999px;
+
+    font-size: 13px;
+
+    font-weight: 600;
+}
+
+.tipo.entrada{
+    background:
+    rgba(0,255,120,0.12);
+
+    color: #22c55e;
+}
+
+.tipo.saida{
+    background:
+    rgba(255,0,0,0.12);
+
+    color: #ff4d4d;
+}
+
+.tipo.editar{
+    background:
+    rgba(255,180,0,0.12);
+
+    color: #F4B400;
+}
+
+/* ========================================= */
+/* MOBILE */
+/* ========================================= */
+
+@media(max-width:900px){
+
+    .main-content{
+        margin-left: 0;
+
+        width: 100%;
+
+        padding: 90px 18px 120px;
+    }
+
+    .top-header{
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+    .header-right{
+        width: 100%;
+
+        justify-content: space-between;
+    }
+
+    .cards-mov{
+        grid-template-columns: 1fr;
+    }
+
+    .tabela-box{
+        overflow-x: auto;
+    }
+
+    table{
+        min-width: 700px;
+    }
+}
