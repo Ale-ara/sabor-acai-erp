@@ -1,5 +1,7 @@
 const CONFIG_KEY = 'configuracoesLoja'
 
+const PRINT_CONFIG_KEY = 'configuracoesImpressaoElectron'
+
 const CONFIG_PADRAO = {
     nome: 'Sabor do Açaí',
     cnpj: '31.259.610/0001-38',
@@ -24,6 +26,12 @@ async function carregarConfiguracoes(){
         ) || CONFIG_PADRAO
     }
 
+    config = {
+        ...config,
+        ...carregarConfiguracaoImpressaoLocal()
+    }
+
+    await carregarImpressorasElectron()
     preencherFormulario(config)
     renderizarPreview(config)
 }
@@ -67,6 +75,25 @@ function lerFormulario(){
     }
 }
 
+function carregarConfiguracaoImpressaoLocal(){
+    try{
+        return JSON.parse(
+            localStorage.getItem(PRINT_CONFIG_KEY) || '{}'
+        )
+    }catch(error){
+        return {}
+    }
+}
+
+function lerConfiguracaoImpressaoLocal(){
+    return {
+        impressora_nome: document.getElementById('config-impressora')?.value || '',
+        impressao_silenciosa: Boolean(
+            document.getElementById('config-impressao-silenciosa')?.checked
+        )
+    }
+}
+
 function preencherFormulario(config){
     document.getElementById('config-nome').value = config.nome || ''
     document.getElementById('config-cnpj').value = config.cnpj || ''
@@ -79,6 +106,10 @@ function preencherFormulario(config){
     config.cor_principal || '#B82566'
     document.getElementById('config-impressao').value =
     config.impressao_padrao || 'termica'
+    document.getElementById('config-impressora').value =
+    config.impressora_nome || ''
+    document.getElementById('config-impressao-silenciosa').checked =
+    Boolean(config.impressao_silenciosa)
     document.getElementById('config-estoque-minimo').value =
     config.estoque_minimo_padrao || 3
     document.getElementById('config-meta-diaria').value =
@@ -110,6 +141,14 @@ function renderizarPreview(config){
             <strong>${config.impressao_padrao || 'térmica'}</strong>
         </div>
         <div class="config-preview-item">
+            <span>Impressora</span>
+            <strong>${config.impressora_nome || 'Padrão do sistema'}</strong>
+        </div>
+        <div class="config-preview-item">
+            <span>Impressão automática</span>
+            <strong>${config.impressao_silenciosa ? 'Ativada no Electron' : 'Desativada'}</strong>
+        </div>
+        <div class="config-preview-item">
             <span>Estoque mínimo</span>
             <strong>${config.estoque_minimo_padrao || 3}</strong>
         </div>
@@ -128,10 +167,19 @@ async function salvarConfiguracoes(event){
     event.preventDefault()
 
     const config = lerFormulario()
+    const printConfig = lerConfiguracaoImpressaoLocal()
 
     localStorage.setItem(
         CONFIG_KEY,
-        JSON.stringify(config)
+        JSON.stringify({
+            ...config,
+            ...printConfig
+        })
+    )
+
+    localStorage.setItem(
+        PRINT_CONFIG_KEY,
+        JSON.stringify(printConfig)
     )
 
     const { error } = await supabaseClient
@@ -158,7 +206,134 @@ async function salvarConfiguracoes(event){
         )
     }
 
-    renderizarPreview(config)
+    renderizarPreview({
+        ...config,
+        ...printConfig
+    })
+}
+
+async function carregarImpressorasElectron(mostrarFeedback = false){
+    const select =
+    document.getElementById('config-impressora')
+
+    if(!select){
+        return
+    }
+
+    const configLocal =
+    carregarConfiguracaoImpressaoLocal()
+
+    select.innerHTML =
+    '<option value="">Impressora padrão do sistema</option>'
+
+    if(!window.electronERP?.isElectron){
+        select.insertAdjacentHTML(
+            'beforeend',
+            '<option value="" disabled>Disponível apenas no app Electron</option>'
+        )
+
+        if(mostrarFeedback){
+            mostrarToast(
+                'Electron necessário',
+                'A listagem de impressoras aparece no aplicativo desktop.',
+                'warning'
+            )
+        }
+
+        return
+    }
+
+    try{
+        const impressoras =
+        await window.electronERP.listarImpressoras()
+
+        impressoras.forEach(impressora => {
+            const option =
+            document.createElement('option')
+
+            option.value = impressora.name
+            option.textContent =
+            `${impressora.displayName || impressora.name}${impressora.isDefault ? ' (padrão)' : ''}`
+
+            select.appendChild(option)
+        })
+
+        select.value = configLocal.impressora_nome || ''
+
+        if(mostrarFeedback){
+            mostrarToast(
+                'Impressoras atualizadas',
+                `${impressoras.length} impressora(s) encontrada(s)`
+            )
+        }
+    }catch(error){
+        console.log(error)
+
+        mostrarToast(
+            'Erro',
+            'Não foi possível listar as impressoras.',
+            'error'
+        )
+    }
+}
+
+async function testarImpressaoElectron(){
+    if(!window.electronERP?.isElectron){
+        mostrarToast(
+            'Electron necessário',
+            'Abra pelo aplicativo desktop para testar impressão silenciosa.',
+            'warning'
+        )
+
+        return
+    }
+
+    const printConfig =
+    lerConfiguracaoImpressaoLocal()
+
+    const config =
+    lerFormulario()
+
+    localStorage.setItem(
+        'ultimaVenda',
+        JSON.stringify({
+            vendaId: 'TESTE',
+            itens: [
+                {
+                    nome: 'Teste de impressão',
+                    preco: 0
+                }
+            ],
+            total: 0,
+            pagamento: 'Teste',
+            recebido: 0,
+            troco: 0,
+            data: new Date().toLocaleString('pt-BR')
+        })
+    )
+
+    try{
+        await window.electronERP.imprimirSilencioso({
+            page: config.impressao_padrao === 'a4'
+            ? 'impressao-a4.html'
+            : 'impressao-termica.html',
+            deviceName: printConfig.impressora_nome || '',
+            data: localStorage.getItem('ultimaVenda') || ''
+        })
+
+        mostrarToast(
+            'Teste enviado',
+            'A impressão de teste foi enviada.'
+        )
+    }catch(error){
+        console.log(error)
+
+        mostrarToast(
+            'Falha ao imprimir',
+            error.message || 'Confira a impressora configurada.',
+            'error'
+        )
+    }
 }
 
 async function exportarDadosSistema(){
@@ -231,6 +406,12 @@ async function exportarVendasCSV(){
             'forma_pagamento',
             'valor_recebido',
             'troco',
+            'pagamento_dividido',
+            'forma_pagamento_1',
+            'valor_pagamento_1',
+            'forma_pagamento_2',
+            'valor_pagamento_2',
+            'valor_recebido_dinheiro',
             'desconto',
             'usuario',
             'criado_em'
@@ -245,6 +426,12 @@ async function exportarVendasCSV(){
             venda.forma_pagamento,
             venda.valor_recebido,
             venda.troco,
+            venda.pagamento_dividido,
+            venda.forma_pagamento_1,
+            venda.valor_pagamento_1,
+            venda.forma_pagamento_2,
+            venda.valor_pagamento_2,
+            venda.valor_recebido_dinheiro,
             venda.desconto,
             venda.usuario,
             venda.criado_em

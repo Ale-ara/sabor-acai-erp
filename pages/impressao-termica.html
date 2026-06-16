@@ -347,12 +347,45 @@ PRINT
 DADOS VENDA
 ========================= */
 
-const venda = JSON.parse(
+function obterVendaImpressao(){
+    const dataUrl =
+    new URLSearchParams(window.location.search).get('data')
 
-    localStorage.getItem(
-        'ultimaVenda'
+    if(dataUrl){
+        try{
+            return JSON.parse(dataUrl)
+        }catch(error){
+            return null
+        }
+    }
+
+    return JSON.parse(
+
+        localStorage.getItem(
+            'ultimaVenda'
+        )
     )
-)
+}
+
+const venda = obterVendaImpressao()
+
+function moeda(valor){
+    return `R$ ${Number(valor || 0).toFixed(2)}`
+}
+
+function descreverPagamento(venda){
+    const pagamento =
+    venda.pagamentoDetalhado
+
+    if(!pagamento?.dividido){
+        return venda.pagamento
+    }
+
+    return `${pagamento.formaPagamento1}: ${moeda(pagamento.valor1)} | ${pagamento.formaPagamento2}: ${moeda(pagamento.valor2)}`
+}
+
+const impressaoSilenciosa =
+new URLSearchParams(window.location.search).get('silent') === '1'
 
 /* =========================
 VALIDAÇÃO
@@ -391,19 +424,19 @@ if(!venda){
 
     document.getElementById(
         'pagamento'
-    ).innerText = venda.pagamento
+    ).innerText = descreverPagamento(venda)
 
     document.getElementById(
         'troco'
     ).innerText =
 
-    `R$ ${Number(venda.troco).toFixed(2)}`
+    moeda(venda.troco)
 
     document.getElementById(
         'total'
     ).innerText =
 
-    `TOTAL: R$ ${Number(venda.total).toFixed(2)}`
+    `TOTAL: ${moeda(venda.total)}`
 
     /* =========================
     ITENS
@@ -446,13 +479,15 @@ if(!venda){
     IMPRIMIR
     ========================= */
 
-    window.onload = () => {
+    if(!impressaoSilenciosa){
+        window.onload = () => {
 
-        setTimeout(() => {
+            setTimeout(() => {
 
-            window.print()
+                window.print()
 
-        }, 500)
+            }, 500)
+        }
     }
 }
 

@@ -475,7 +475,10 @@
                         Forma de pagamento
                     </label>
 
-                    <select id="forma-pagamento">
+                    <select
+                        id="forma-pagamento"
+                        onchange="atualizarPagamento()"
+                    >
 
                         <option>
                             Dinheiro
@@ -486,16 +489,115 @@
                         </option>
 
                         <option>
-                            Cartão
+                            Débito
+                        </option>
+
+                        <option>
+                            Crédito
                         </option>
 
                     </select>
 
                 </div>
 
+                <label class="split-toggle">
+                    <span>
+                        <strong>Dividir Pagamento</strong>
+                        <small>Usar duas formas nesta venda</small>
+                    </span>
+
+                    <input
+                        type="checkbox"
+                        id="dividir-pagamento"
+                        onchange="alternarPagamentoDividido()"
+                    >
+
+                    <i></i>
+                </label>
+
+                <div
+                    class="split-payment-card"
+                    id="split-payment-card"
+                    hidden
+                >
+                    <div class="split-grid">
+                        <label>
+                            1ª forma de pagamento
+                            <select
+                                id="split-forma-1"
+                                onchange="atualizarPagamento()"
+                            >
+                                <option>Dinheiro</option>
+                                <option>Pix</option>
+                                <option>Débito</option>
+                                <option>Crédito</option>
+                            </select>
+                        </label>
+
+                        <label>
+                            Valor pago
+                            <input
+                                type="number"
+                                id="split-valor-1"
+                                placeholder="0.00"
+                                min="0"
+                                step="0.01"
+                                oninput="atualizarPagamento()"
+                            >
+                        </label>
+
+                        <label>
+                            2ª forma de pagamento
+                            <select
+                                id="split-forma-2"
+                                onchange="atualizarPagamento()"
+                            >
+                                <option>Dinheiro</option>
+                                <option>Pix</option>
+                                <option>Débito</option>
+                                <option>Crédito</option>
+                            </select>
+                        </label>
+
+                        <label>
+                            Valor restante
+                            <input
+                                type="number"
+                                id="split-valor-2"
+                                placeholder="0.00"
+                                readonly
+                            >
+                        </label>
+
+                        <label
+                            class="split-dinheiro-recebido"
+                            id="split-dinheiro-recebido-box"
+                            hidden
+                        >
+                            Valor recebido em dinheiro
+                            <input
+                                type="number"
+                                id="split-dinheiro-recebido"
+                                placeholder="0.00"
+                                min="0"
+                                step="0.01"
+                                oninput="atualizarPagamento()"
+                            >
+                        </label>
+                    </div>
+
+                    <div class="split-restante">
+                        <span>Restante a pagar</span>
+                        <strong id="split-restante">R$ 0,00</strong>
+                    </div>
+                </div>
+
                 <!-- RECEBIDO -->
 
-                <div class="pagamento-box">
+                <div
+                    class="pagamento-box"
+                    id="pagamento-simples-recebido"
+                >
 
                     <label>
                         Valor recebido
@@ -505,7 +607,7 @@
                         type="number"
                         id="valor-recebido"
                         placeholder="0.00"
-                        oninput="calcularTroco()"
+                        oninput="atualizarPagamento()"
                     >
 
                 </div>
@@ -524,6 +626,38 @@
 
                 </div>
 
+                <div class="split-summary" id="split-summary">
+                    <div>
+                        <span>Total do pedido</span>
+                        <strong id="summary-total">R$ 0,00</strong>
+                    </div>
+
+                    <div>
+                        <span>Pago na 1ª forma</span>
+                        <strong id="summary-pago-1">R$ 0,00</strong>
+                    </div>
+
+                    <div>
+                        <span>Pago na 2ª forma</span>
+                        <strong id="summary-pago-2">R$ 0,00</strong>
+                    </div>
+
+                    <div>
+                        <span>Total pago</span>
+                        <strong id="summary-total-pago">R$ 0,00</strong>
+                    </div>
+
+                    <div>
+                        <span>Falta pagar</span>
+                        <strong id="summary-falta">R$ 0,00</strong>
+                    </div>
+
+                    <div>
+                        <span>Troco</span>
+                        <strong id="summary-troco">R$ 0,00</strong>
+                    </div>
+                </div>
+
                 <!-- TOTAL -->
 
                 <h3 class="total-box">
@@ -538,7 +672,11 @@
 
                 <!-- BOTÃO -->
 
-                <button onclick="finalizarVenda()">
+                <button
+                    id="btn-finalizar-venda"
+                    onclick="finalizarVenda()"
+                    disabled
+                >
                     Finalizar Venda
                 </button>
 
@@ -857,7 +995,7 @@
 
 <script src="../js/auth.js"></script>
 
-<script src="../js/caixa.js?v=2"></script>
+<script src="../js/caixa.js?v=5"></script>
 
 </body>
 </html>

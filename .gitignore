@@ -1,0 +1,7 @@
+node_modules/
+dist/
+electron-dist/
+release/
+artifacts/
+npm-debug.log*
+*.log

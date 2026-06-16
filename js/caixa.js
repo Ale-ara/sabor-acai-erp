@@ -8,11 +8,17 @@ let categoriasCaixa = []
 
 let caixaAtual = null
 
+let vendaEmAndamento = false
+
 const CAIXA_ATUAL_KEY = 'caixaAtual'
 
 const CAIXA_HISTORICO_KEY = 'historicoCaixas'
 
 const CAIXA_RELATORIO_IMPRESSAO_KEY = 'ultimoRelatorioCaixa'
+
+const CONFIG_LOJA_KEY = 'configuracoesLoja'
+
+const PRINT_CONFIG_KEY = 'configuracoesImpressaoElectron'
 
 /* =========================
    CONTROLE DE CAIXA
@@ -23,6 +29,14 @@ function formatarMoeda(valor){
         style: 'currency',
         currency: 'BRL'
     })
+}
+
+function carregarJsonLocal(chave){
+    try{
+        return JSON.parse(localStorage.getItem(chave) || '{}')
+    }catch(error){
+        return {}
+    }
 }
 
 function escaparHtml(valor){
@@ -37,6 +51,186 @@ function obterTotalCarrinho(){
     return carrinho.reduce((total, item) =>
         total + Number(item.preco || 0), 0
     )
+}
+
+function valorCampo(id){
+    return Number(document.getElementById(id)?.value || 0)
+}
+
+function estaPagamentoDividido(){
+    return Boolean(document.getElementById('dividir-pagamento')?.checked)
+}
+
+function obterDadosPagamento(){
+    const total =
+    obterTotalCarrinho()
+
+    if(!estaPagamentoDividido()){
+        const formaPagamento =
+        document.getElementById('forma-pagamento')?.value || 'Dinheiro'
+
+        const valorRecebidoInput =
+        valorCampo('valor-recebido')
+
+        const valorRecebido =
+        formaPagamento === 'Dinheiro'
+        ? valorRecebidoInput
+        : total
+
+        const totalPago =
+        formaPagamento === 'Dinheiro'
+        ? Math.min(valorRecebido, total)
+        : total
+
+        const troco =
+        formaPagamento === 'Dinheiro'
+        ? Math.max(valorRecebido - total, 0)
+        : 0
+
+        return {
+            dividido: false,
+            total,
+            formaPagamento,
+            formaPagamento1: formaPagamento,
+            valor1: total,
+            formaPagamento2: '',
+            valor2: 0,
+            valorRecebidoDinheiro: formaPagamento === 'Dinheiro' ? valorRecebido : 0,
+            valorRecebido,
+            totalPago,
+            falta: Math.max(total - totalPago, 0),
+            troco,
+            quitado: total > 0 && totalPago >= total && (
+                formaPagamento !== 'Dinheiro' || valorRecebido >= total
+            )
+        }
+    }
+
+    const formaPagamento1 =
+    document.getElementById('split-forma-1')?.value || 'Pix'
+
+    const formaPagamento2 =
+    document.getElementById('split-forma-2')?.value || 'Dinheiro'
+
+    const valor1 =
+    Math.min(
+        Math.max(valorCampo('split-valor-1'), 0),
+        total
+    )
+
+    const valor2 =
+    Math.max(total - valor1, 0)
+
+    const dinheiroNaSegunda =
+    formaPagamento2 === 'Dinheiro'
+
+    const recebidoDinheiro =
+    dinheiroNaSegunda
+    ? valorCampo('split-dinheiro-recebido')
+    : 0
+
+    const valor2Quitado =
+    dinheiroNaSegunda
+    ? recebidoDinheiro >= valor2
+    : true
+
+    const troco =
+    dinheiroNaSegunda
+    ? Math.max(recebidoDinheiro - valor2, 0)
+    : 0
+
+    const totalPago =
+    valor1 + (valor2Quitado ? valor2 : Math.max(recebidoDinheiro, 0))
+
+    return {
+        dividido: true,
+        total,
+        formaPagamento: `${formaPagamento1} + ${formaPagamento2}`,
+        formaPagamento1,
+        valor1,
+        formaPagamento2,
+        valor2,
+        valorRecebidoDinheiro: recebidoDinheiro,
+        valorRecebido: valor1 + (dinheiroNaSegunda ? recebidoDinheiro : valor2),
+        totalPago,
+        falta: Math.max(total - Math.min(totalPago, total), 0),
+        troco,
+        quitado: total > 0 && valor1 >= 0 && valor2Quitado && valor1 + valor2 >= total
+    }
+}
+
+function obterBotaoFinalizarVenda(){
+    return document.getElementById('btn-finalizar-venda')
+}
+
+function obterChavePagamentoCaixa(formaPagamento){
+    const texto =
+    String(formaPagamento || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+
+    if(texto.includes('pix')){
+        return 'pix'
+    }
+
+    if(
+        texto.includes('cart') ||
+        texto.includes('credito') ||
+        texto.includes('debito')
+    ){
+        return 'cartao'
+    }
+
+    return 'dinheiro'
+}
+
+function definirVendaEmAndamento(ativo){
+    vendaEmAndamento = ativo
+
+    const botao =
+    obterBotaoFinalizarVenda()
+
+    if(!botao){
+        return
+    }
+
+    if(ativo){
+        botao.disabled = true
+    }else{
+        const pagamento =
+        obterDadosPagamento()
+
+        botao.disabled =
+        carrinho.length === 0 ||
+        !caixaEstaAberto() ||
+        !pagamento.quitado
+    }
+
+    botao.innerText = ativo ? 'Finalizando...' : 'Finalizar Venda'
+}
+
+async function garantirSessaoVenda(){
+    const {
+        data: { session },
+        error
+    } = await supabaseClient.auth.getSession()
+
+    if(error || !session){
+        mostrarToast(
+            'Sessão expirada',
+            'Entre novamente para finalizar a venda.',
+            'warning'
+        )
+
+        setTimeout(() => {
+            window.location.href = '../index.html'
+        }, 1200)
+
+        return null
+    }
+
+    return session
 }
 
 function carregarCaixaAtual(){
@@ -298,16 +492,21 @@ function registrarVendaNoCaixa(
     vendaId,
     total,
     formaPagamento,
-    valorRecebido
+    valorRecebido,
+    pagamento = null
 ){
     if(!caixaEstaAberto()) return
 
-    const pagamento = formaPagamento.toLowerCase()
+    const pagamentoTexto = formaPagamento.toLowerCase()
 
     const chavePagamento =
-    pagamento.includes('pix')
+    pagamentoTexto.includes('pix')
     ? 'pix'
-    : pagamento.includes('cart')
+    : pagamentoTexto.includes('cart') ||
+    pagamentoTexto.includes('crédito') ||
+    pagamentoTexto.includes('débito') ||
+    pagamentoTexto.includes('credito') ||
+    pagamentoTexto.includes('debito')
     ? 'cartao'
     : 'dinheiro'
 
@@ -316,6 +515,7 @@ function registrarVendaNoCaixa(
         total,
         formaPagamento,
         valorRecebido,
+        pagamentoDetalhado: pagamento,
         itens: carrinho.map(item => ({
             id: item.id,
             nome: item.nome,
@@ -324,7 +524,22 @@ function registrarVendaNoCaixa(
         data: new Date().toISOString()
     })
 
-    caixaAtual.totais[chavePagamento] += total
+    if(pagamento?.dividido){
+        const chavePagamento1 =
+        obterChavePagamentoCaixa(pagamento.formaPagamento1)
+
+        const chavePagamento2 =
+        obterChavePagamentoCaixa(pagamento.formaPagamento2)
+
+        caixaAtual.totais[chavePagamento1] +=
+        Number(pagamento.valor1 || 0)
+
+        caixaAtual.totais[chavePagamento2] +=
+        Number(pagamento.valor2 || 0)
+    }else{
+        caixaAtual.totais[chavePagamento] += total
+    }
+
     caixaAtual.totais.total += total
 
     salvarCaixaAtual()
@@ -385,29 +600,33 @@ function imprimirRelatorioCaixa(){
 async function criarNotificacaoVenda(
     total
 ){
+    try{
 
-    if(typeof criarNotificacao === 'function'){
+        if(typeof criarNotificacao === 'function'){
 
-        await criarNotificacao(
-            'Nova venda',
-            `Pedido de ${formatarMoeda(total)}`,
-            'venda',
-            `venda-${Date.now()}`
-        )
+            await criarNotificacao(
+                'Nova venda',
+                `Pedido de ${formatarMoeda(total)}`,
+                'venda',
+                `venda-${Date.now()}`
+            )
 
-        return
-    }
-
-    await supabaseClient
-    .from('notificacoes')
-    .insert([
-        {
-            titulo: 'Nova venda',
-            texto: `Pedido de R$ ${total.toFixed(2)}`,
-            tipo: 'venda',
-            visualizada: false
+            return
         }
-    ])
+
+        await supabaseClient
+        .from('notificacoes')
+        .insert([
+            {
+                titulo: 'Nova venda',
+                texto: `Pedido de R$ ${total.toFixed(2)}`,
+                tipo: 'venda',
+                visualizada: false
+            }
+        ])
+    }catch(error){
+        console.log('Notificacao da venda nao foi criada', error)
+    }
 }
 
 function agruparCarrinhoPorProduto(){
@@ -497,19 +716,44 @@ async function baixarEstoqueVenda(vendaId){
     const usuario =
     await obterNomeUsuarioAtual()
 
-    for(const item of itensAgrupados){
-        const produtoAtual =
-        produtos.find(produto => String(produto.id) === String(item.id))
+    const produtosAtuais = {}
 
-        if(!produtoAtual){
-            continue
+    for(const item of itensAgrupados){
+        const {
+            data: produtoAtual,
+            error: erroProduto
+        } = await supabaseClient
+        .from('produtos')
+        .select('*')
+        .eq('id', item.id)
+        .single()
+
+        if(erroProduto || !produtoAtual){
+            throw new Error(`${item.nome} nao foi encontrado no estoque.`)
         }
 
         const estoqueAnterior =
         Number(produtoAtual.estoque || 0)
 
         const estoqueFinal =
-        Math.max(estoqueAnterior - item.quantidade, 0)
+        estoqueAnterior - item.quantidade
+
+        if(estoqueFinal < 0){
+            throw new Error(`${item.nome} nao possui estoque suficiente.`)
+        }
+
+        produtosAtuais[item.id] = produtoAtual
+    }
+
+    for(const item of itensAgrupados){
+        const produtoAtual =
+        produtosAtuais[item.id]
+
+        const estoqueAnterior =
+        Number(produtoAtual.estoque || 0)
+
+        const estoqueFinal =
+        estoqueAnterior - item.quantidade
 
         const { error } = await supabaseClient
         .from('produtos')
@@ -555,12 +799,16 @@ async function baixarEstoqueVenda(vendaId){
         }
 
         if(estoqueFinal <= Number(produtoAtual.estoque_minimo || 3)){
-            await criarNotificacao(
-                'Estoque critico',
-                `${item.nome} ficou com ${estoqueFinal} unidade(s)`,
-                'critica',
-                `estoque-${item.id}-${estoqueFinal}`
-            )
+            try{
+                await criarNotificacao(
+                    'Estoque critico',
+                    `${item.nome} ficou com ${estoqueFinal} unidade(s)`,
+                    'critica',
+                    `estoque-${item.id}-${estoqueFinal}`
+                )
+            }catch(error){
+                console.log('Notificacao de estoque nao foi criada', error)
+            }
         }
     }
 }
@@ -573,7 +821,8 @@ function salvarUltimaVenda(
     vendaId,
     total,
     formaPagamento,
-    valorRecebido
+    valorRecebido,
+    pagamento = null
 ){
 
     localStorage.setItem(
@@ -589,10 +838,11 @@ function salvarUltimaVenda(
             total,
 
             pagamento: formaPagamento,
+            pagamentoDetalhado: pagamento,
 
             recebido: valorRecebido,
 
-            troco: valorRecebido - total,
+            troco: pagamento?.troco ?? valorRecebido - total,
 
             data: new Date().toLocaleString()
 
@@ -604,7 +854,60 @@ function salvarUltimaVenda(
    POPUP IMPRESSÃO
 ========================= */
 
-function abrirPopupImpressao(){
+async function imprimirVendaSilenciosaElectron(){
+    if(!window.electronERP?.isElectron){
+        return false
+    }
+
+    const printConfig =
+    carregarJsonLocal(PRINT_CONFIG_KEY)
+
+    if(!printConfig.impressao_silenciosa){
+        return false
+    }
+
+    const configLoja =
+    carregarJsonLocal(CONFIG_LOJA_KEY)
+
+    const page =
+    configLoja.impressao_padrao === 'a4'
+    ? 'impressao-a4.html'
+    : 'impressao-termica.html'
+
+    try{
+        await window.electronERP.imprimirSilencioso({
+            page,
+            deviceName: printConfig.impressora_nome || '',
+            data: localStorage.getItem('ultimaVenda') || ''
+        })
+
+        mostrarToast(
+            'Impresso',
+            'Comprovante enviado para a impressora.'
+        )
+
+        return true
+    }catch(error){
+        console.log(error)
+
+        mostrarToast(
+            'Falha ao imprimir',
+            error.message || 'Confira a impressora configurada.',
+            'error'
+        )
+
+        return false
+    }
+}
+
+async function abrirPopupImpressao(){
+
+    const impressoSilencioso =
+    await imprimirVendaSilenciosaElectron()
+
+    if(impressoSilencioso){
+        return
+    }
 
     document
 
@@ -1143,7 +1446,7 @@ function renderizarCarrinho(){
 
     `R$ ${total.toFixed(2)}`
 
-    calcularTroco()
+    atualizarPagamento()
 }
 
 function removerItem(index){
@@ -1158,46 +1461,98 @@ function removerItem(index){
 ========================= */
 
 function calcularTroco(){
+    atualizarPagamento()
+}
 
-    const valorRecebido =
+function atualizarTexto(id, valor){
+    const elemento =
+    document.getElementById(id)
 
-    Number(
+    if(elemento){
+        elemento.innerText = valor
+    }
+}
 
-        document.getElementById(
-            'valor-recebido'
-        ).value
+function atualizarValorInput(id, valor){
+    const elemento =
+    document.getElementById(id)
+
+    if(elemento){
+        elemento.value = Number(valor || 0).toFixed(2)
+    }
+}
+
+function atualizarPagamento(){
+    const dados =
+    obterDadosPagamento()
+
+    const dividido =
+    dados.dividido
+
+    const recebidoSimples =
+    document.getElementById('pagamento-simples-recebido')
+
+    if(recebidoSimples){
+        recebidoSimples.hidden =
+        dividido || dados.formaPagamento !== 'Dinheiro'
+    }
+
+    const dinheiroSegundaBox =
+    document.getElementById('split-dinheiro-recebido-box')
+
+    if(dinheiroSegundaBox){
+        dinheiroSegundaBox.hidden =
+        !(dividido && dados.formaPagamento2 === 'Dinheiro')
+    }
+
+    if(dividido){
+        const valor1Input =
+        document.getElementById('split-valor-1')
+
+        if(valor1Input && valorCampo('split-valor-1') > dados.total){
+            valor1Input.value = dados.total.toFixed(2)
+        }
+
+        atualizarValorInput('split-valor-2', dados.valor2)
+    }
+
+    atualizarTexto(
+        'split-restante',
+        formatarMoeda(dados.valor2 || dados.falta)
     )
 
-    const totalTexto =
+    atualizarTexto('summary-total', formatarMoeda(dados.total))
+    atualizarTexto('summary-pago-1', formatarMoeda(dados.dividido ? dados.valor1 : dados.totalPago))
+    atualizarTexto('summary-pago-2', formatarMoeda(dados.dividido ? dados.valor2 : 0))
+    atualizarTexto('summary-total-pago', formatarMoeda(Math.min(dados.totalPago, dados.total)))
+    atualizarTexto('summary-falta', formatarMoeda(dados.falta))
+    atualizarTexto('summary-troco', formatarMoeda(dados.troco))
 
-    document.getElementById(
-        'total'
-    ).innerText
-
-    const total =
-
-    Number(
-
-        totalTexto
-
-        .replace('R$', '')
-
-        .replace(',', '.')
+    atualizarTexto(
+        'troco',
+        dados.falta > 0
+        ? 'Valor insuficiente'
+        : formatarMoeda(dados.troco)
     )
 
-    const troco =
+    const botao =
+    obterBotaoFinalizarVenda()
 
-    valorRecebido - total
+    if(botao && !vendaEmAndamento){
+        botao.disabled =
+        carrinho.length === 0 || !caixaEstaAberto() || !dados.quitado
+    }
+}
 
-    document.getElementById(
-        'troco'
-    ).innerText =
+function alternarPagamentoDividido(){
+    const card =
+    document.getElementById('split-payment-card')
 
-    troco >= 0
+    if(card){
+        card.hidden = !estaPagamentoDividido()
+    }
 
-    ? `R$ ${troco.toFixed(2)}`
-
-    : 'Valor insuficiente'
+    atualizarPagamento()
 }
 
 /* =========================
@@ -1205,6 +1560,10 @@ function calcularTroco(){
 ========================= */
 
 async function finalizarVenda(){
+
+    if(vendaEmAndamento){
+        return
+    }
 
     if(carrinho.length === 0){
 
@@ -1228,61 +1587,71 @@ async function finalizarVenda(){
         return
     }
 
+    const session =
+    await garantirSessaoVenda()
+
+    if(!session){
+        return
+    }
+
+    definirVendaEmAndamento(true)
+
     let total = obterTotalCarrinho()
 
-    const formaPagamento =
+    const pagamento =
+    obterDadosPagamento()
 
-    document.getElementById(
-        'forma-pagamento'
-    ).value
-
-    const valorRecebido =
-
-    Number(
-
-        document.getElementById(
-            'valor-recebido'
-        ).value
-    )
-
-    if(
-
-        formaPagamento === 'Dinheiro'
-
-        &&
-
-        valorRecebido < total
-    ){
+    if(!pagamento.quitado){
 
         mostrarToast(
             'Valor insuficiente',
-            'Confira o valor recebido',
+            'Confira os valores do pagamento',
             'warning'
         )
+
+        definirVendaEmAndamento(false)
 
         return
     }
 
-    const {
+    const vendaPayload = {
+        total: total,
+        status: 'ativa',
+        forma_pagamento: pagamento.formaPagamento,
+        valor_recebido: pagamento.valorRecebido || total,
+        troco: pagamento.troco,
+        pagamento_dividido: pagamento.dividido,
+        forma_pagamento_1: pagamento.formaPagamento1,
+        valor_pagamento_1: pagamento.valor1,
+        forma_pagamento_2: pagamento.formaPagamento2 || null,
+        valor_pagamento_2: pagamento.valor2 || 0,
+        valor_recebido_dinheiro: pagamento.valorRecebidoDinheiro || 0,
+        usuario: session.user.email
+    }
 
+    let {
         data: venda,
-
         error: erroVenda
-
     } = await supabaseClient
-
     .from('vendas')
-
-    .insert([
-
-        {
-            total: total,
-            status: 'ativa'
-        }
-
-    ])
-
+    .insert([vendaPayload])
     .select()
+
+    if(erroVenda){
+        const fallback =
+        await supabaseClient
+        .from('vendas')
+        .insert([
+            {
+                total: total,
+                status: 'ativa'
+            }
+        ])
+        .select()
+
+        venda = fallback.data
+        erroVenda = fallback.error
+    }
 
     if(erroVenda){
 
@@ -1294,10 +1663,24 @@ async function finalizarVenda(){
             'error'
         )
 
+        definirVendaEmAndamento(false)
+
         return
     }
 
-    const vendaId = venda[0].id
+    const vendaId = venda?.[0]?.id
+
+    if(!vendaId){
+        mostrarToast(
+            'Erro',
+            'A venda foi criada, mas o retorno veio incompleto. Atualize a tela.',
+            'error'
+        )
+
+        definirVendaEmAndamento(false)
+
+        return
+    }
 
     try{
 
@@ -1307,11 +1690,6 @@ async function finalizarVenda(){
 
         await baixarEstoqueVenda(
             vendaId
-        )
-
-        await registrarAuditoria(
-            'Venda realizada',
-            `Venda #${vendaId} finalizada em ${formatarMoeda(total)}`
         )
 
     }catch(error){
@@ -1328,28 +1706,41 @@ async function finalizarVenda(){
 
         mostrarToast(
             'Erro ao finalizar',
-            'A venda foi cancelada porque os itens ou estoque nao foram salvos',
+            error.message || 'A venda foi cancelada porque os itens ou estoque nao foram salvos',
             'error'
         )
 
+        definirVendaEmAndamento(false)
+
         return
+    }
+
+    try{
+        await registrarAuditoria(
+            'Venda realizada',
+            `Venda #${vendaId} finalizada em ${formatarMoeda(total)}`
+        )
+    }catch(error){
+        console.log('Auditoria da venda nao foi registrada', error)
     }
 
     salvarUltimaVenda(
         vendaId,
         total,
-        formaPagamento,
-        valorRecebido
+        pagamento.formaPagamento,
+        pagamento.valorRecebido,
+        pagamento
     )
 
     registrarVendaNoCaixa(
         vendaId,
         total,
-        formaPagamento,
-        valorRecebido
+        pagamento.formaPagamento,
+        pagamento.valorRecebido,
+        pagamento
     )
 
-    await criarNotificacaoVenda(
+    criarNotificacaoVenda(
         total
     )
 
@@ -1376,15 +1767,22 @@ async function finalizarVenda(){
         'valor-recebido'
     ).value = ''
 
+    document.getElementById('split-valor-1').value = ''
+    document.getElementById('split-dinheiro-recebido').value = ''
+
     document.getElementById(
         'troco'
     ).innerText = 'R$ 0,00'
+
+    atualizarPagamento()
 
     setTimeout(() => {
 
         abrirPopupImpressao()
 
     }, 500)
+
+    definirVendaEmAndamento(false)
 }
 
 /* =========================
@@ -1408,17 +1806,21 @@ function fecharPopup(){
 
 async function carregarUsuario(){
 
-    const { data: authData } =
+    const { data: authData, error: erroAuth } =
 
     await supabaseClient
     .auth
     .getUser()
 
+    if(erroAuth || !authData.user){
+        return
+    }
+
     const email =
 
     authData.user.email
 
-    const { data: usuario } =
+    const { data: usuario, error: erroUsuario } =
 
     await supabaseClient
 
@@ -1428,7 +1830,11 @@ async function carregarUsuario(){
 
     .eq('email', email)
 
-    .single()
+    .maybeSingle()
+
+    if(erroUsuario || !usuario){
+        return
+    }
 
     document.getElementById(
         'user-name'

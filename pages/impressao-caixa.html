@@ -154,6 +154,9 @@ const relatorio = JSON.parse(
     localStorage.getItem('ultimoRelatorioCaixa')
 )
 
+const impressaoSilenciosa =
+new URLSearchParams(window.location.search).get('silent') === '1'
+
 function moeda(valor){
     return Number(valor || 0).toLocaleString('pt-BR', {
         style: 'currency',
@@ -266,10 +269,12 @@ if(!relatorio || !relatorio.caixa){
     ? renderizarFechamento(relatorio.caixa)
     : renderizarAbertura(relatorio.caixa)
 
-    window.onload = () => {
-        setTimeout(() => {
-            window.print()
-        }, 500)
+    if(!impressaoSilenciosa){
+        window.onload = () => {
+            setTimeout(() => {
+                window.print()
+            }, 500)
+        }
     }
 }
 </script>

@@ -373,6 +373,19 @@ async function prepararVendaImpressao(){
         return
     }
 
+    const pagamentoDetalhado =
+    venda.pagamento_dividido
+    ? {
+        dividido: true,
+        formaPagamento1: venda.forma_pagamento_1,
+        valor1: Number(venda.valor_pagamento_1 || 0),
+        formaPagamento2: venda.forma_pagamento_2,
+        valor2: Number(venda.valor_pagamento_2 || 0),
+        valorRecebidoDinheiro: Number(venda.valor_recebido_dinheiro || 0),
+        troco: Number(venda.troco || 0)
+    }
+    : null
+
     /* SALVA */
 
     localStorage.setItem(
@@ -393,11 +406,17 @@ async function prepararVendaImpressao(){
 
             total: venda.total,
 
-            pagamento: 'Sistema',
+            pagamento:
+            venda.forma_pagamento ||
+            'Sistema',
 
-            recebido: venda.total,
+            recebido:
+            Number(venda.valor_recebido || venda.total || 0),
 
-            troco: 0,
+            troco:
+            Number(venda.troco || 0),
+
+            pagamentoDetalhado,
 
             data: new Date(
                 venda.criado_em

@@ -1,0 +1,38 @@
+{
+  "name": "sabor-erp-electron",
+  "version": "1.0.0",
+  "description": "ERP Sabor do Acai para desktop com Electron",
+  "author": "ALTech",
+  "main": "electron/main.js",
+  "scripts": {
+    "electron": "electron .",
+    "start": "electron .",
+    "test:print": "electron electron/print-smoke-test.js",
+    "screenshot:login": "electron electron/screenshot-login.js",
+    "pack": "electron-builder --dir --config.directories.output=electron-dist",
+    "dist": "electron-builder --config.directories.output=release"
+  },
+  "build": {
+    "appId": "com.altech.saborerp",
+    "productName": "Sabor ERP",
+    "files": [
+      "assets/**/*",
+      "components/**/*",
+      "css/**/*",
+      "js/**/*",
+      "pages/**/*",
+      "index.html",
+      "electron/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icone.ico",
+      "signAndEditExecutable": false
+    }
+  },
+  "devDependencies": {
+    "electron": "^31.7.0",
+    "electron-builder": "^24.13.3"
+  }
+}

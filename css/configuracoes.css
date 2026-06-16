@@ -65,6 +65,46 @@
     outline:none;
 }
 
+.config-check{
+    justify-content:center;
+}
+
+.config-check input{
+    width:18px;
+    height:18px;
+    accent-color:var(--green);
+}
+
+.config-check{
+    display:flex;
+    flex-direction:row !important;
+    align-items:center;
+    gap:10px !important;
+    min-height:48px;
+    padding:0 14px;
+    border:1px solid rgba(255,255,255,0.10);
+    border-radius:13px;
+    background:#0D1117;
+}
+
+.config-inline-actions{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;
+    align-self:end;
+}
+
+.config-inline-actions button{
+    min-height:48px;
+    border:0;
+    border-radius:13px;
+    padding:0 12px;
+    background:#263142;
+    color:white;
+    font-weight:800;
+    cursor:pointer;
+}
+
 .config-save{
     margin-top:22px;
     height:50px;
@@ -135,6 +175,10 @@
 
 @media(max-width:620px){
     .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .config-inline-actions{
         grid-template-columns:1fr;
     }
 }
