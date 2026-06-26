@@ -1633,7 +1633,9 @@ FILTROS CATEGORIAS
 
     top:24px;
 
-    height:calc(100vh - 48px);
+    max-height:calc(100vh - 48px);
+
+    height:auto;
 
     min-height:620px;
 
@@ -1642,6 +1644,8 @@ FILTROS CATEGORIAS
     justify-content:flex-start;
 
     gap:16px;
+
+    overflow:hidden;
 }
 
 .caixa-page .carrinho > div:first-child{
@@ -1698,11 +1702,37 @@ FILTROS CATEGORIAS
 
     min-height:130px;
 
-    max-height:none;
+    max-height:clamp(130px, 24vh, 320px);
+
+    overflow-y:auto;
 
     margin-top:0;
 
     padding-right:4px;
+}
+
+.caixa-page .itens-carrinho:has(.carrinho-vazio){
+    flex:0 0 auto;
+
+    min-height:74px;
+
+    max-height:74px;
+
+    overflow:hidden;
+}
+
+.caixa-page .itens-carrinho:has(.carrinho-vazio) .carrinho-vazio{
+    min-height:64px;
+
+    padding:10px 12px;
+}
+
+.caixa-page .itens-carrinho:has(.carrinho-vazio) .carrinho-vazio strong{
+    font-size:14px;
+}
+
+.caixa-page .itens-carrinho:has(.carrinho-vazio) .carrinho-vazio span{
+    font-size:12px;
 }
 
 .caixa-page .item{
@@ -1741,7 +1771,11 @@ FILTROS CATEGORIAS
 
     flex:0 0 auto;
 
+    margin-top:2px;
+
     padding-top:16px;
+
+    border-top:1px solid rgba(255,255,255,0.08);
 
     background:transparent;
 }
