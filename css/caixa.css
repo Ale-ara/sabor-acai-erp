@@ -469,15 +469,18 @@
 .split-payment-card{
     margin:0 0 14px;
     padding:14px;
+    width:100%;
+    max-width:100%;
     border:1px solid rgba(255,209,102,0.20);
     border-radius:17px;
     background:linear-gradient(145deg,rgba(15,21,29,0.96),rgba(30,11,54,0.72));
     box-shadow:0 18px 38px rgba(0,0,0,0.24);
+    overflow:hidden;
 }
 
 .split-grid{
     display:grid;
-    grid-template-columns:1fr 0.82fr;
+    grid-template-columns:minmax(0,1fr) minmax(0,0.82fr);
     gap:12px;
 }
 
@@ -542,6 +545,9 @@
     gap:8px;
     margin:0 0 18px;
     padding:12px;
+    width:100%;
+    max-width:100%;
+    overflow:hidden;
 }
 
 .split-summary div{
@@ -1641,11 +1647,17 @@ FILTROS CATEGORIAS
 
     padding:20px;
 
+    display:flex;
+
+    flex-direction:column;
+
     justify-content:flex-start;
 
     gap:16px;
 
-    overflow:hidden;
+    overflow-y:auto;
+
+    overflow-x:hidden;
 }
 
 .caixa-page .carrinho > div:first-child{
@@ -1655,7 +1667,9 @@ FILTROS CATEGORIAS
 
     flex-direction:column;
 
-    flex:1 1 auto;
+    flex:0 0 auto;
+
+    gap:12px;
 }
 
 .caixa-page .carrinho-header{
@@ -1666,7 +1680,17 @@ FILTROS CATEGORIAS
 
     gap:14px;
 
-    margin-bottom:14px;
+    margin-bottom:0;
+
+    padding-bottom:14px;
+
+    border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.caixa-page .carrinho-header h2{
+    margin:0;
+
+    line-height:1.08;
 }
 
 .caixa-page .carrinho-header span{
@@ -1709,6 +1733,10 @@ FILTROS CATEGORIAS
     margin-top:0;
 
     padding-right:4px;
+}
+
+.caixa-page .itens-carrinho.sem-itens{
+    display:none;
 }
 
 .caixa-page .itens-carrinho:has(.carrinho-vazio){
@@ -1765,7 +1793,7 @@ FILTROS CATEGORIAS
 }
 
 .caixa-page .rodape-carrinho{
-    position:static;
+    position:relative !important;
 
     bottom:auto;
 
@@ -1778,6 +1806,19 @@ FILTROS CATEGORIAS
     border-top:1px solid rgba(255,255,255,0.08);
 
     background:transparent;
+}
+
+.caixa-page .rodape-carrinho,
+.caixa-page .split-payment-card,
+.caixa-page .split-summary,
+.caixa-page .troco-box,
+.caixa-page .total-box{
+    width:100%;
+    max-width:100%;
+}
+
+.caixa-page .pagamento-dividido-ativo #pagamento-simples-recebido{
+    display:none !important;
 }
 
 .caixa-page .pagamento-box{

@@ -8,6 +8,7 @@
     "electron": "electron .",
     "start": "electron .",
     "test:print": "electron electron/print-smoke-test.js",
+    "test:pdv-layout": "electron electron/pdv-layout-smoke-test.js",
     "screenshot:login": "electron electron/screenshot-login.js",
     "pack": "electron-builder --dir --config.directories.output=electron-dist",
     "dist": "electron-builder --config.directories.output=release"

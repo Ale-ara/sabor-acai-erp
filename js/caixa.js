@@ -1389,6 +1389,11 @@ function renderizarCarrinho(){
         `${carrinho.length} ${carrinho.length === 1 ? 'item' : 'itens'}`
     }
 
+    area.classList.toggle(
+        'sem-itens',
+        carrinho.length === 0
+    )
+
     if(carrinho.length === 0){
 
         area.innerHTML = `
@@ -1489,12 +1494,25 @@ function atualizarPagamento(){
     const dividido =
     dados.dividido
 
+    const carrinhoBox =
+    document.querySelector('.carrinho')
+
+    if(carrinhoBox){
+        carrinhoBox.classList.toggle(
+            'pagamento-dividido-ativo',
+            dividido
+        )
+    }
+
     const recebidoSimples =
     document.getElementById('pagamento-simples-recebido')
 
     if(recebidoSimples){
         recebidoSimples.hidden =
         dividido || dados.formaPagamento !== 'Dinheiro'
+
+        recebidoSimples.style.display =
+        recebidoSimples.hidden ? 'none' : ''
     }
 
     const dinheiroSegundaBox =
