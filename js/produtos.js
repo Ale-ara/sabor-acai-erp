@@ -199,6 +199,12 @@ function limparFormulario(){
     document.getElementById('preco').value = ''
     document.getElementById('categoria').value = ''
     document.getElementById('estoque').value = ''
+    document.getElementById('codigo').value = ''
+    document.getElementById('custo').value = ''
+    document.getElementById('estoque-minimo').value = ''
+    document.getElementById('unidade').value = 'un'
+    document.getElementById('variacoes').value = ''
+    document.getElementById('ativo').checked = true
     limparFotoCadastro()
 }
 
@@ -219,6 +225,8 @@ function obterProdutosFiltrados(){
             String(produto.nome || '').toLowerCase().includes(busca)
             ||
             String(produto.categoria || '').toLowerCase().includes(busca)
+            ||
+            String(produto.codigo || '').toLowerCase().includes(busca)
         )
     }
 
@@ -232,17 +240,20 @@ function atualizarResumoProdutos(){
 
     if(!totalProdutos) return
 
-    totalProdutos.innerText = produtosCache.length
+    const produtosAtivos =
+    produtosCache.filter(produto => produto.ativo !== false)
+
+    totalProdutos.innerText = produtosAtivos.length
 
     totalEstoque.innerText =
-    produtosCache.reduce((total, produto) =>
+    produtosAtivos.reduce((total, produto) =>
         total + Number(produto.estoque || 0),
         0
     )
 
     totalCriticos.innerText =
-    produtosCache.filter(produto =>
-        Number(produto.estoque || 0) <= 3
+    produtosAtivos.filter(produto =>
+        Number(produto.estoque || 0) <= Number(produto.estoque_minimo || 3)
     ).length
 }
 
@@ -289,17 +300,44 @@ async function salvarProduto(){
         nome,
         preco,
         categoria,
-        estoque
+        estoque,
+        codigo: document.getElementById('codigo').value.trim() || null,
+        custo: Number(document.getElementById('custo').value || 0),
+        estoque_minimo: Number(document.getElementById('estoque-minimo').value || 3),
+        unidade: document.getElementById('unidade').value || 'un',
+        variacoes: document.getElementById('variacoes').value.trim() || null,
+        ativo: document.getElementById('ativo').checked
     }
 
     if(imagem){
         payload.imagem = imagem
     }
 
-    const { data, error } = await supabaseClient
+    let { data, error } = await supabaseClient
     .from('produtos')
     .insert([payload])
     .select()
+
+    if(error){
+        const payloadBasico = {
+            nome,
+            preco,
+            categoria,
+            estoque
+        }
+
+        if(imagem){
+            payloadBasico.imagem = imagem
+        }
+
+        const fallback = await supabaseClient
+        .from('produtos')
+        .insert([payloadBasico])
+        .select()
+
+        data = fallback.data
+        error = fallback.error
+    }
 
     btn.disabled = false
     btn.innerText = '+ Salvar Produto'
@@ -437,15 +475,25 @@ function renderizarProdutos(data){
         const preco = Number(produto.preco || 0)
         const imagem = produto.imagem || ''
 
+        const ativo =
+        produto.ativo !== false
+
+        const estoqueMinimo =
+        Number(produto.estoque_minimo || 3)
+
         const statusEstoque =
-        estoque <= 0
+        !ativo
+        ? 'inativo'
+        : estoque <= 0
         ? 'sem-estoque'
-        : estoque <= 3
+        : estoque <= estoqueMinimo
         ? 'critico'
         : 'ok'
 
         const statusTexto =
-        statusEstoque === 'sem-estoque'
+        statusEstoque === 'inativo'
+        ? 'Inativo'
+        : statusEstoque === 'sem-estoque'
         ? 'Sem estoque'
         : statusEstoque === 'critico'
         ? 'Estoque critico'
@@ -470,7 +518,7 @@ function renderizarProdutos(data){
                     <div class="produto-identidade">
                         <div>
                             <h3>${produto.nome}</h3>
-                            <small>${produto.categoria}</small>
+                            <small>${produto.categoria}${produto.codigo ? ` | ${produto.codigo}` : ''}</small>
                         </div>
                     </div>
 
@@ -487,10 +535,10 @@ function renderizarProdutos(data){
                         <button
                             class="edit-btn delete-btn"
                             type="button"
-                            title="Excluir produto"
+                            title="Inativar produto"
                             onclick="excluirProduto(${produto.id})"
                         >
-                            Excluir
+                            Inativar
                         </button>
                     </div>
                 </div>
@@ -504,6 +552,11 @@ function renderizarProdutos(data){
                     <div>
                         <span>Estoque</span>
                         <strong>${estoque}</strong>
+                    </div>
+
+                    <div>
+                        <span>Custo</span>
+                        <strong>R$ ${Number(produto.custo || 0).toFixed(2)}</strong>
                     </div>
                 </div>
 
@@ -548,7 +601,9 @@ async function confirmarExclusao(){
     try{
         const { error } = await supabaseClient
         .from('produtos')
-        .delete()
+        .update({
+            ativo: false
+        })
         .eq('id', produtoExcluindo)
 
         if(error){
@@ -556,7 +611,7 @@ async function confirmarExclusao(){
 
             mostrarToast(
                 'Erro',
-                'Erro ao excluir produto',
+                'Nao foi possivel inativar. Confira a coluna ativo no Supabase.',
                 'error'
             )
 
@@ -568,8 +623,8 @@ async function confirmarExclusao(){
         setTimeout(() => {
             abrirPopup(
                 'OK',
-                'Produto excluido!',
-                'O produto foi removido.'
+                'Produto inativado!',
+                'Ele nao aparece mais no caixa, mas o historico foi preservado.'
             )
         }, 250)
 
@@ -614,6 +669,12 @@ function abrirEdicao(id){
     document.getElementById('edit-nome').value = produto.nome
     document.getElementById('edit-preco').value = produto.preco
     document.getElementById('edit-estoque').value = produto.estoque
+    document.getElementById('edit-codigo').value = produto.codigo || ''
+    document.getElementById('edit-custo').value = Number(produto.custo || 0)
+    document.getElementById('edit-estoque-minimo').value = Number(produto.estoque_minimo || 3)
+    document.getElementById('edit-unidade').value = produto.unidade || 'un'
+    document.getElementById('edit-variacoes').value = produto.variacoes || ''
+    document.getElementById('edit-ativo').checked = produto.ativo !== false
     document.getElementById('edit-foto').value = ''
     document.getElementById('preview-edit-foto').src = produto.imagem || FOTO_PADRAO
 
@@ -656,19 +717,48 @@ async function salvarEdicao(){
         nome,
         preco,
         categoria,
-        estoque
+        estoque,
+        codigo: document.getElementById('edit-codigo').value.trim() || null,
+        custo: Number(document.getElementById('edit-custo').value || 0),
+        estoque_minimo: Number(document.getElementById('edit-estoque-minimo').value || 3),
+        unidade: document.getElementById('edit-unidade').value || 'un',
+        variacoes: document.getElementById('edit-variacoes').value.trim() || null,
+        ativo: document.getElementById('edit-ativo').checked
     }
 
     if(novaImagem || imagemAtualEditando){
         payload.imagem = novaImagem || imagemAtualEditando
     }
 
-    const { data, error } = await supabaseClient
+    let { data, error } = await supabaseClient
     .from('produtos')
     .update(payload)
     .eq('id', produtoEditando)
     .select()
     .single()
+
+    if(error){
+        const payloadBasico = {
+            nome,
+            preco,
+            categoria,
+            estoque
+        }
+
+        if(novaImagem || imagemAtualEditando){
+            payloadBasico.imagem = novaImagem || imagemAtualEditando
+        }
+
+        const fallback = await supabaseClient
+        .from('produtos')
+        .update(payloadBasico)
+        .eq('id', produtoEditando)
+        .select()
+        .single()
+
+        data = fallback.data
+        error = fallback.error
+    }
 
     if(error){
         console.log(error)

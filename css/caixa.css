@@ -137,6 +137,10 @@
     background:#ff4d4d;
 }
 
+.btn-caixa-secundario{
+    background:#263142;
+}
+
 .pdv-container{
     display:grid;
 
@@ -1132,6 +1136,10 @@ FILTROS CATEGORIAS
     animation:popupAnim 0.3s ease;
 }
 
+.modal-caixa-box-largo{
+    width:min(720px,94vw);
+}
+
 .modal-caixa-box h2{
     font-size:26px;
 
@@ -1174,6 +1182,49 @@ FILTROS CATEGORIAS
     color:#F4B400;
 
     font-size:22px;
+}
+
+.historico-caixas-lista{
+    display:grid;
+    gap:10px;
+    max-height:420px;
+    overflow:auto;
+    padding-right:4px;
+}
+
+.historico-caixa-item{
+    display:grid;
+    grid-template-columns:1.4fr 0.8fr 0.8fr;
+    gap:12px;
+    align-items:center;
+    padding:12px;
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:14px;
+    background:#0F151D;
+}
+
+.historico-caixa-item div{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+}
+
+.historico-caixa-item span,
+.historico-caixa-vazio{
+    color:rgba(255,255,255,0.62);
+    font-size:12px;
+}
+
+.historico-caixa-item strong{
+    color:#FFD166;
+}
+
+.historico-caixa-item strong.ok{
+    color:#22c55e;
+}
+
+.historico-caixa-item strong.alerta{
+    color:#fb7185;
 }
 
 @media(max-width:600px){
@@ -1334,7 +1385,7 @@ FILTROS CATEGORIAS
 
     min-width:150px;
 
-    min-height:48px;
+    min-height:44px;
 
     border-radius:12px;
 }

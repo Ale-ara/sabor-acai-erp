@@ -1,4 +1,5 @@
 let produtoSelecionado = null
+let produtosEstoqueCache = []
 
 /* ========================================= */
 /* CRIAR NOTIFICAÇÃO */
@@ -91,6 +92,8 @@ async function carregarEstoque(){
         return
     }
 
+    produtosEstoqueCache = data || []
+
     const tabela =
 
     document.getElementById(
@@ -107,7 +110,7 @@ async function carregarEstoque(){
         'total-produtos'
     ).innerText = data.length
 
-    for(const produto of data){
+    for(const produto of produtosEstoqueCache){
 
         let status = ''
         let classe = ''
@@ -215,6 +218,120 @@ async function carregarEstoque(){
     document.getElementById(
         'sem-estoque'
     ).innerText = semEstoque
+}
+
+function localizarProdutoEstoque(identificador){
+    const termo =
+    String(identificador || '').trim().toLowerCase()
+
+    return produtosEstoqueCache.find(produto =>
+        String(produto.id).toLowerCase() === termo ||
+        String(produto.codigo || '').toLowerCase() === termo ||
+        String(produto.nome || '').trim().toLowerCase() === termo
+    )
+}
+
+async function aplicarEntradaLote(){
+    const campo =
+    document.getElementById('entrada-lote')
+
+    const linhas =
+    campo.value
+    .split(/\r?\n/)
+    .map(linha => linha.trim())
+    .filter(Boolean)
+
+    if(linhas.length === 0){
+        mostrarToast(
+            'Entrada em lote',
+            'Informe pelo menos um produto.',
+            'warning'
+        )
+
+        return
+    }
+
+    const erros = []
+    const movimentos = []
+
+    for(const [index, linha] of linhas.entries()){
+        const partes =
+        linha.split(';').map(parte => parte.trim())
+
+        const produto =
+        localizarProdutoEstoque(partes[0])
+
+        const quantidade =
+        Number(String(partes[1] || '').replace(',', '.'))
+
+        if(!produto || !quantidade || quantidade <= 0){
+            erros.push(`Linha ${index + 1}: produto ou quantidade inválida.`)
+            continue
+        }
+
+        movimentos.push({
+            produto,
+            quantidade,
+            motivo: partes[2] || 'Entrada em lote'
+        })
+    }
+
+    if(erros.length > 0){
+        mostrarToast(
+            'Entrada em lote',
+            erros.slice(0, 2).join(' '),
+            'warning'
+        )
+
+        return
+    }
+
+    for(const movimento of movimentos){
+        const estoqueAnterior =
+        Number(movimento.produto.estoque || 0)
+
+        const estoqueFinal =
+        estoqueAnterior + movimento.quantidade
+
+        const { error } = await supabaseClient
+        .from('produtos')
+        .update({
+            estoque: estoqueFinal
+        })
+        .eq('id', movimento.produto.id)
+
+        if(error){
+            mostrarToast(
+                'Erro',
+                `Falha ao atualizar ${movimento.produto.nome}`,
+                'error'
+            )
+
+            return
+        }
+
+        await supabaseClient
+        .from('movimentacoes_estoque')
+        .insert([{
+            produto: movimento.produto.nome,
+            produto_id: movimento.produto.id,
+            tipo: 'entrada',
+            quantidade: movimento.quantidade,
+            estoque_anterior: estoqueAnterior,
+            estoque_final: estoqueFinal,
+            motivo: movimento.motivo,
+            usuario: 'Sistema'
+        }])
+    }
+
+    campo.value = ''
+
+    mostrarToast(
+        'Entrada em lote',
+        `${movimentos.length} produto(s) atualizado(s).`
+    )
+
+    carregarEstoque()
 }
 
 /* ========================================= */

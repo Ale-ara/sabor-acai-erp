@@ -356,6 +356,53 @@
 
         </div>
 
+        <div class="produto-form produto-form-avancado">
+            <input
+                type="text"
+                id="codigo"
+                placeholder="Código interno ou código de barras"
+            >
+
+            <input
+                type="number"
+                id="custo"
+                placeholder="Custo do produto"
+                step="0.01"
+                min="0"
+            >
+
+            <input
+                type="number"
+                id="estoque-minimo"
+                placeholder="Estoque mínimo"
+                step="1"
+                min="0"
+            >
+
+            <select id="unidade">
+                <option value="un">Unidade</option>
+                <option value="kg">Kg</option>
+                <option value="l">Litro</option>
+                <option value="ml">ML</option>
+                <option value="cx">Caixa</option>
+            </select>
+
+            <input
+                type="text"
+                id="variacoes"
+                placeholder="Variações: 300ml, 500ml, 700ml..."
+            >
+
+            <label class="produto-check">
+                <input
+                    type="checkbox"
+                    id="ativo"
+                    checked
+                >
+                Produto ativo
+            </label>
+        </div>
+
 
         <div class="produto-foto-box">
 
@@ -577,6 +624,53 @@
 
         </div>
 
+        <div class="produto-form produto-form-avancado compacto">
+            <input
+                type="text"
+                id="edit-codigo"
+                placeholder="Código interno ou código de barras"
+            >
+
+            <input
+                type="number"
+                id="edit-custo"
+                placeholder="Custo"
+                step="0.01"
+                min="0"
+            >
+
+            <input
+                type="number"
+                id="edit-estoque-minimo"
+                placeholder="Estoque mínimo"
+                step="1"
+                min="0"
+            >
+
+            <select id="edit-unidade">
+                <option value="un">Unidade</option>
+                <option value="kg">Kg</option>
+                <option value="l">Litro</option>
+                <option value="ml">ML</option>
+                <option value="cx">Caixa</option>
+            </select>
+
+            <input
+                type="text"
+                id="edit-variacoes"
+                placeholder="Variações"
+            >
+
+            <label class="produto-check">
+                <input
+                    type="checkbox"
+                    id="edit-ativo"
+                    checked
+                >
+                Produto ativo
+            </label>
+        </div>
+
 
         <div class="produto-foto-box compacto">
 
@@ -640,7 +734,7 @@
 
 </div>
 
-<!-- POPUP EXCLUIR -->
+<!-- POPUP INATIVAR -->
 
 <div
     class="popup-excluir"
@@ -654,11 +748,11 @@
         </div>
 
         <h2>
-            Excluir produto?
+            Inativar produto?
         </h2>
 
         <p>
-            Essa ação não poderá ser desfeita.
+            O produto sai do caixa, mas o historico de vendas permanece.
         </p>
 
         <div
@@ -683,7 +777,7 @@
                 type="button"
                 onclick="confirmarExclusao()"
             >
-                Excluir
+                Inativar
             </button>
 
         </div>

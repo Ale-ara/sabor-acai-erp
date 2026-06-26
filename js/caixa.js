@@ -255,6 +255,10 @@ function carregarCaixaAtual(){
     if(caixaAtual && !Array.isArray(caixaAtual.vendas)){
         caixaAtual.vendas = []
     }
+
+    if(caixaAtual && !Array.isArray(caixaAtual.movimentacoes)){
+        caixaAtual.movimentacoes = []
+    }
 }
 
 function salvarCaixaAtual(){
@@ -273,8 +277,19 @@ function caixaEstaAberto(){
 function obterDinheiroEsperado(){
     if(!caixaEstaAberto()) return 0
 
+    const movimentos =
+    (caixaAtual.movimentacoes || []).reduce((total, movimento) => {
+        const valor =
+        Number(movimento.valor || 0)
+
+        return movimento.tipo === 'sangria'
+        ? total - valor
+        : total + valor
+    }, 0)
+
     return Number(caixaAtual.saldoInicial || 0)
     + Number(caixaAtual.totais.dinheiro || 0)
+    + movimentos
 }
 
 function renderizarCaixa(){
@@ -286,6 +301,7 @@ function renderizarCaixa(){
     const dinheiroEsperado = document.getElementById('caixa-dinheiro-esperado')
     const btnAbrir = document.getElementById('btn-abrir-caixa')
     const btnFechar = document.getElementById('btn-fechar-caixa')
+    const btnMovimentar = document.getElementById('btn-movimentar-caixa')
 
     if(!status) return
 
@@ -306,6 +322,7 @@ function renderizarCaixa(){
 
         btnAbrir.disabled = false
         btnFechar.disabled = true
+        if(btnMovimentar) btnMovimentar.disabled = true
 
         return
     }
@@ -331,6 +348,7 @@ function renderizarCaixa(){
 
     btnAbrir.disabled = true
     btnFechar.disabled = false
+    if(btnMovimentar) btnMovimentar.disabled = false
 }
 
 function abrirModalAberturaCaixa(){
@@ -375,7 +393,8 @@ function confirmarAberturaCaixa(){
             pix: 0,
             cartao: 0,
             total: 0
-        }
+        },
+        movimentacoes: []
     }
 
     salvarCaixaAtual()
@@ -389,6 +408,130 @@ function confirmarAberturaCaixa(){
     )
 
     abrirPopupImpressaoCaixa('abertura')
+}
+
+function abrirModalMovimentacaoCaixa(){
+    if(!caixaEstaAberto()){
+        mostrarToast(
+            'Caixa fechado',
+            'Abra o caixa para registrar sangria ou suprimento.',
+            'warning'
+        )
+
+        return
+    }
+
+    document.getElementById('mov-caixa-tipo').value = 'suprimento'
+    document.getElementById('mov-caixa-valor').value = ''
+    document.getElementById('mov-caixa-motivo').value = ''
+
+    document
+    .getElementById('modal-movimentacao-caixa')
+    .classList.add('ativo')
+}
+
+function fecharModalMovimentacaoCaixa(){
+    document
+    .getElementById('modal-movimentacao-caixa')
+    .classList.remove('ativo')
+}
+
+function confirmarMovimentacaoCaixa(){
+    if(!caixaEstaAberto()) return
+
+    const tipo =
+    document.getElementById('mov-caixa-tipo').value
+
+    const valor =
+    Number(document.getElementById('mov-caixa-valor').value || 0)
+
+    const motivo =
+    document.getElementById('mov-caixa-motivo').value.trim()
+
+    if(valor <= 0){
+        mostrarToast(
+            'Valor inválido',
+            'Informe um valor maior que zero.',
+            'warning'
+        )
+
+        return
+    }
+
+    caixaAtual.movimentacoes = caixaAtual.movimentacoes || []
+    caixaAtual.movimentacoes.unshift({
+        id: `mov-${Date.now()}`,
+        tipo,
+        valor,
+        motivo: motivo || tipo,
+        criadoEm: new Date().toISOString()
+    })
+
+    salvarCaixaAtual()
+    renderizarCaixa()
+    fecharModalMovimentacaoCaixa()
+
+    mostrarToast(
+        tipo === 'sangria' ? 'Sangria registrada' : 'Suprimento registrado',
+        `${formatarMoeda(valor)} lançado no caixa.`
+    )
+}
+
+function obterHistoricoCaixas(){
+    try{
+        return JSON.parse(
+            localStorage.getItem(CAIXA_HISTORICO_KEY) || '[]'
+        )
+    }catch(error){
+        return []
+    }
+}
+
+function abrirHistoricoCaixas(){
+    const lista =
+    document.getElementById('historico-caixas-lista')
+
+    const historico =
+    obterHistoricoCaixas()
+
+    if(historico.length === 0){
+        lista.innerHTML = `
+            <div class="historico-caixa-vazio">
+                Nenhum caixa fechado neste computador.
+            </div>
+        `
+    }else{
+        lista.innerHTML = historico.slice(0, 12).map(caixa => `
+            <article class="historico-caixa-item">
+                <div>
+                    <strong>${new Date(caixa.abertoEm).toLocaleString('pt-BR')}</strong>
+                    <span>Fechado em ${caixa.fechadoEm ? new Date(caixa.fechadoEm).toLocaleString('pt-BR') : '-'}</span>
+                </div>
+
+                <div>
+                    <span>Total</span>
+                    <strong>${formatarMoeda(caixa.totais?.total)}</strong>
+                </div>
+
+                <div>
+                    <span>Diferença</span>
+                    <strong class="${Number(caixa.diferenca || 0) === 0 ? 'ok' : 'alerta'}">
+                        ${formatarMoeda(caixa.diferenca)}
+                    </strong>
+                </div>
+            </article>
+        `).join('')
+    }
+
+    document
+    .getElementById('modal-historico-caixas')
+    .classList.add('ativo')
+}
+
+function fecharHistoricoCaixas(){
+    document
+    .getElementById('modal-historico-caixas')
+    .classList.remove('ativo')
 }
 
 function abrirModalFechamentoCaixa(){
@@ -875,6 +1018,34 @@ async function imprimirVendaSilenciosaElectron(){
     : 'impressao-termica.html'
 
     try{
+        const impressoras =
+        await window.electronERP.listarImpressoras()
+
+        if(!impressoras || impressoras.length === 0){
+            mostrarToast(
+                'Sem impressora',
+                'Nenhuma impressora foi encontrada no Windows.',
+                'warning'
+            )
+
+            return false
+        }
+
+        if(
+            printConfig.impressora_nome &&
+            !impressoras.some(impressora =>
+                impressora.name === printConfig.impressora_nome
+            )
+        ){
+            mostrarToast(
+                'Impressora ausente',
+                'A impressora configurada não foi encontrada. Confira as configurações.',
+                'warning'
+            )
+
+            return false
+        }
+
         await window.electronERP.imprimirSilencioso({
             page,
             deviceName: printConfig.impressora_nome || '',
@@ -898,6 +1069,30 @@ async function imprimirVendaSilenciosaElectron(){
 
         return false
     }
+}
+
+async function reimprimirUltimaVenda(){
+    const ultimaVenda =
+    localStorage.getItem('ultimaVenda')
+
+    if(!ultimaVenda){
+        mostrarToast(
+            'Sem venda',
+            'Nenhuma última venda encontrada para reimpressão.',
+            'warning'
+        )
+
+        return
+    }
+
+    const impressoSilencioso =
+    await imprimirVendaSilenciosaElectron()
+
+    if(impressoSilencioso){
+        return
+    }
+
+    mostrarOpcoesImpressao()
 }
 
 async function abrirPopupImpressao(){
@@ -1293,7 +1488,9 @@ async function carregarProdutos(){
         return
     }
 
-    produtos = data
+    produtos = (data || []).filter(produto =>
+        produto.ativo !== false
+    )
 
     await carregarCategoriasCaixa()
 
@@ -1344,7 +1541,7 @@ function adicionarCarrinho(
 
         mostrarToast(
             'Caixa fechado',
-            'Abra o caixa antes de vender',
+            'Abra o caixa antes de adicionar produtos ao pedido.',
             'warning'
         )
 
@@ -1598,7 +1795,7 @@ async function finalizarVenda(){
 
         mostrarToast(
             'Caixa fechado',
-            'Abra o caixa antes de finalizar vendas',
+            'Abra o caixa antes de finalizar a venda. O pedido so pode ser concluido com um turno ativo.',
             'warning'
         )
 

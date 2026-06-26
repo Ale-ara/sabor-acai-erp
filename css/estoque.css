@@ -381,3 +381,53 @@ td{
         height: 52px;
     }
 }
+
+.estoque-lote-box{
+    display:grid;
+    gap:14px;
+    margin-bottom:24px;
+    padding:22px;
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:18px;
+    background:#141A22;
+}
+
+.estoque-lote-box h2{
+    margin:0 0 4px;
+    font-size:22px;
+}
+
+.estoque-lote-box p{
+    color:rgba(255,255,255,0.62);
+}
+
+.estoque-lote-box textarea{
+    width:100%;
+    min-height:118px;
+    resize:vertical;
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:14px;
+    outline:none;
+    background:#0F151D;
+    color:white;
+    padding:14px;
+    font:inherit;
+}
+
+.estoque-lote-box button{
+    width:max-content;
+    min-height:46px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg,#16a34a,#2563eb);
+    color:white;
+    padding:0 18px;
+    font-weight:800;
+    cursor:pointer;
+}
+
+@media(max-width:640px){
+    .estoque-lote-box button{
+        width:100%;
+    }
+}

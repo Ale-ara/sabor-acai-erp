@@ -142,6 +142,16 @@ body{
     font-size: 34px;
 
     color: #F4B400;
+
+    overflow-wrap:anywhere;
+}
+
+#produto-top{
+    display:block;
+
+    font-size: 22px;
+
+    line-height: 1.2;
 }
 
 .destaque{

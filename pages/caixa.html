@@ -338,6 +338,29 @@
                 Fechar caixa
             </button>
 
+            <button
+                class="btn-caixa-secundario"
+                id="btn-movimentar-caixa"
+                onclick="abrirModalMovimentacaoCaixa()"
+                disabled
+            >
+                Sangria / Suprimento
+            </button>
+
+            <button
+                class="btn-caixa-secundario"
+                onclick="reimprimirUltimaVenda()"
+            >
+                Reimprimir última
+            </button>
+
+            <button
+                class="btn-caixa-secundario"
+                onclick="abrirHistoricoCaixas()"
+            >
+                Histórico
+            </button>
+
         </div>
 
     </section>
@@ -849,6 +872,100 @@
 
     </div>
 
+</div>
+
+<div
+    class="modal-caixa"
+    id="modal-movimentacao-caixa"
+>
+
+    <div class="modal-caixa-box">
+
+        <h2>
+            Sangria / Suprimento
+        </h2>
+
+        <p>
+            Registre entradas ou retiradas de dinheiro do caixa.
+        </p>
+
+        <div class="pagamento-box">
+            <label>Tipo</label>
+
+            <select id="mov-caixa-tipo">
+                <option value="suprimento">Suprimento</option>
+                <option value="sangria">Sangria</option>
+            </select>
+        </div>
+
+        <div class="pagamento-box">
+            <label>Valor</label>
+
+            <input
+                type="number"
+                id="mov-caixa-valor"
+                placeholder="0.00"
+                min="0"
+                step="0.01"
+            >
+        </div>
+
+        <div class="pagamento-box">
+            <label>Motivo</label>
+
+            <textarea
+                id="mov-caixa-motivo"
+                placeholder="Ex: troco, retirada, reforço..."
+            ></textarea>
+        </div>
+
+        <div class="popup-impressao-buttons">
+            <button
+                class="btn-imprimir"
+                onclick="confirmarMovimentacaoCaixa()"
+            >
+                Registrar
+            </button>
+
+            <button
+                class="btn-cancelar"
+                onclick="fecharModalMovimentacaoCaixa()"
+            >
+                Cancelar
+            </button>
+        </div>
+    </div>
+</div>
+
+<div
+    class="modal-caixa"
+    id="modal-historico-caixas"
+>
+
+    <div class="modal-caixa-box modal-caixa-box-largo">
+
+        <h2>
+            Histórico de caixas
+        </h2>
+
+        <p>
+            Últimos turnos fechados neste computador.
+        </p>
+
+        <div
+            class="historico-caixas-lista"
+            id="historico-caixas-lista"
+        ></div>
+
+        <div class="popup-impressao-buttons">
+            <button
+                class="btn-cancelar"
+                onclick="fecharHistoricoCaixas()"
+            >
+                Fechar
+            </button>
+        </div>
+    </div>
 </div>
 
 <div

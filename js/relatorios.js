@@ -1,6 +1,10 @@
 let relatorioAtual = {
     vendas: [],
-    produtosVendidos: []
+    produtosVendidos: [],
+    itensVenda: [],
+    formasPagamento: [],
+    faturamentoPeriodos: [],
+    lucroEstimado: 0
 }
 
 function formatarMoeda(valor){
@@ -151,7 +155,7 @@ function carregarHistorico(vendas){
     if(vendas.length === 0){
         tabela.innerHTML = `
             <tr>
-                <td colspan="3">Nenhuma venda encontrada</td>
+                <td colspan="4">Nenhuma venda encontrada</td>
             </tr>
         `
 
@@ -167,9 +171,193 @@ function carregarHistorico(vendas){
                 <td>#${venda.id}</td>
                 <td>${dataFormatada}</td>
                 <td>${formatarMoeda(venda.total)}</td>
+                <td>${escaparHtml(venda.forma_pagamento || '-')}</td>
             </tr>
         `
     })
+}
+
+function somarFormaPagamento(acumulador, forma, valor){
+    const nome = forma || 'Nao informado'
+
+    if(!acumulador[nome]){
+        acumulador[nome] = {
+            forma: nome,
+            total: 0,
+            quantidade: 0
+        }
+    }
+
+    acumulador[nome].total += Number(valor || 0)
+    acumulador[nome].quantidade += 1
+}
+
+function carregarFormasPagamento(vendas){
+    const tabela =
+    document.getElementById('formas-pagamento')
+
+    const acumulador = {}
+
+    vendas.forEach(venda => {
+        if(venda.pagamento_dividido){
+            somarFormaPagamento(
+                acumulador,
+                venda.forma_pagamento_1,
+                venda.valor_pagamento_1
+            )
+
+            somarFormaPagamento(
+                acumulador,
+                venda.forma_pagamento_2,
+                venda.valor_pagamento_2
+            )
+
+            return
+        }
+
+        somarFormaPagamento(
+            acumulador,
+            venda.forma_pagamento,
+            venda.total
+        )
+    })
+
+    const formas =
+    Object.values(acumulador)
+    .sort((a,b) => b.total - a.total)
+
+    relatorioAtual.formasPagamento = formas
+
+    if(!tabela) return
+
+    if(formas.length === 0){
+        tabela.innerHTML = `
+            <tr>
+                <td colspan="3">Nenhum pagamento encontrado</td>
+            </tr>
+        `
+
+        return
+    }
+
+    tabela.innerHTML = formas.map(item => `
+        <tr>
+            <td>${escaparHtml(item.forma)}</td>
+            <td>${formatarMoeda(item.total)}</td>
+            <td>${item.quantidade}</td>
+        </tr>
+    `).join('')
+}
+
+function carregarFaturamentoPeriodos(vendas){
+    const tabela =
+    document.getElementById('faturamento-periodos')
+
+    const agora = new Date()
+    const inicioDia = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate())
+    const inicioSemana = new Date(inicioDia)
+    inicioSemana.setDate(inicioDia.getDate() - inicioDia.getDay())
+    const inicioMes = new Date(agora.getFullYear(), agora.getMonth(), 1)
+
+    const periodos = [
+        {
+            nome: 'Hoje',
+            inicio: inicioDia
+        },
+        {
+            nome: 'Semana atual',
+            inicio: inicioSemana
+        },
+        {
+            nome: 'Mes atual',
+            inicio: inicioMes
+        }
+    ].map(periodo => {
+        const vendasPeriodo =
+        vendas.filter(venda => new Date(venda.criado_em) >= periodo.inicio)
+
+        return {
+            nome: periodo.nome,
+            total: vendasPeriodo.reduce((total, venda) => total + Number(venda.total || 0), 0),
+            quantidade: vendasPeriodo.length
+        }
+    })
+
+    relatorioAtual.faturamentoPeriodos = periodos
+
+    if(!tabela) return
+
+    tabela.innerHTML = periodos.map(periodo => `
+        <tr>
+            <td>${periodo.nome}</td>
+            <td>${formatarMoeda(periodo.total)}</td>
+            <td>${periodo.quantidade}</td>
+        </tr>
+    `).join('')
+}
+
+async function calcularLucroEstimado(itens){
+    const produtoIds =
+    [...new Set(
+        itens
+        .map(item => item.produto_id)
+        .filter(Boolean)
+    )]
+
+    const custos = {}
+
+    if(produtoIds.length > 0){
+        const { data, error } = await supabaseClient
+        .from('produtos')
+        .select('id,custo')
+        .in('id', produtoIds)
+
+        if(!error){
+            ;(data || []).forEach(produto => {
+                custos[produto.id] = Number(produto.custo || 0)
+            })
+        }
+    }
+
+    return itens.reduce((total, item) => {
+        const quantidade = Number(item.quantidade || 1)
+        const subtotal =
+        Number(item.subtotal || 0)
+        || Number(item.preco || 0) * quantidade
+
+        const custo =
+        Number(custos[item.produto_id] || item.custo || 0) * quantidade
+
+        return total + (subtotal - custo)
+    }, 0)
+}
+
+async function carregarAnalisesAvancadas(vendas, itens){
+    carregarFormasPagamento(vendas)
+    carregarFaturamentoPeriodos(vendas)
+
+    const produtoTop =
+    relatorioAtual.produtosVendidos[0]
+
+    const produtoTopElemento =
+    document.getElementById('produto-top')
+
+    if(produtoTopElemento){
+        produtoTopElemento.innerText =
+        produtoTop ? produtoTop.nome : '-'
+    }
+
+    const lucro =
+    await calcularLucroEstimado(itens)
+
+    relatorioAtual.lucroEstimado = lucro
+
+    const lucroElemento =
+    document.getElementById('lucro-estimado')
+
+    if(lucroElemento){
+        lucroElemento.innerText = formatarMoeda(lucro)
+    }
 }
 
 async function carregarProdutosMaisVendidos(vendas){
@@ -182,12 +370,15 @@ async function carregarProdutosMaisVendidos(vendas){
 
     if(idsVendas.length === 0){
         relatorioAtual.produtosVendidos = []
+        relatorioAtual.itensVenda = []
 
         tabela.innerHTML = `
             <tr>
                 <td colspan="2">Nenhum produto vendido</td>
             </tr>
         `
+
+        await carregarAnalisesAvancadas(vendas, [])
 
         return
     }
@@ -201,6 +392,8 @@ async function carregarProdutosMaisVendidos(vendas){
         console.log(error)
         return
     }
+
+    relatorioAtual.itensVenda = data || []
 
     const contador = {}
 
@@ -236,6 +429,8 @@ async function carregarProdutosMaisVendidos(vendas){
             </tr>
         `
 
+        await carregarAnalisesAvancadas(vendas, data || [])
+
         return
     }
 
@@ -247,6 +442,8 @@ async function carregarProdutosMaisVendidos(vendas){
             </tr>
         `
     })
+
+    await carregarAnalisesAvancadas(vendas, data || [])
 }
 
 async function logout(){
@@ -282,6 +479,9 @@ async function notificarPDFGerado(){
 async function gerarPDF(){
     const vendas = relatorioAtual.vendas || []
     const produtosVendidos = relatorioAtual.produtosVendidos || []
+    const formasPagamento = relatorioAtual.formasPagamento || []
+    const faturamentoPeriodos = relatorioAtual.faturamentoPeriodos || []
+    const lucroEstimado = relatorioAtual.lucroEstimado || 0
 
     const faturamento =
     vendas.reduce((total, venda) =>
@@ -298,6 +498,8 @@ async function gerarPDF(){
 
     const periodo = obterPeriodoRelatorio()
     const geradoEm = new Date().toLocaleString('pt-BR')
+    const logoUrl =
+    new URL('../assets/logo.png', window.location.href).href
 
     const linhasProdutos =
     produtosVendidos.length > 0
@@ -315,6 +517,36 @@ async function gerarPDF(){
         </tr>
     `
 
+    const linhasFormasPagamento =
+    formasPagamento.length > 0
+    ? formasPagamento.map(item => `
+        <tr>
+            <td>${escaparHtml(item.forma)}</td>
+            <td class="numero">${formatarMoeda(item.total)}</td>
+            <td class="numero">${item.quantidade}</td>
+        </tr>
+    `).join('')
+    : `
+        <tr>
+            <td colspan="3" class="vazio">Nenhuma forma de pagamento encontrada.</td>
+        </tr>
+    `
+
+    const linhasFaturamentoPeriodos =
+    faturamentoPeriodos.length > 0
+    ? faturamentoPeriodos.map(item => `
+        <tr>
+            <td>${escaparHtml(item.nome)}</td>
+            <td class="numero">${formatarMoeda(item.total)}</td>
+            <td class="numero">${item.quantidade}</td>
+        </tr>
+    `).join('')
+    : `
+        <tr>
+            <td colspan="3" class="vazio">Nenhum faturamento no periodo.</td>
+        </tr>
+    `
+
     const linhasVendas =
     vendas.length > 0
     ? vendas.map(venda => `
@@ -322,11 +554,12 @@ async function gerarPDF(){
             <td>#${escaparHtml(venda.id)}</td>
             <td>${new Date(venda.criado_em).toLocaleString('pt-BR')}</td>
             <td class="numero">${formatarMoeda(venda.total)}</td>
+            <td>${escaparHtml(venda.forma_pagamento || '-')}</td>
         </tr>
     `).join('')
     : `
         <tr>
-            <td colspan="3" class="vazio">Nenhuma venda encontrada no periodo.</td>
+            <td colspan="4" class="vazio">Nenhuma venda encontrada no periodo.</td>
         </tr>
     `
 
@@ -383,6 +616,22 @@ async function gerarPDF(){
 
                 .marca{
                     display:flex;
+                    align-items:center;
+                    gap:12px;
+                }
+
+                .marca img{
+                    width:58px;
+                    height:58px;
+                    border-radius:14px;
+                    object-fit:contain;
+                    background:#FFFFFF;
+                    border:1px solid #E5E7EB;
+                    padding:5px;
+                }
+
+                .marca-texto{
+                    display:flex;
                     flex-direction:column;
                     gap:6px;
                 }
@@ -423,7 +672,7 @@ async function gerarPDF(){
 
                 .resumo{
                     display:grid;
-                    grid-template-columns:repeat(3, 1fr);
+                    grid-template-columns:repeat(4, 1fr);
                     gap:10px;
                     margin-bottom:18px;
                 }
@@ -532,8 +781,12 @@ async function gerarPDF(){
             <main>
                 <header class="cabecalho">
                     <div class="marca">
-                        <span>Sabor do Acai ERP</span>
-                        <h1>Relatorio de Vendas</h1>
+                        <img src="${logoUrl}" alt="Sabor do Acai">
+
+                        <div class="marca-texto">
+                            <span>Sabor do Acai ERP</span>
+                            <h1>Relatorio de Vendas</h1>
+                        </div>
                     </div>
 
                     <div class="meta">
@@ -564,6 +817,47 @@ async function gerarPDF(){
                         <span>Ticket medio</span>
                         <strong>${formatarMoeda(ticketMedio)}</strong>
                     </div>
+
+                    <div class="resumo-card">
+                        <span>Lucro estimado</span>
+                        <strong>${formatarMoeda(lucroEstimado)}</strong>
+                    </div>
+                </section>
+
+                <section class="secao">
+                    <h2>Faturamento por periodo</h2>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Periodo</th>
+                                <th class="numero">Total</th>
+                                <th class="numero">Vendas</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            ${linhasFaturamentoPeriodos}
+                        </tbody>
+                    </table>
+                </section>
+
+                <section class="secao">
+                    <h2>Vendas por forma de pagamento</h2>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Forma</th>
+                                <th class="numero">Total</th>
+                                <th class="numero">Quantidade</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            ${linhasFormasPagamento}
+                        </tbody>
+                    </table>
                 </section>
 
                 <section class="secao">
@@ -594,6 +888,7 @@ async function gerarPDF(){
                                 <th>Venda</th>
                                 <th>Data</th>
                                 <th class="numero">Total</th>
+                                <th>Pagamento</th>
                             </tr>
                         </thead>
 
